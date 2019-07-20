@@ -9,15 +9,17 @@ using System.Management.Automation.Internal;
 using System.Management.Automation.Remoting;
 using System.Management.Automation.Remoting.Internal;
 using System.Threading;
+
 using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Options;
 using Microsoft.PowerShell.Cim;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Cmdletization.Cim
 {
     /// <summary>
-    /// Base class for all child jobs that wrap CIM operations
+    /// Base class for all child jobs that wrap CIM operations.
     /// </summary>
     internal abstract class CimChildJobBase<T> :
         StartableJob,
@@ -54,7 +56,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
             _jobSpecificCustomOptions = new Lazy<CimCustomOptionsDictionary>(this.CalculateJobSpecificCustomOptions);
         }
 
-        private CimSensitiveValueConverter _cimSensitiveValueConverter = new CimSensitiveValueConverter();
+        private readonly CimSensitiveValueConverter _cimSensitiveValueConverter = new CimSensitiveValueConverter();
         internal CimSensitiveValueConverter CimSensitiveValueConverter { get { return _cimSensitiveValueConverter; } }
 
         internal abstract IObservable<T> GetCimOperation();
@@ -223,7 +225,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         }
 
         /// <summary>
-        /// Indicates a location where this job is running
+        /// Indicates a location where this job is running.
         /// </summary>
         public override string Location
         {
@@ -243,7 +245,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         }
 
         /// <summary>
-        /// Status message associated with the Job
+        /// Status message associated with the Job.
         /// </summary>
         public override string StatusMessage
         {

@@ -1,21 +1,22 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Management.Automation.Language;
-using System.Security;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Management.Automation.Internal;
-using System.Management.Automation.Runspaces;
-using Dbg = System.Management.Automation;
 using System.Diagnostics.CodeAnalysis;
+using System.Management.Automation.Internal;
+using System.Management.Automation.Language;
+using System.Management.Automation.Runspaces;
+using System.Security;
+
+using Dbg = System.Management.Automation;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the state of a Monad Shell session
+    /// Holds the state of a Monad Shell session.
     /// </summary>
 
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "This is a bridge class between internal classes and a public interface. It requires this much coupling.")]
@@ -39,7 +40,7 @@ namespace System.Management.Automation
         #region Constructor
 
         /// <summary>
-        /// Constructor for session state object
+        /// Constructor for session state object.
         /// </summary>
         /// <param name="context">
         /// The context for the runspace to which this session state object belongs.
@@ -166,7 +167,7 @@ namespace System.Management.Automation
         private SessionState _publicSessionState;
 
         /// <summary>
-        /// Gets the engine APIs to access providers
+        /// Gets the engine APIs to access providers.
         /// </summary>
         internal ProviderIntrinsics InvokeProvider
         {
@@ -176,7 +177,7 @@ namespace System.Management.Automation
         private ProviderIntrinsics _invokeProvider;
 
         /// <summary>
-        /// The module info object associated with this session state
+        /// The module info object associated with this session state.
         /// </summary>
         internal PSModuleInfo Module { get; set; } = null;
 
@@ -190,7 +191,7 @@ namespace System.Management.Automation
         internal Dictionary<string, PSModuleInfo> ModuleTable { get; } = new Dictionary<string, PSModuleInfo>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Get/set constraints for this execution environment
+        /// Get/set constraints for this execution environment.
         /// </summary>
         internal PSLanguageMode LanguageMode
         {
@@ -206,7 +207,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// If true the PowerShell debugger will use FullLanguage mode, otherwise it will use the current language mode
+        /// If true the PowerShell debugger will use FullLanguage mode, otherwise it will use the current language mode.
         /// </summary>
         internal bool UseFullLanguageModeInDebugger
         {
@@ -225,7 +226,7 @@ namespace System.Management.Automation
         /// <summary>
         /// See if a script is allowed to be run.
         /// </summary>
-        /// <param name="scriptPath">Path to check</param>
+        /// <param name="scriptPath">Path to check.</param>
         /// <returns>True if script is allowed.</returns>
         internal SessionStateEntryVisibility CheckScriptVisibility(string scriptPath)
         {
@@ -252,7 +253,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionState cmdlet entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
+        /// <param name="entry">The entry to add.</param>
         internal void AddSessionStateEntry(SessionStateCmdletEntry entry)
         {
             AddSessionStateEntry(entry, /*local*/false);
@@ -261,8 +262,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionState cmdlet entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
-        /// <param name="local">If local, add cmdlet to current scope. Else, add to module scope</param>
+        /// <param name="entry">The entry to add.</param>
+        /// <param name="local">If local, add cmdlet to current scope. Else, add to module scope.</param>
         internal void AddSessionStateEntry(SessionStateCmdletEntry entry, bool local)
         {
             ExecutionContext.CommandDiscovery.AddSessionStateCmdletEntryToCache(entry, local);
@@ -271,7 +272,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionState cmdlet entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
+        /// <param name="entry">The entry to add.</param>
         internal void AddSessionStateEntry(SessionStateApplicationEntry entry)
         {
             this.Applications.Add(entry.Path);
@@ -280,7 +281,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionState cmdlet entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
+        /// <param name="entry">The entry to add.</param>
         internal void AddSessionStateEntry(SessionStateScriptEntry entry)
         {
             this.Scripts.Add(entry.Path);
@@ -382,7 +383,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Check to see if an application is allowed to be run.
         /// </summary>
-        /// <param name="applicationPath">The path to the application to check</param>
+        /// <param name="applicationPath">The path to the application to check.</param>
         /// <returns>True if application is permitted.</returns>
         internal SessionStateEntryVisibility CheckApplicationVisibility(string applicationPath)
         {
@@ -392,12 +393,12 @@ namespace System.Management.Automation
         private SessionStateEntryVisibility checkPathVisibility(List<string> list, string path)
         {
             if (list == null || list.Count == 0) return SessionStateEntryVisibility.Private;
-            if (String.IsNullOrEmpty(path)) return SessionStateEntryVisibility.Private;
+            if (string.IsNullOrEmpty(path)) return SessionStateEntryVisibility.Private;
 
             if (list.Contains("*")) return SessionStateEntryVisibility.Public;
             foreach (string p in list)
             {
-                if (String.Equals(p, path, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(p, path, StringComparison.OrdinalIgnoreCase))
                     return SessionStateEntryVisibility.Public;
 
                 if (WildcardPattern.ContainsWildcardCharacters(p))
@@ -440,7 +441,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Constructs a new instance of a ProviderInvocationException
-        /// using the specified data
+        /// using the specified data.
         /// </summary>
         /// <param name="resourceId">
         /// The resource ID to use as the format message for the error.
@@ -478,7 +479,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Constructs a new instance of a ProviderInvocationException
-        /// using the specified data
+        /// using the specified data.
         /// </summary>
         /// <param name="resourceId">
         /// The resource ID to use as the format message for the error.

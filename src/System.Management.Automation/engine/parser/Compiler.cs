@@ -17,6 +17,7 @@ using System.Management.Automation.Runspaces;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+
 using Microsoft.PowerShell.Commands;
 
 namespace System.Management.Automation.Language
@@ -33,9 +34,9 @@ namespace System.Management.Automation.Language
         internal const BindingFlags instancePublicFlags = BindingFlags.Instance | BindingFlags.Public;
 
         internal static readonly ConstructorInfo ObjectList_ctor =
-            typeof(List<object>).GetConstructor(PSTypeExtensions.EmptyTypes);
+            typeof(List<object>).GetConstructor(Type.EmptyTypes);
         internal static readonly MethodInfo ObjectList_ToArray =
-            typeof(List<object>).GetMethod(nameof(List<object>.ToArray), PSTypeExtensions.EmptyTypes);
+            typeof(List<object>).GetMethod(nameof(List<object>.ToArray), Type.EmptyTypes);
 
         internal static readonly MethodInfo ArrayOps_GetMDArrayValue =
             typeof(ArrayOps).GetMethod(nameof(ArrayOps.GetMDArrayValue), staticFlags);
@@ -94,8 +95,6 @@ namespace System.Management.Automation.Language
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.AddObject), staticFlags);
         internal static readonly MethodInfo EnumerableOps_Compare =
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.Compare), staticFlags);
-        internal static readonly MethodInfo EnumerableOps_Current =
-            typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.Current), staticFlags);
         internal static readonly MethodInfo EnumerableOps_GetEnumerator =
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.GetEnumerator), staticFlags);
         internal static readonly MethodInfo EnumerableOps_GetCOMEnumerator =
@@ -110,8 +109,6 @@ namespace System.Management.Automation.Language
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.Where), staticFlags);
         internal static readonly MethodInfo EnumerableOps_ForEach =
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.ForEach), staticFlags);
-        internal static readonly MethodInfo EnumerableOps_MoveNext =
-            typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.MoveNext), staticFlags);
         internal static readonly MethodInfo EnumerableOps_Multiply =
             typeof(EnumerableOps).GetMethod(nameof(EnumerableOps.Multiply), staticFlags);
         internal static readonly MethodInfo EnumerableOps_PropertyGetter =
@@ -138,8 +135,6 @@ namespace System.Management.Automation.Language
             typeof(ExceptionHandlingOps).GetMethod(nameof(ExceptionHandlingOps.ConvertToException), staticFlags);
         internal static readonly MethodInfo ExceptionHandlingOps_ConvertToMethodInvocationException =
             typeof(ExceptionHandlingOps).GetMethod(nameof(ExceptionHandlingOps.ConvertToMethodInvocationException), staticFlags);
-        internal static readonly MethodInfo ExceptionHandlingOps_ConvertToRuntimeException =
-            typeof(ExceptionHandlingOps).GetMethod(nameof(ExceptionHandlingOps.ConvertToRuntimeException), staticFlags);
         internal static readonly MethodInfo ExceptionHandlingOps_FindMatchingHandler =
             typeof(ExceptionHandlingOps).GetMethod(nameof(ExceptionHandlingOps.FindMatchingHandler), staticFlags);
         internal static readonly MethodInfo ExceptionHandlingOps_RestoreStoppingPipeline =
@@ -163,20 +158,6 @@ namespace System.Management.Automation.Language
             typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.LanguageMode), instanceFlags);
         internal static readonly PropertyInfo ExecutionContext_EngineIntrinsics =
             typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.EngineIntrinsics), instanceFlags);
-        internal static readonly PropertyInfo ExecutionContext_ShellFunctionErrorOutputPipe =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.ShellFunctionErrorOutputPipe), instanceFlags);
-        internal static readonly PropertyInfo ExecutionContext_TypeTable =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.TypeTable), instanceFlags);
-
-        internal static readonly PropertyInfo ExecutionContext_ExpressionWarningOutputPipe =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.ExpressionWarningOutputPipe), instanceFlags);
-        internal static readonly PropertyInfo ExecutionContext_ExpressionVerboseOutputPipe =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.ExpressionVerboseOutputPipe), instanceFlags);
-        internal static readonly PropertyInfo ExecutionContext_ExpressionDebugOutputPipe =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.ExpressionDebugOutputPipe), instanceFlags);
-        internal static readonly PropertyInfo ExecutionContext_ExpressionInformationOutputPipe =
-            typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.ExpressionInformationOutputPipe), instanceFlags);
-
         internal static readonly MethodInfo FileRedirection_BindForExpression =
             typeof(FileRedirection).GetMethod(nameof(FileRedirection.BindForExpression), instanceFlags);
         internal static readonly MethodInfo FileRedirection_CallDoCompleteForExpression =
@@ -197,8 +178,6 @@ namespace System.Management.Automation.Language
             typeof(FunctionContext).GetField(nameof(FunctionContext._localsTuple), instanceFlags);
         internal static readonly FieldInfo FunctionContext__outputPipe =
             typeof(FunctionContext).GetField(nameof(FunctionContext._outputPipe), instanceFlags);
-        internal static readonly FieldInfo FunctionContext__traps =
-            typeof(FunctionContext).GetField(nameof(FunctionContext._traps), instanceFlags);
         internal static readonly MethodInfo FunctionContext_PopTrapHandlers =
             typeof(FunctionContext).GetMethod(nameof(FunctionContext.PopTrapHandlers), instanceFlags);
         internal static readonly MethodInfo FunctionContext_PushTrapHandlers =
@@ -221,10 +200,6 @@ namespace System.Management.Automation.Language
 
         internal static readonly MethodInfo IComparable_CompareTo =
             typeof(IComparable).GetMethod(nameof(IComparable.CompareTo));
-
-        internal static readonly MethodInfo IDictionary_set_Item =
-            typeof(IDictionary).GetMethod("set_Item");
-
         internal static readonly MethodInfo IDisposable_Dispose =
             typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
 
@@ -365,8 +340,8 @@ namespace System.Management.Automation.Language
             typeof(PSObject).GetMethod(nameof(PSObject.Base), staticFlags);
         internal static readonly PropertyInfo PSObject_BaseObject =
             typeof(PSObject).GetProperty(nameof(PSObject.BaseObject));
-        internal static readonly FieldInfo PSObject_isDeserialized =
-            typeof(PSObject).GetField(nameof(PSObject.isDeserialized), instanceFlags);
+        internal static readonly PropertyInfo PSObject_IsDeserialized =
+            typeof(PSObject).GetProperty(nameof(PSObject.IsDeserialized), instanceFlags);
         internal static readonly MethodInfo PSObject_ToStringParser =
             typeof(PSObject).GetMethod(nameof(PSObject.ToStringParser), staticFlags, null, new[] { typeof(ExecutionContext), typeof(object) }, null);
 
@@ -425,9 +400,6 @@ namespace System.Management.Automation.Language
             typeof(ScriptBlock).GetMethod(nameof(ScriptBlock.DoInvokeReturnAsIs), instanceFlags);
         internal static readonly MethodInfo ScriptBlock_InvokeAsDelegateHelper =
             typeof(ScriptBlock).GetMethod(nameof(ScriptBlock.InvokeAsDelegateHelper), instanceFlags);
-        internal static readonly MethodInfo ScriptBlock_InvokeAsMemberFunction =
-            typeof(ScriptBlock).GetMethod(nameof(ScriptBlock.InvokeAsMemberFunction), instanceFlags);
-
         internal static readonly MethodInfo ScriptBlockExpressionWrapper_GetScriptBlock =
             typeof(ScriptBlockExpressionWrapper).GetMethod(nameof(ScriptBlockExpressionWrapper.GetScriptBlock), instanceFlags);
 
@@ -441,22 +413,17 @@ namespace System.Management.Automation.Language
         internal static readonly ConstructorInfo StreamReader_ctor =
             typeof(StreamReader).GetConstructor(new Type[] { typeof(string) });
         internal static readonly MethodInfo StreamReader_ReadLine =
-            typeof(StreamReader).GetMethod(nameof(StreamReader.ReadLine));
+            typeof(StreamReader).GetMethod(nameof(StreamReader.ReadLine), Type.EmptyTypes);
 
         internal static readonly ConstructorInfo String_ctor_char_int =
             typeof(string).GetConstructor(new Type[] { typeof(char), typeof(int) });
         internal static readonly MethodInfo String_Concat_String =
-            typeof(string).GetMethod(nameof(String.Concat), staticPublicFlags, null,
+            typeof(string).GetMethod(nameof(string.Concat), staticPublicFlags, null,
                                      CallingConventions.Standard, new Type[] { typeof(string), typeof(string) }, null);
         internal static readonly MethodInfo String_Equals =
-            typeof(string).GetMethod(nameof(String.Equals), staticPublicFlags, null,
+            typeof(string).GetMethod(nameof(string.Equals), staticPublicFlags, null,
                                      CallingConventions.Standard,
                                      new Type[] { typeof(string), typeof(string), typeof(StringComparison) }, null);
-        internal static readonly MethodInfo String_get_Chars =
-            typeof(string).GetMethod("get_Chars");
-        internal static readonly PropertyInfo String_Length =
-            typeof(string).GetProperty(nameof(String.Length));
-
         internal static readonly MethodInfo StringOps_Compare =
             typeof(StringOps).GetMethod(nameof(StringOps.Compare), staticFlags);
         internal static readonly MethodInfo StringOps_Equals =
@@ -538,7 +505,7 @@ namespace System.Management.Automation.Language
         internal static readonly Expression CompareOptionsNone = Expression.Constant(CompareOptions.None);
         internal static readonly Expression Ordinal = Expression.Constant(StringComparison.Ordinal);
         internal static readonly Expression InvariantCulture = Expression.Constant(CultureInfo.InvariantCulture);
-        internal static readonly Expression CurrentCultureIgnoreCaseComparer = Expression.Constant(StringComparer.CurrentCultureIgnoreCase, typeof(StringComparer));
+        internal static readonly Expression OrdinalIgnoreCaseComparer = Expression.Constant(StringComparer.OrdinalIgnoreCase, typeof(StringComparer));
         internal static readonly Expression CatchAllType = Expression.Constant(typeof(ExceptionHandlingOps.CatchAll), typeof(Type));
         internal static readonly Expression Empty = Expression.Empty();
         internal static Expression GetExecutionContextFromTLS =
@@ -687,8 +654,6 @@ namespace System.Management.Automation.Language
 
         internal static readonly CatchBlock[] _stmtCatchHandlers;
         internal static readonly Type DottedLocalsTupleType = MutableTuple.MakeTupleType(SpecialVariables.AutomaticVariableTypes);
-        internal static Type DottedScriptCmdletLocalsTupleType =
-            MutableTuple.MakeTupleType(SpecialVariables.AutomaticVariableTypes.Concat(SpecialVariables.PreferenceVariableTypes).ToArray());
         internal static readonly Dictionary<string, int> DottedLocalsNameIndexMap =
             new Dictionary<string, int>(SpecialVariables.AutomaticVariableTypes.Length, StringComparer.OrdinalIgnoreCase);
         internal static readonly Dictionary<string, int> DottedScriptCmdletLocalsNameIndexMap =
@@ -814,7 +779,7 @@ namespace System.Management.Automation.Language
 
         private IEnumerable<Expression> CompileInvocationArguments(IEnumerable<ExpressionAst> arguments)
         {
-            return arguments == null ? Utils.EmptyArray<Expression>() : arguments.Select(CompileExpressionOperand);
+            return arguments == null ? Array.Empty<Expression>() : arguments.Select(CompileExpressionOperand);
         }
 
         internal Expression ReduceAssignment(ISupportsAssignment left, TokenKind tokenKind, Expression right)
@@ -1302,7 +1267,7 @@ namespace System.Management.Automation.Language
             OutputTypeAttribute result;
             if (ast.PositionalArguments.Count == 0)
             {
-                result = new OutputTypeAttribute(Utils.EmptyArray<string>());
+                result = new OutputTypeAttribute(Array.Empty<string>());
             }
             else if (ast.PositionalArguments.Count == 1)
             {
@@ -2395,7 +2360,7 @@ namespace System.Management.Automation.Language
         /// This method should be called only for rootAsts (i.e. script file root ScriptBlockAst).
         /// </summary>
         /// <param name="rootForDefiningTypes"></param>
-        /// <param name="typeAsts">non-empty array of TypeDefinitionAst</param>
+        /// <param name="typeAsts">Non-empty array of TypeDefinitionAst.</param>
         /// <returns>Assembly with defined types.</returns>
         internal static Assembly DefinePowerShellTypes(Ast rootForDefiningTypes, TypeDefinitionAst[] typeAsts)
         {
@@ -3762,7 +3727,7 @@ namespace System.Management.Automation.Language
 
         internal static Expression CreateThrow(Type resultType, Type exception, params object[] exceptionArgs)
         {
-            Type[] argTypes = PSTypeExtensions.EmptyTypes;
+            Type[] argTypes = Type.EmptyTypes;
             if (exceptionArgs != null)
             {
                 argTypes = new Type[exceptionArgs.Length];
@@ -5756,7 +5721,7 @@ namespace System.Management.Automation.Language
             yield return Expression.Assign(temp,
                 Expression.New(ordered ? CachedReflectionInfo.OrderedDictionary_ctor : CachedReflectionInfo.Hashtable_ctor,
                                 ExpressionCache.Constant(keyValuePairs.Count),
-                                ExpressionCache.CurrentCultureIgnoreCaseComparer.Cast(typeof(IEqualityComparer))));
+                                ExpressionCache.OrdinalIgnoreCaseComparer.Cast(typeof(IEqualityComparer))));
             for (int index = 0; index < keyValuePairs.Count; index++)
             {
                 var keyValuePair = keyValuePairs[index];
@@ -5950,7 +5915,7 @@ namespace System.Management.Automation.Language
             }
 
             return InvokeMemberExpressionAst.Arguments == null
-               ? Utils.EmptyArray<Expression>()
+               ? Array.Empty<Expression>()
                : (InvokeMemberExpressionAst.Arguments.Select(compiler.Compile)).ToArray();
         }
 

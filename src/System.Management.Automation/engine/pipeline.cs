@@ -3,11 +3,12 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Management.Automation.Runspaces;
-using Dbg = System.Management.Automation.Diagnostics;
 using System.Management.Automation.Tracing;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
+
+using Dbg = System.Management.Automation.Diagnostics;
 
 #pragma warning disable 1634, 1691 // Stops compiler from warning about unknown warnings
 
@@ -90,7 +91,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// Finalizer for class PipelineProcessor
+        /// Finalizer for class PipelineProcessor.
         /// </summary>
         ~PipelineProcessor()
         {
@@ -217,7 +218,7 @@ namespace System.Management.Automation.Internal
             }
 
             // Log the cmdlet invocation execution details if we didn't have an associated script line with it.
-            if ((invocation == null) || String.IsNullOrEmpty(invocation.Line))
+            if ((invocation == null) || string.IsNullOrEmpty(invocation.Line))
             {
                 if (hostInterface != null)
                 {
@@ -225,7 +226,7 @@ namespace System.Management.Automation.Internal
                 }
             }
 
-            if (!String.IsNullOrEmpty(logElement))
+            if (!string.IsNullOrEmpty(logElement))
             {
                 _eventLogBuffer.Add(logElement);
             }
@@ -268,7 +269,7 @@ namespace System.Management.Automation.Internal
         #region public_methods
 
         /// <summary>
-        /// Add a single InternalCommand to the end of the pipeline
+        /// Add a single InternalCommand to the end of the pipeline.
         /// </summary>
         /// <returns>Results from last pipeline stage.</returns>
         /// <exception cref="InvalidOperationException">
@@ -293,11 +294,11 @@ namespace System.Management.Automation.Internal
         //   should be an int or enum to allow for more queues
         // 2005/03/08-JonN: This is an internal API
         /// <summary>
-        /// Add a command to the pipeline
+        /// Add a command to the pipeline.
         /// </summary>
         /// <param name="commandProcessor"></param>
-        /// <param name="readFromCommand">reference number of command from which to read, 0 for none</param>
-        /// <param name="readErrorQueue">read from error queue of command readFromCommand</param>
+        /// <param name="readFromCommand">Reference number of command from which to read, 0 for none.</param>
+        /// <param name="readErrorQueue">Read from error queue of command readFromCommand.</param>
         /// <returns>Reference number of this command for use in readFromCommand.</returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="ArgumentException">
@@ -747,7 +748,7 @@ namespace System.Management.Automation.Internal
         /// to process as is the case for I/O redirection into a file. We
         /// still want the file opened, even if there was nothing to write to it.
         /// </summary>
-        /// <param name="expectInput">True if you want to write to this pipeline</param>
+        /// <param name="expectInput">True if you want to write to this pipeline.</param>
         internal void StartStepping(bool expectInput)
         {
             try
@@ -1067,7 +1068,7 @@ namespace System.Management.Automation.Internal
 
         /// <summary>
         /// Add ExternalErrorOutput to all commands whose error
-        /// output is not yet claimed
+        /// output is not yet claimed.
         /// </summary>
         private void SetExternalErrorOutput()
         {
@@ -1090,7 +1091,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// Clear ErrorVariable as appropriate
+        /// Clear ErrorVariable as appropriate.
         /// </summary>
         private void SetupParameterVariables()
         {
@@ -1118,7 +1119,7 @@ namespace System.Management.Automation.Internal
         /// <param name="input">
         /// Array of input objects for first stage
         /// </param>
-        /// <param name="enumerate">If true, unravel the input otherwise pass as one object</param>
+        /// <param name="enumerate">If true, unravel the input otherwise pass as one object.</param>
         /// <throws>
         /// Exception if any cmdlet throws a [terminating] exception
         /// </throws>
@@ -1239,7 +1240,7 @@ namespace System.Management.Automation.Internal
         /// to write into the parent pipeline. It does this by resetting the terminal
         /// pipeline object.
         /// </summary>
-        /// <param name="pipeToUse">The pipeline to write success objects to</param>
+        /// <param name="pipeToUse">The pipeline to write success objects to.</param>
         internal void LinkPipelineSuccessOutput(Pipe pipeToUse)
         {
             Dbg.Assert(pipeToUse != null, "Caller should verify pipeToUse != null");
@@ -1382,8 +1383,8 @@ namespace System.Management.Automation.Internal
         /// Makes an internal note of the exception, but only if this is
         /// the first error.
         /// </summary>
-        /// <param name="e">error which terminated the pipeline</param>
-        /// <param name="command">command against which to log SecondFailure</param>
+        /// <param name="e">Error which terminated the pipeline.</param>
+        /// <param name="command">Command against which to log SecondFailure.</param>
         /// <returns>True iff the pipeline was not already stopped.</returns>
         internal bool RecordFailure(Exception e, InternalCommand command)
         {

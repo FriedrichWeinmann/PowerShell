@@ -2,33 +2,34 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Collections;
-using System.Xml;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using System.Resources;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Win32;
+using System.Globalization;
+using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Provider;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Xml;
+
+using Microsoft.Win32;
 
 namespace Microsoft.WSMan.Management
 {
     [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#")]
     internal class WSManHelper
     {
-        //regular expressions
+        // regular expressions
         private const string PTRN_URI_LAST = @"([a-z_][-a-z0-9._]*)$";
         private const string PTRN_OPT = @"^-([a-z]+):(.*)";
         private const string PTRN_HASH_TOK = @"\s*([\w:]+)\s*=\s*(\$null|""([^""]*)"")\s*";
 
-        //schemas
+        // schemas
         private const string URI_IPMI = @"http://schemas.dmtf.org/wbem/wscim/1/cim-schema";
         private const string URI_WMI = @"http://schemas.microsoft.com/wbem/wsman/1/wmi";
         private const string NS_IPMI = @"http://schemas.dmtf.org/wbem/wscim/1/cim-schema";
@@ -41,7 +42,7 @@ namespace Microsoft.WSMan.Management
         private const string ALIAS_XPATH = @"xpath";
         private const string URI_XPATH_DIALECT = @"http://www.w3.org/TR/1999/REC-xpath-19991116";
 
-        //credSSP strings
+        // credSSP strings
         internal string CredSSP_RUri = "winrm/config/client/auth";
         internal string CredSSP_XMLNmsp = "http://schemas.microsoft.com/wbem/wsman/1/config/client/auth";
         internal string CredSSP_SNode = "/cfg:Auth/cfg:CredSSP";
@@ -55,18 +56,18 @@ namespace Microsoft.WSMan.Management
         internal string Service_CredSSP_Uri = "winrm/config/service/auth";
         internal string Service_CredSSP_XMLNmsp = "http://schemas.microsoft.com/wbem/wsman/1/config/service/auth";
 
-        //gpo registry path and keys
+        // gpo registry path and keys
         internal string Registry_Path_Credentials_Delegation = @"SOFTWARE\Policies\Microsoft\Windows";
         internal string Key_Allow_Fresh_Credentials = "AllowFreshCredentials";
         internal string Key_Concatenate_Defaults_AllowFresh = "ConcatenateDefaults_AllowFresh";
         internal string Delegate = "delegate";
         internal string keyAllowcredssp = "AllowCredSSP";
 
-        //'Constants for MS-XML
+        // 'Constants for MS-XML
         private const string NODE_ATTRIBUTE = "2";
         private const int NODE_TEXT = 3;
 
-        //strings for dialects
+        // strings for dialects
         internal string ALIAS_WQL = @"wql";
         internal string ALIAS_ASSOCIATION = @"association";
         internal string ALIAS_SELECTOR = @"selector";
@@ -74,7 +75,7 @@ namespace Microsoft.WSMan.Management
         internal string URI_SELECTOR_DIALECT = @"http://schemas.dmtf.org/wbem/wsman/1/wsman/SelectorFilter";
         internal string URI_ASSOCIATION_DIALECT = @" http://schemas.dmtf.org/wbem/wsman/1/cimbinding/associationFilter";
 
-        //string for operation
+        // string for operation
         internal string WSManOp = null;
 
         private PSCmdlet cmdletname;
@@ -87,11 +88,11 @@ namespace Microsoft.WSMan.Management
 
         //
         //
-        //Below class is just a static container which would release sessions in case this DLL is unloaded.
+        // Below class is just a static container which would release sessions in case this DLL is unloaded.
         internal class Sessions
         {
             /// <summary>
-            /// dictionary object to store the connection
+            /// Dictionary object to store the connection.
             /// </summary>
             internal static Dictionary<string, object> SessionObjCache = new Dictionary<string, object>();
 
@@ -120,10 +121,10 @@ namespace Microsoft.WSMan.Management
                     }
                     catch (ArgumentException)
                     {
-                        //Somehow the object was a null reference. Ignore the error
+                        // Somehow the object was a null reference. Ignore the error
                     }
 
-                    sessionobj=null;
+                    sessionobj = null;
                 }
 
                 Sessions.SessionObjCache.Clear();
@@ -182,7 +183,7 @@ namespace Microsoft.WSMan.Management
                 throw new ArgumentNullException("resourceManager");
             }
 
-            if (String.IsNullOrEmpty(resourceName))
+            if (string.IsNullOrEmpty(resourceName))
             {
                 throw new ArgumentNullException("resourceName");
             }
@@ -192,7 +193,7 @@ namespace Microsoft.WSMan.Management
             string result = null;
             if (template != null)
             {
-                result = String.Format(CultureInfo.CurrentCulture,
+                result = string.Format(CultureInfo.CurrentCulture,
                     template, args);
             }
 
@@ -200,10 +201,10 @@ namespace Microsoft.WSMan.Management
         }
 
         /// <summary>
-        /// add a session to dictionary
+        /// Add a session to dictionary.
         /// </summary>
-        /// <param name="key">connection string</param>
-        /// <param name="value">session object</param>
+        /// <param name="key">Connection string.</param>
+        /// <param name="value">Session object.</param>
         internal void AddtoDictionary(string key, object value)
         {
             key = key.ToLowerInvariant();
@@ -223,14 +224,13 @@ namespace Microsoft.WSMan.Management
                     }
                     catch (ArgumentException)
                     {
-                        //Somehow the object was a null reference. Ignore the error
+                        // Somehow the object was a null reference. Ignore the error
                     }
 
                     Sessions.SessionObjCache.Remove(key);
                     Sessions.SessionObjCache.Add(key, value);
                 }
             }
-
         }
 
         internal object RemoveFromDictionary(string computer)
@@ -248,7 +248,7 @@ namespace Microsoft.WSMan.Management
                     }
                     catch (ArgumentException)
                     {
-                        //Somehow the object was a null reference. Ignore the error
+                        // Somehow the object was a null reference. Ignore the error
                     }
 
                     Sessions.SessionObjCache.Remove(computer);
@@ -303,7 +303,7 @@ namespace Microsoft.WSMan.Management
                     if (operation.Equals("invoke", StringComparison.OrdinalIgnoreCase))
                     {
                         sfx = "_INPUT";
-                        resultStr = String.Concat(actionStr, sfx);
+                        resultStr = string.Concat(actionStr, sfx);
                     }
                     else
                     {
@@ -312,7 +312,7 @@ namespace Microsoft.WSMan.Management
                 }
                 else
                 {
-                    //error
+                    // error
                 }
             }
 
@@ -338,7 +338,6 @@ namespace Microsoft.WSMan.Management
             string strOut = null;
             try
             {
-
                 _fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 // create stream Reader
                 _sr = new StreamReader(_fs);
@@ -348,7 +347,6 @@ namespace Microsoft.WSMan.Management
             {
                 ErrorRecord er = new ErrorRecord(e, "ArgumentNullException", ErrorCategory.InvalidArgument, null);
                 cmdletname.ThrowTerminatingError(er);
-
             }
             catch (UnauthorizedAccessException e)
             {
@@ -374,13 +372,13 @@ namespace Microsoft.WSMan.Management
             {
                 if (_sr != null)
                 {
-                   // _sr.Close();
+                    // _sr.Close();
                     _sr.Dispose();
                 }
 
                 if (_fs != null)
                 {
-                    //_fs.Close();
+                    // _fs.Close();
                     _fs.Dispose();
                 }
             }
@@ -390,10 +388,9 @@ namespace Microsoft.WSMan.Management
 
         internal string ProcessInput(IWSManEx wsman, string filepath, string operation, string root, Hashtable valueset, IWSManResourceLocator resourceUri, IWSManSession sessionObj)
         {
-
             string resultString = null;
 
-            //if file path is given
+            // if file path is given
             if (!string.IsNullOrEmpty(filepath) && valueset == null)
             {
                 if (!File.Exists(filepath))
@@ -413,7 +410,7 @@ namespace Microsoft.WSMan.Management
                     string parameters = null, nilns = null;
                     string xmlns = GetXmlNs(resourceUri.ResourceUri);
 
-                    //if valueset is given, i.e hashtable
+                    // if valueset is given, i.e hashtable
                     if (valueset != null)
                     {
                         foreach (DictionaryEntry entry in valueset)
@@ -446,7 +443,7 @@ namespace Microsoft.WSMan.Management
                             xpathString = @"/*/*[local-name()=""" + entry.Key + @"""]";
                             if (entry.Key.ToString().Equals("location", StringComparison.OrdinalIgnoreCase))
                             {
-                                //'Ignore cim:Location
+                                // 'Ignore cim:Location
                                 xpathString = @"/*/*[local-name()=""" + entry.Key + @""" and namespace-uri() != """ + NS_CIMBASE + @"""]";
                             }
 
@@ -480,11 +477,11 @@ namespace Microsoft.WSMan.Management
 
                                 if (string.IsNullOrEmpty(entry.Key.ToString()))
                                 {
-                                    //XmlNode newnode = xmlfile.CreateNode(XmlNodeType.Attribute, ATTR_NIL_NAME, NS_XSI_URI);
+                                    // XmlNode newnode = xmlfile.CreateNode(XmlNodeType.Attribute, ATTR_NIL_NAME, NS_XSI_URI);
                                     XmlAttribute newnode = xmlfile.CreateAttribute(XmlNodeType.Attribute.ToString(), ATTR_NIL_NAME, NS_XSI_URI);
                                     newnode.Value = "true";
                                     node.Attributes.Append(newnode);
-                                    //(newnode.Attributes.Item(0).FirstChild   );
+                                    // (newnode.Attributes.Item(0).FirstChild   );
                                     node.Value = string.Empty;
                                 }
                                 else
@@ -493,12 +490,13 @@ namespace Microsoft.WSMan.Management
                                     node.InnerText = entry.Value.ToString();
                                 }
                             }
+                        }
+                    }
 
-                        }//end for
-                    }//end if valueset
                     resultString = xmlfile.OuterXml;
                     break;
-            }//end switch
+            }
+
             return resultString;
         }
 
@@ -552,12 +550,10 @@ namespace Microsoft.WSMan.Management
             }
 
             return ConnectionString;
-
         }
 
         internal IWSManResourceLocator InitializeResourceLocator(Hashtable optionset, Hashtable selectorset, string fragment, Uri dialect, IWSManEx wsmanObj, Uri resourceuri)
         {
-
             string resource = null;
             if (resourceuri != null)
             {
@@ -630,7 +626,7 @@ namespace Microsoft.WSMan.Management
         {
             if ((credential != null) && (certificateThumbprint != null))
             {
-                String message = FormatResourceMsgFromResourcetextS(
+                string message = FormatResourceMsgFromResourcetextS(
                     "AmbiguosAuthentication",
                         "CertificateThumbPrint", "credential");
 
@@ -641,7 +637,7 @@ namespace Microsoft.WSMan.Management
                 (authentication != AuthenticationMechanism.ClientCertificate) &&
                 (certificateThumbprint != null))
             {
-                String message = FormatResourceMsgFromResourcetextS(
+                string message = FormatResourceMsgFromResourcetextS(
                     "AmbiguosAuthentication",
                         "CertificateThumbPrint", authentication.ToString());
 
@@ -692,20 +688,19 @@ namespace Microsoft.WSMan.Management
                 {
                     sessionFlags = sessionFlags | (int)WSManSessionFlags.WSManFlagUseClientCertificate;
                 }
-
             }
 
             IWSManConnectionOptionsEx2 connObject = (IWSManConnectionOptionsEx2)wsmanObject.CreateConnectionOptions();
             if (credential != null)
             {
-                //connObject = (IWSManConnectionOptionsEx2)wsmanObject.CreateConnectionOptions();
+                // connObject = (IWSManConnectionOptionsEx2)wsmanObject.CreateConnectionOptions();
                 System.Net.NetworkCredential nwCredential = new System.Net.NetworkCredential();
                 if (credential.UserName != null)
                 {
                     nwCredential = credential.GetNetworkCredential();
-                    if (String.IsNullOrEmpty(nwCredential.Domain))
+                    if (string.IsNullOrEmpty(nwCredential.Domain))
                     {
-                        if ( authentication.Equals(AuthenticationMechanism.Digest) || authentication.Equals(AuthenticationMechanism.Basic) )
+                        if (authentication.Equals(AuthenticationMechanism.Digest) || authentication.Equals(AuthenticationMechanism.Basic))
                         {
                             connObject.UserName = nwCredential.UserName;
                         }
@@ -736,7 +731,6 @@ namespace Microsoft.WSMan.Management
 
             if (sessionoption != null)
             {
-
                 if (sessionoption.ProxyAuthentication != 0)
                 {
                     int ProxyAccessflags = 0;
@@ -786,7 +780,6 @@ namespace Microsoft.WSMan.Management
                     {
                         connObject.SetProxy((int)sessionoption.ProxyAccessType, (int)sessionoption.ProxyAuthentication, null, null);
                     }
-
                 }
 
                 if (sessionoption.SkipCACheck)
@@ -810,7 +803,7 @@ namespace Microsoft.WSMan.Management
                 }
                 else
                 {
-                    //If UseUtf16 is false, then default Encoding is Utf8
+                    // If UseUtf16 is false, then default Encoding is Utf8
                     sessionFlags = sessionFlags | (int)WSManSessionFlags.WSManFlagUtf8;
                 }
 
@@ -826,7 +819,7 @@ namespace Microsoft.WSMan.Management
             }
             else
             {
-                //If SessionOption is null then, default Encoding is Utf8
+                // If SessionOption is null then, default Encoding is Utf8
                 sessionFlags = sessionFlags | (int)WSManSessionFlags.WSManFlagUtf8;
             }
 
@@ -857,7 +850,6 @@ namespace Microsoft.WSMan.Management
 
         internal void CleanUp()
         {
-
             if (_sr != null)
             {
                 _sr.Dispose();
@@ -869,7 +861,6 @@ namespace Microsoft.WSMan.Management
                 _fs.Dispose();
                 _fs = null;
             }
-
         }
 
         internal string GetFilterString(Hashtable seletorset)
@@ -931,7 +922,7 @@ namespace Microsoft.WSMan.Management
             if (operation.Equals("remove", StringComparison.OrdinalIgnoreCase))
             {
                 sburi.Append(GetFilterString(selectorset));
-                if (sburi.ToString().EndsWith("?", StringComparison.OrdinalIgnoreCase))
+                if (sburi.ToString().EndsWith('?'))
                 {
                     sburi.Remove(sburi.Length - 1, 1);
                 }
@@ -941,7 +932,7 @@ namespace Microsoft.WSMan.Management
         }
 
         /// <summary>
-        /// This method is used by Connect-WsMan Cmdlet and New-Item of WsMan Provider to create connection to WsMan
+        /// This method is used by Connect-WsMan Cmdlet and New-Item of WsMan Provider to create connection to WsMan.
         /// </summary>
         /// <param name="ParameterSetName"></param>
         /// <param name="connectionuri"></param>
@@ -961,7 +952,7 @@ namespace Microsoft.WSMan.Management
                 string connectionStr = CreateConnectionString(connectionuri, port, computername, applicationname);
                 if (connectionuri != null)
                 {
-                    //in the format http(s)://server[:port/applicationname]
+                    // in the format http(s)://server[:port/applicationname]
                     string[] constrsplit = connectionStr.Split(new string[] { ":" + port + "/" + applicationname }, StringSplitOptions.None);
                     string[] constrsplit1 = constrsplit[0].Split(new string[] { "//" }, StringSplitOptions.None);
                     computername = constrsplit1[1].Trim();
@@ -987,11 +978,10 @@ namespace Microsoft.WSMan.Management
             }
             finally
             {
-                if (!String.IsNullOrEmpty(m_wsmanObject.Error))
+                if (!string.IsNullOrEmpty(m_wsmanObject.Error))
                 {
                     AssertError(m_wsmanObject.Error, true, computername);
                 }
-
             }
         }
 
@@ -1096,7 +1086,7 @@ namespace Microsoft.WSMan.Management
 #if CORECLR
                     "0409" /* TODO: don't assume it is always English on CSS? */
 #else
-                    String.Concat("0", String.Format(CultureInfo.CurrentCulture, "{0:x2}", checked((uint)CultureInfo.CurrentUICulture.LCID)))
+                    string.Concat("0", string.Format(CultureInfo.CurrentCulture, "{0:x2}", checked((uint)CultureInfo.CurrentUICulture.LCID)))
 #endif
                     + "\\" + "winrm.ini";
                 if (File.Exists(filepath))
@@ -1120,21 +1110,19 @@ namespace Microsoft.WSMan.Management
             }
             catch (IOException e)
             {
-
                 throw (e);
             }
-
         }
 
         /// <summary>
         /// Get the resource value from WinRm.ini
-        /// from %windir%\system32\winrm\[Hexadecimal Language Folder]\winrm.ini
+        /// from %windir%\system32\winrm\[Hexadecimal Language Folder]\winrm.ini.
         /// </summary>
         /// <param name="Key"></param>
         /// <returns></returns>
         internal static string GetResourceString(string Key)
         {
-            //Checks whether resource values already loaded and loads.
+            // Checks whether resource values already loaded and loads.
             if (ResourceValueCache.Count <= 0)
             {
                 LoadResourceData();
@@ -1152,6 +1140,5 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// </summary>
         private static Dictionary<string, string> ResourceValueCache = new Dictionary<string, string>();
-
     }
 }

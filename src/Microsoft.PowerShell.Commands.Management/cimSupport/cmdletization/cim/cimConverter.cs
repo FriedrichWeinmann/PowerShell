@@ -10,13 +10,15 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
+
 using Microsoft.Management.Infrastructure;
+
 using Dbg = System.Management.Automation.Diagnostics;
-using System.Runtime.InteropServices;
 
 // TODO/FIXME: Move this class to src/cimSupport/other directory (to map to the namespace it lives in and functionality it implements [cmdletization independent])
 
@@ -100,7 +102,7 @@ namespace Microsoft.PowerShell.Cim
             }
 
             /// <summary>
-            /// Releases resources associated with this object
+            /// Releases resources associated with this object.
             /// </summary>
             public void Dispose()
             {
@@ -109,7 +111,7 @@ namespace Microsoft.PowerShell.Cim
             }
 
             /// <summary>
-            /// Releases resources associated with this object
+            /// Releases resources associated with this object.
             /// </summary>
             private void Dispose(bool disposing)
             {
@@ -130,7 +132,7 @@ namespace Microsoft.PowerShell.Cim
         private readonly List<IDisposable> _trackedDisposables = new List<IDisposable>();
 
         /// <summary>
-        /// Releases resources associated with this object
+        /// Releases resources associated with this object.
         /// </summary>
         public void Dispose()
         {
@@ -139,7 +141,7 @@ namespace Microsoft.PowerShell.Cim
         }
 
         /// <summary>
-        /// Releases resources associated with this object
+        /// Releases resources associated with this object.
         /// </summary>
         private void Dispose(bool disposing)
         {
@@ -231,7 +233,7 @@ namespace Microsoft.PowerShell.Cim
 
     internal static class CimValueConverter
     {
-        /// <exception cref="PSInvalidCastException">The only kind of exception this method can throw</exception>
+        /// <exception cref="PSInvalidCastException">The only kind of exception this method can throw.</exception>
         internal static object ConvertFromDotNetToCim(object dotNetObject)
         {
             if (dotNetObject == null)
@@ -347,7 +349,7 @@ namespace Microsoft.PowerShell.Cim
                 CmdletizationResources.CimConversion_CimIntrinsicValue);
         }
 
-        /// <exception cref="PSInvalidCastException">The only kind of exception this method can throw</exception>
+        /// <exception cref="PSInvalidCastException">The only kind of exception this method can throw.</exception>
         internal static object ConvertFromCimToDotNet(object cimObject, Type expectedDotNetType)
         {
             if (expectedDotNetType == null) { throw new ArgumentNullException("expectedDotNetType"); }
@@ -583,7 +585,7 @@ namespace Microsoft.PowerShell.Cim
         }
 
         /// <summary>
-        /// Returns a type of CIM representation if conversion from/to CIM can be done purely with LanguagePrimitives.ConvertTo
+        /// Returns a type of CIM representation if conversion from/to CIM can be done purely with LanguagePrimitives.ConvertTo.
         /// </summary>
         /// <param name="dotNetType"></param>
         /// <returns></returns>

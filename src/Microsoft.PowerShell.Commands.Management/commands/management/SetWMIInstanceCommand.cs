@@ -2,21 +2,21 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
-using System.Management;
-using System.Text;
-using System.Management.Automation.Provider;
-using System.ComponentModel;
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.Security.AccessControl;
-using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Management;
+using System.Management.Automation;
+using System.Management.Automation.Provider;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Text;
 
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// A command to Set WMI Instance
+    /// A command to Set WMI Instance.
     /// </summary>
     [Cmdlet(VerbsCommon.Set, "WmiInstance", DefaultParameterSetName = "class", SupportsShouldProcess = true,
         HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113402", RemotingCapability = RemotingCapability.OwnedByCommand)]
@@ -24,25 +24,25 @@ namespace Microsoft.PowerShell.Commands
     {
         #region Parameters
         /// <summary>
-        /// The WMI Object to use
+        /// The WMI Object to use.
         /// </summary>
         [Parameter(ValueFromPipeline = true, Mandatory = true, ParameterSetName = "object")]
         public ManagementObject InputObject { get; set; } = null;
 
         /// <summary>
-        /// The WMI Path to use
+        /// The WMI Path to use.
         /// </summary>
         [Parameter(ParameterSetName = "path", Mandatory = true)]
         public string Path { get; set; } = null;
 
         /// <summary>
-        /// The WMI class to use
+        /// The WMI class to use.
         /// </summary>
         [Parameter(Position = 0, Mandatory = true, ParameterSetName = "class")]
         public string Class { get; set; } = null;
 
         /// <summary>
-        /// The property name /value pair
+        /// The property name /value pair.
         /// </summary>
         [Parameter(ParameterSetName = "path")]
         [Parameter(Position = 2, ParameterSetName = "class")]
@@ -52,7 +52,7 @@ namespace Microsoft.PowerShell.Commands
         public Hashtable Arguments { get; set; } = null;
 
         /// <summary>
-        /// The Flag to use
+        /// The Flag to use.
         /// </summary>
         [Parameter]
         public PutType PutType
@@ -123,9 +123,9 @@ namespace Microsoft.PowerShell.Commands
             else
             {
                 ManagementPath mPath = null;
-                //If Class is specified only CreateOnly flag is supported
+                // If Class is specified only CreateOnly flag is supported
                 mPath = this.SetWmiInstanceBuildManagementPath();
-                //If server name is specified loop through it.
+                // If server name is specified loop through it.
                 if (mPath != null)
                 {
                     if (!(mPath.Server == "." && serverNameSpecified))

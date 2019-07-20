@@ -2,13 +2,14 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Management.Automation.Language;
 using System.Diagnostics;
 using System.Management.Automation.Host;
-using System.Management.Automation.Internal.Host;
 using System.Management.Automation.Internal;
-using Dbg = System.Management.Automation.Diagnostics;
+using System.Management.Automation.Internal.Host;
+using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
+
+using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation.Internal
 {
@@ -84,7 +85,7 @@ namespace System.Management.Automation.Internal
         internal PSObject currentObjectInPipeline = AutomationNull.Value;
 
         /// <summary>
-        /// Gets or sets the current pipeline object under consideration
+        /// Gets or sets the current pipeline object under consideration.
         /// </summary>
         internal PSObject CurrentPipelineObject
         {
@@ -107,7 +108,7 @@ namespace System.Management.Automation.Internal
         private PSHost _CBhost;
 
         /// <summary>
-        /// Internal helper to get to SessionState
+        /// Internal helper to get to SessionState.
         /// </summary>
         internal SessionState InternalState
         {
@@ -229,7 +230,7 @@ namespace System.Management.Automation.Internal
         #endregion Override
 
         /// <summary>
-        /// throws if the pipeline is stopping
+        /// Throws if the pipeline is stopping.
         /// </summary>
         /// <exception cref="System.Management.Automation.PipelineStoppedException"></exception>
         internal void ThrowIfStopping()
@@ -242,7 +243,7 @@ namespace System.Management.Automation.Internal
 
         /// <summary>
         /// IDisposable implementation
-        /// When the command is complete, release the associated members
+        /// When the command is complete, release the associated members.
         /// </summary>
         /// <remarks>
         /// Using InternalDispose instead of Dispose pattern because this
@@ -397,7 +398,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Repository for jobs
+        /// Repository for jobs.
         /// </summary>
         public JobRepository JobRepository
         {
@@ -425,7 +426,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Repository for runspaces
+        /// Repository for runspaces.
         /// </summary>
         internal RunspaceRepository RunspaceRepository
         {

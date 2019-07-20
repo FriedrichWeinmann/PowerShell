@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Globalization;
-using System.Xml;
 using System.Text;
+using System.Xml;
 
 namespace System.Management.Automation
 {
@@ -179,7 +179,7 @@ namespace System.Management.Automation
 
         private string _role = null;
         /// <summary>
-        /// Role for this command
+        /// Role for this command.
         /// </summary>
         /// <value></value>
         internal override string Role
@@ -192,7 +192,7 @@ namespace System.Management.Automation
 
         private string _functionality = null;
         /// <summary>
-        /// Functionality for this command
+        /// Functionality for this command.
         /// </summary>
         /// <value></value>
         internal override string Functionality
@@ -217,7 +217,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add user-defined command help data to command help.
         /// </summary>
-        /// <param name="userDefinedData">User defined data object</param>
+        /// <param name="userDefinedData">User defined data object.</param>
         internal void AddUserDefinedData(UserDefinedHelpData userDefinedData)
         {
             if (userDefinedData == null)
@@ -251,14 +251,14 @@ namespace System.Management.Automation
         /// <summary>
         /// Create a MamlCommandHelpInfo object from an XmlNode.
         /// </summary>
-        /// <param name="xmlNode">xmlNode that contains help info</param>
-        /// <param name="helpCategory">help category this maml object fits into</param>
+        /// <param name="xmlNode">XmlNode that contains help info.</param>
+        /// <param name="helpCategory">Help category this maml object fits into.</param>
         /// <returns>MamlCommandHelpInfo object created.</returns>
         internal static MamlCommandHelpInfo Load(XmlNode xmlNode, HelpCategory helpCategory)
         {
             MamlCommandHelpInfo mamlCommandHelpInfo = new MamlCommandHelpInfo(xmlNode, helpCategory);
 
-            if (String.IsNullOrEmpty(mamlCommandHelpInfo.Name))
+            if (string.IsNullOrEmpty(mamlCommandHelpInfo.Name))
                 return null;
 
             mamlCommandHelpInfo.AddCommonHelpProperties();
@@ -279,8 +279,8 @@ namespace System.Management.Automation
         /// <remarks>
         /// A new MamlCommandHelpInfo is created to avoid polluting the provider help cache.
         /// </remarks>
-        /// <param name="cmdletHelp">provider-specific cmdletHelp to merge into current MamlCommandHelpInfo object</param>
-        /// <param name="dynamicParameterHelp">provider-specific dynamic parameter help to merge into current MamlCommandHelpInfo object</param>
+        /// <param name="cmdletHelp">Provider-specific cmdletHelp to merge into current MamlCommandHelpInfo object.</param>
+        /// <param name="dynamicParameterHelp">Provider-specific dynamic parameter help to merge into current MamlCommandHelpInfo object.</param>
         /// <returns>Merged command help info object.</returns>
         internal MamlCommandHelpInfo MergeProviderSpecificHelp(PSObject cmdletHelp, PSObject[] dynamicParameterHelp)
         {
@@ -308,9 +308,9 @@ namespace System.Management.Automation
         #region Helper Methods and Overloads
 
         /// <summary>
-        /// Extracts text for a given property from the full help object
+        /// Extracts text for a given property from the full help object.
         /// </summary>
-        /// <param name="psObject">FullHelp object</param>
+        /// <param name="psObject">FullHelp object.</param>
         /// <param name="propertyName">
         /// Name of the property for which text needs to be extracted.
         /// </param>
@@ -391,7 +391,7 @@ namespace System.Management.Automation
         /// The underlying code will usually run pattern.IsMatch() on
         /// content it wants to search.
         /// Cmdlet help info looks for pattern in Synopsis and
-        /// DetailedDescription
+        /// DetailedDescription.
         /// </summary>
         /// <param name="pattern"></param>
         /// <returns></returns>

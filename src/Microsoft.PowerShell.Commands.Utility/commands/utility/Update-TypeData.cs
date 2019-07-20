@@ -4,12 +4,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
-using System.Management.Automation;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Reflection;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
@@ -17,7 +18,8 @@ namespace Microsoft.PowerShell.Commands
     /// <summary>
     /// This class implements update-typeData command.
     /// </summary>
-    [Cmdlet(VerbsData.Update, "TypeData", SupportsShouldProcess = true, DefaultParameterSetName = FileParameterSet, HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113421")]
+    [Cmdlet(VerbsData.Update, "TypeData", SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low,
+        DefaultParameterSetName = FileParameterSet, HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113421")]
     public class UpdateTypeDataCommand : UpdateData
     {
         #region dynamic type set
@@ -403,7 +405,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         private void ProcessDynamicType()
         {
-            if (String.IsNullOrWhiteSpace(_typeName))
+            if (string.IsNullOrWhiteSpace(_typeName))
             {
                 ThrowTerminatingError(NewError("TargetTypeNameEmpty", UpdateDataStrings.TargetTypeNameEmpty, _typeName));
             }
@@ -574,7 +576,7 @@ namespace Microsoft.PowerShell.Commands
 
         private void EnsureMemberNameHasBeenSpecified()
         {
-            if (String.IsNullOrEmpty(_memberName))
+            if (string.IsNullOrEmpty(_memberName))
             {
                 ThrowTerminatingError(NewError("MemberNameShouldBeSpecified", UpdateDataStrings.ShouldBeSpecified, null, "MemberName", _memberType));
             }
@@ -592,7 +594,7 @@ namespace Microsoft.PowerShell.Commands
         {
             if (_value1 is string)
             {
-                if (String.IsNullOrEmpty((string)_value1))
+                if (string.IsNullOrEmpty((string)_value1))
                 {
                     ThrowTerminatingError(NewError("ValueShouldBeSpecified", UpdateDataStrings.ShouldNotBeNull, null, "Value", _memberType));
                 }
@@ -883,7 +885,8 @@ namespace Microsoft.PowerShell.Commands
     /// <summary>
     /// This class implements update-typeData command.
     /// </summary>
-    [Cmdlet(VerbsData.Update, "FormatData", SupportsShouldProcess = true, DefaultParameterSetName = FileParameterSet, HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113420")]
+    [Cmdlet(VerbsData.Update, "FormatData", SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low,
+        DefaultParameterSetName = FileParameterSet, HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113420")]
     public class UpdateFormatDataCommand : UpdateData
     {
         /// <summary>
@@ -1196,7 +1199,7 @@ namespace Microsoft.PowerShell.Commands
             }
             else
             {
-                if (String.IsNullOrWhiteSpace(_typeName))
+                if (string.IsNullOrWhiteSpace(_typeName))
                 {
                     ThrowTerminatingError(NewError("TargetTypeNameEmpty", UpdateDataStrings.TargetTypeNameEmpty, _typeName));
                 }
@@ -1204,7 +1207,7 @@ namespace Microsoft.PowerShell.Commands
                 typeNameToRemove = _typeName;
             }
 
-            Dbg.Assert(!String.IsNullOrEmpty(typeNameToRemove), "TypeNameToRemove should be not null and not empty at this point");
+            Dbg.Assert(!string.IsNullOrEmpty(typeNameToRemove), "TypeNameToRemove should be not null and not empty at this point");
             TypeData type = new TypeData(typeNameToRemove);
             string removeTypeFormattedTarget = string.Format(CultureInfo.InvariantCulture, removeTypeTarget, typeNameToRemove);
 
@@ -1292,7 +1295,7 @@ namespace Microsoft.PowerShell.Commands
             var exception = new InvalidOperationException(UpdateDataStrings.TargetTypeNameEmpty);
             foreach (string typeName in TypeName)
             {
-                if (String.IsNullOrWhiteSpace(typeName))
+                if (string.IsNullOrWhiteSpace(typeName))
                 {
                     WriteError(
                         new ErrorRecord(

@@ -6,9 +6,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+
 using Microsoft.PowerShell;
 using Microsoft.PowerShell.DesiredStateConfiguration.Internal;
 
@@ -568,11 +569,11 @@ namespace System.Management.Automation.Language
         /// Check that label exists inside the method.
         /// Only call it, when label is present and can be calculated in compile time.
         /// </summary>
-        /// <param name="ast">BreakStatementAst or ContinueStatementAst</param>
-        /// <param name="label">label name. Can be null</param>
+        /// <param name="ast">BreakStatementAst or ContinueStatementAst.</param>
+        /// <param name="label">Label name. Can be null.</param>
         private void CheckLabelExists(StatementAst ast, string label)
         {
-            if (String.IsNullOrEmpty(label))
+            if (string.IsNullOrEmpty(label))
             {
                 return;
             }
@@ -716,7 +717,7 @@ namespace System.Management.Automation.Language
         /// Check if the ast is a valid target for assignment.  If not, the action reportError is called.
         /// </summary>
         /// <param name="ast">The target of an assignment.</param>
-        /// <param name="simpleAssignment">True if the operator '=' is used, false otherwise (e.g. false on '+=' or '++'.)</param>
+        /// <param name="simpleAssignment">True if the operator '=' is used, false otherwise (e.g. false on '+=' or '++'.).</param>
         /// <param name="reportError">The action called to report any errors.</param>
         private void CheckAssignmentTarget(ExpressionAst ast, bool simpleAssignment, Action<Ast> reportError)
         {
@@ -1365,7 +1366,7 @@ namespace System.Management.Automation.Language
                             nameof(ParserStrings.InvalidInstanceProperty),
                             ParserStrings.InvalidInstanceProperty,
                             propName.Value,
-                            String.Join("', '", tableKeys));
+                            string.Join("', '", tableKeys));
                     }
                 }
             }
@@ -1447,7 +1448,7 @@ namespace System.Management.Automation.Language
     internal static class DscResourceChecker
     {
         /// <summary>
-        /// Check if it is a qualified DSC resource type
+        /// Check if it is a qualified DSC resource type.
         /// </summary>
         /// <param name="parser"></param>
         /// <param name="typeDefinitionAst"></param>
@@ -1540,14 +1541,14 @@ namespace System.Management.Automation.Language
             }
         }
         /// <summary>
-        /// Look up all the way up until find all the required members
+        /// Look up all the way up until find all the required members.
         /// </summary>
         /// <param name="parser"></param>
-        /// <param name="typeDefinitionAst">The type definition ast of the DSC resource type</param>
-        /// <param name="hasSet">flag to indicate if the class contains Set method.</param>
-        /// <param name="hasGet">flag to indicate if the class contains Get method.</param>
-        /// <param name="hasTest">flag to indicate if the class contains Test method.</param>
-        /// <param name="hasKey">flag to indicate if the class contains Key property.</param>
+        /// <param name="typeDefinitionAst">The type definition ast of the DSC resource type.</param>
+        /// <param name="hasSet">Flag to indicate if the class contains Set method.</param>
+        /// <param name="hasGet">Flag to indicate if the class contains Get method.</param>
+        /// <param name="hasTest">Flag to indicate if the class contains Test method.</param>
+        /// <param name="hasKey">Flag to indicate if the class contains Key property.</param>
         private static void LookupRequiredMembers(Parser parser, TypeDefinitionAst typeDefinitionAst, ref bool hasSet, ref bool hasGet, ref bool hasTest, ref bool hasKey)
         {
             if (typeDefinitionAst == null)
@@ -1597,11 +1598,11 @@ namespace System.Management.Automation.Language
             }
         }
         /// <summary>
-        /// Check if it is a Get method with correct return type and signature
+        /// Check if it is a Get method with correct return type and signature.
         /// </summary>
         /// <param name="parser"></param>
-        /// <param name="functionMemberAst">The function member AST</param>
-        /// <param name="hasGet">True if it is a Get method with qualified return type and signature; otherwise, false. </param>
+        /// <param name="functionMemberAst">The function member AST.</param>
+        /// <param name="hasGet">True if it is a Get method with qualified return type and signature; otherwise, false.</param>
         private static void CheckGet(Parser parser, FunctionMemberAst functionMemberAst, ref bool hasGet)
         {
             if (hasGet)
@@ -1615,7 +1616,7 @@ namespace System.Management.Automation.Language
                 if (functionMemberAst.ReturnType != null)
                 {
                     // Return type is of the class we're defined in
-                    //it must return the class type, or array of the class type.
+                    // it must return the class type, or array of the class type.
                     var arrayTypeName = functionMemberAst.ReturnType.TypeName as ArrayTypeName;
                     var typeName =
                         (arrayTypeName != null ? arrayTypeName.ElementType : functionMemberAst.ReturnType.TypeName) as
@@ -1635,16 +1636,16 @@ namespace System.Management.Automation.Language
                         ParserStrings.DscResourceInvalidGetMethod,
                         ((TypeDefinitionAst)functionMemberAst.Parent).Name);
                 }
-                //Set hasGet to true to stop look up; it may have invalid get
+                // Set hasGet to true to stop look up; it may have invalid get
                 hasGet = true;
                 return;
             }
         }
 
         /// <summary>
-        /// Check if it is a Test method with correct return type and signature
+        /// Check if it is a Test method with correct return type and signature.
         /// </summary>
-        /// <param name="functionMemberAst">The function member AST</param>
+        /// <param name="functionMemberAst">The function member AST.</param>
         /// <param name="hasTest">True if it is a Test method with qualified return type and signature; otherwise, false.</param>
         private static void CheckTest(FunctionMemberAst functionMemberAst, ref bool hasTest)
         {
@@ -1655,9 +1656,9 @@ namespace System.Management.Automation.Language
                     functionMemberAst.ReturnType.TypeName.GetReflectionType() == typeof(bool));
         }
         /// <summary>
-        /// Check if it is a Set method with correct return type and signature
+        /// Check if it is a Set method with correct return type and signature.
         /// </summary>
-        /// <param name="functionMemberAst">The function member AST</param>
+        /// <param name="functionMemberAst">The function member AST.</param>
         /// <param name="hasSet">True if it is a Set method with qualified return type and signature; otherwise, false.</param>
         private static void CheckSet(FunctionMemberAst functionMemberAst, ref bool hasSet)
         {
@@ -1671,7 +1672,7 @@ namespace System.Management.Automation.Language
         /// True if it is a key property.
         /// </summary>
         /// <param name="parser"></param>
-        /// <param name="propertyMemberAst">The property member AST</param>
+        /// <param name="propertyMemberAst">The property member AST.</param>
         /// <param name="hasKey">True if it is a key property; otherwise, false.</param>
         private static void CheckKey(Parser parser, PropertyMemberAst propertyMemberAst, ref bool hasKey)
         {
@@ -2324,7 +2325,7 @@ namespace System.Management.Automation.Language
         {
             // REVIEW: it should be OK to allow these, since the ast now would visit the nested expressions and catch the errors.
             // Not allowed since most variables are not allowed
-            //ReportError(expandableStringExpressionAst, () => ParserStrings.ExpandableStringNotSupportedInDataSection);
+            // ReportError(expandableStringExpressionAst, () => ParserStrings.ExpandableStringNotSupportedInDataSection);
 
             return AstVisitAction.Continue;
         }

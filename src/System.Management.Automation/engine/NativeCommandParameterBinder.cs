@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.PowerShell.Commands;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation.Internal;
 using System.Text;
+
+using Microsoft.PowerShell.Commands;
 
 namespace System.Management.Automation
 {
@@ -21,7 +22,7 @@ namespace System.Management.Automation
         #region ctor
 
         /// <summary>
-        /// Constructs a NativeCommandParameterBinder
+        /// Constructs a NativeCommandParameterBinder.
         /// </summary>
         /// <param name="command">
         /// The NativeCommand to bind to.
@@ -110,15 +111,15 @@ namespace System.Management.Automation
                         ArrayLiteralAst arrayLiteralAst = null;
                         switch (parameter?.ArgumentAst)
                         {
-                        case StringConstantExpressionAst sce:
-                            usedQuotes = sce.StringConstantType != StringConstantType.BareWord;
-                            break;
-                        case ExpandableStringExpressionAst ese:
-                            usedQuotes = ese.StringConstantType != StringConstantType.BareWord;
-                            break;
-                        case ArrayLiteralAst ala:
-                            arrayLiteralAst = ala;
-                            break;
+                            case StringConstantExpressionAst sce:
+                                usedQuotes = sce.StringConstantType != StringConstantType.BareWord;
+                                break;
+                            case ExpandableStringExpressionAst ese:
+                                usedQuotes = ese.StringConstantType != StringConstantType.BareWord;
+                                break;
+                            case ArrayLiteralAst ala:
+                                arrayLiteralAst = ala;
+                                break;
                         }
 
                         appendOneNativeArgument(Context, argValue,
@@ -131,7 +132,7 @@ namespace System.Management.Automation
         #endregion Parameter binding
 
         /// <summary>
-        /// Gets the command arguments in string form
+        /// Gets the command arguments in string form.
         /// </summary>
         internal string Arguments
         {
@@ -152,11 +153,11 @@ namespace System.Management.Automation
         /// and trailing spaces as appropriate. An array gets added as multiple arguments
         /// each of which will be stringized.
         /// </summary>
-        /// <param name="context">Execution context instance</param>
-        /// <param name="obj">The object to append</param>
-        /// <param name="argArrayAst">If the argument was an array literal, the Ast, otherwise null</param>
-        /// <param name="sawVerbatimArgumentMarker">true if the argument occurs after --%</param>
-        /// <param name="usedQuotes">True if the argument was a quoted string (single or double)</param>
+        /// <param name="context">Execution context instance.</param>
+        /// <param name="obj">The object to append.</param>
+        /// <param name="argArrayAst">If the argument was an array literal, the Ast, otherwise null.</param>
+        /// <param name="sawVerbatimArgumentMarker">True if the argument occurs after --%.</param>
+        /// <param name="usedQuotes">True if the argument was a quoted string (single or double).</param>
         private void appendOneNativeArgument(ExecutionContext context, object obj, ArrayLiteralAst argArrayAst, bool sawVerbatimArgumentMarker, bool usedQuotes)
         {
             IEnumerator list = LanguagePrimitives.GetEnumerator(obj);
@@ -190,7 +191,7 @@ namespace System.Management.Automation
                     }
                 }
 
-                if (!String.IsNullOrEmpty(arg))
+                if (!string.IsNullOrEmpty(arg))
                 {
                     _arguments.Append(separator);
 
@@ -220,7 +221,7 @@ namespace System.Management.Automation
                             // need to escape all trailing backslashes so the native command receives it correctly
                             // according to http://www.daviddeley.com/autohotkey/parameters/parameters.htm#WINCRULESDOC
                             _arguments.Append(arg);
-                            for (int i = arg.Length-1; i >= 0 && arg[i] == '\\'; i--)
+                            for (int i = arg.Length - 1; i >= 0 && arg[i] == '\\'; i--)
                             {
                                 _arguments.Append('\\');
                             }
@@ -240,8 +241,8 @@ namespace System.Management.Automation
         /// On Windows, just append <paramref name="arg"/>.
         /// On Unix, do globbing as appropriate, otherwise just append <paramref name="arg"/>.
         /// </summary>
-        /// <param name="arg">The argument that possibly needs expansion</param>
-        /// <param name="usedQuotes">True if the argument was a quoted string (single or double)</param>
+        /// <param name="arg">The argument that possibly needs expansion.</param>
+        /// <param name="usedQuotes">True if the argument was a quoted string (single or double).</param>
         private void PossiblyGlobArg(string arg, bool usedQuotes)
         {
             var argExpanded = false;
@@ -332,7 +333,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Check to see if the string contains spaces and therefore must be quoted.
         /// </summary>
-        /// <param name="stringToCheck">The string to check for spaces</param>
+        /// <param name="stringToCheck">The string to check for spaces.</param>
         internal static bool NeedQuotes(string stringToCheck)
         {
             bool needQuotes = false, followingBackslash = false;
@@ -380,9 +381,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// The native command to bind to
+        /// The native command to bind to.
         /// </summary>
         private NativeCommand _nativeCommand;
-#endregion private members
+        #endregion private members
     }
 }

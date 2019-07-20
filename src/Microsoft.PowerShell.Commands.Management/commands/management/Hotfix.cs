@@ -2,27 +2,28 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics; // Process class
 using System.ComponentModel; // Win32Exception
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics; // Process class
 using System.Globalization;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-using System.Threading;
+using System.IO;
 using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.IO;
+using System.Runtime.Serialization;
 using System.Security;
-using System.Security.Principal;
 using System.Security.AccessControl;
+using System.Security.Permissions;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+
 using Dbg = System.Management.Automation;
 
 namespace Microsoft.PowerShell.Commands
@@ -30,7 +31,7 @@ namespace Microsoft.PowerShell.Commands
     #region Get-HotFix
 
     /// <summary>
-    /// Cmdlet for Get-Hotfix Proxy
+    /// Cmdlet for Get-Hotfix Proxy.
     /// </summary>
     [Cmdlet(VerbsCommon.Get, "HotFix", DefaultParameterSetName = "Default",
         HelpUri = "https://go.microsoft.com/fwlink/?LinkID=135217", RemotingCapability = RemotingCapability.SupportedByCommand)]
@@ -49,7 +50,7 @@ namespace Microsoft.PowerShell.Commands
         public string[] Id { get; set; }
 
         /// <summary>
-        /// To search on description of Hotfixes
+        /// To search on description of Hotfixes.
         /// </summary>
         [Parameter(ParameterSetName = "Description")]
         [ValidateNotNullOrEmpty]
@@ -57,7 +58,7 @@ namespace Microsoft.PowerShell.Commands
         public string[] Description { get; set; }
 
         /// <summary>
-        /// Parameter to pass the Computer Name
+        /// Parameter to pass the Computer Name.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -128,7 +129,7 @@ namespace Microsoft.PowerShell.Commands
                     // try to translate the SID to a more friendly username
                     // just stick with the SID if anything goes wrong
                     string installed = (string)obj["InstalledBy"];
-                    if (!String.IsNullOrEmpty(installed))
+                    if (!string.IsNullOrEmpty(installed))
                     {
                         try
                         {
@@ -141,15 +142,15 @@ namespace Microsoft.PowerShell.Commands
                         catch (SystemException) // thrown by SecurityIdentifier.constr
                         {
                         }
-                        //catch (ArgumentException) // thrown (indirectly) by SecurityIdentifier.constr (on XP only?)
-                        //{ catch not needed - this is already caught as SystemException
-                        //}
-                        //catch (PlatformNotSupportedException) // thrown (indirectly) by SecurityIdentifier.Translate (on Win95 only?)
-                        //{ catch not needed - this is already caught as SystemException
-                        //}
-                        //catch (UnauthorizedAccessException) // thrown (indirectly) by SecurityIdentifier.Translate
-                        //{ catch not needed - this is already caught as SystemException
-                        //}
+                        // catch (ArgumentException) // thrown (indirectly) by SecurityIdentifier.constr (on XP only?)
+                        // { catch not needed - this is already caught as SystemException
+                        // }
+                        // catch (PlatformNotSupportedException) // thrown (indirectly) by SecurityIdentifier.Translate (on Win95 only?)
+                        // { catch not needed - this is already caught as SystemException
+                        // }
+                        // catch (UnauthorizedAccessException) // thrown (indirectly) by SecurityIdentifier.Translate
+                        // { catch not needed - this is already caught as SystemException
+                        // }
                     }
 
                     WriteObject(obj);
@@ -167,10 +168,10 @@ namespace Microsoft.PowerShell.Commands
                     this.Dispose();
                 }
             }
-        }//end of BeginProcessing method
+        }
 
         /// <summary>
-        /// to implement ^C
+        /// To implement ^C.
         /// </summary>
         protected override void StopProcessing()
         {
@@ -214,7 +215,7 @@ namespace Microsoft.PowerShell.Commands
         #region "IDisposable Members"
 
         /// <summary>
-        /// Dispose Method
+        /// Dispose Method.
         /// </summary>
         public void Dispose()
         {
@@ -240,6 +241,6 @@ namespace Microsoft.PowerShell.Commands
         }
 
         #endregion "IDisposable Members"
-    }//end class
+    }
     #endregion
-}//Microsoft.Powershell.commands
+}

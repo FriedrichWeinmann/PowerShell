@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Management.Automation.Remoting.Internal;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation
@@ -22,14 +23,14 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// A job that can throttle execution of child jobs
+    /// A job that can throttle execution of child jobs.
     /// </summary>
     internal sealed class ThrottlingJob : Job
     {
         #region IDisposable Members
 
         /// <summary>
-        /// Releases resources associated with this object
+        /// Releases resources associated with this object.
         /// </summary>
         protected override void Dispose(bool disposing)
         {
@@ -184,7 +185,7 @@ namespace System.Management.Automation
         internal enum ChildJobFlags
         {
             /// <summary>
-            /// Child job doesn't have any special properties
+            /// Child job doesn't have any special properties.
             /// </summary>
             None = 0,
 
@@ -258,8 +259,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Creates a new <see cref="ThrottlingJob"/> object.
         /// </summary>
-        /// <param name="command">Command invoked by this job object</param>
-        /// <param name="jobName">Friendly name for the job object</param>
+        /// <param name="command">Command invoked by this job object.</param>
+        /// <param name="jobName">Friendly name for the job object.</param>
         /// <param name="jobTypeName">Name describing job type.</param>
         /// <param name="maximumConcurrentChildJobs">
         /// The maximum number of child jobs that can be running at any given point in time.
@@ -361,9 +362,9 @@ namespace System.Management.Automation
         /// <summary>
         /// Adds and starts a child job.
         /// </summary>
-        /// <param name="childJob">Child job to add</param>
-        /// <param name="flags">Flags of the child job</param>
-        /// <param name="jobEnqueuedAction">action to run after enqueuing the job</param>
+        /// <param name="childJob">Child job to add.</param>
+        /// <param name="flags">Flags of the child job.</param>
+        /// <param name="jobEnqueuedAction">Action to run after enqueuing the job.</param>
         /// <exception cref="ArgumentException">
         /// Thrown when the child job is not in the <see cref="JobState.NotStarted"/> state.
         /// (because this can lead to race conditions - the child job can finish before the parent job has a chance to register for child job events)
@@ -781,7 +782,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Indicates if job has more data available.
         /// <c>true</c> if any of the child jobs have more data OR if <see cref="EndOfChildJobs"/> have not been called yet;
-        /// <c>false</c> otherwise
+        /// <c>false</c> otherwise.
         /// </summary>
         public override bool HasMoreData
         {
@@ -808,7 +809,7 @@ namespace System.Management.Automation
         private readonly HashSet<string> _childJobLocations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Status message associated with the Job
+        /// Status message associated with the Job.
         /// </summary>
         public override string StatusMessage
         {

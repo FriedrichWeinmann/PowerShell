@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using Xunit;
 
-namespace PSTests.Parallel
+namespace PSTests.Sequential
 {
     // NOTE: do not call AddCommand("out-host") after invoking or MergeMyResults,
     // otherwise Invoke will not return any objects
@@ -98,6 +99,32 @@ namespace PSTests.Parallel
                 }
 
                 runspace.Close();
+            }
+        }
+
+        [Fact]
+        public void TestRunspaceSetBreakpoints()
+        {
+            using (var runspace = RunspaceFactory.CreateRunspace())
+            {
+                var expectedBreakpoints = new Breakpoint[] {
+                    new LineBreakpoint(@"./path/to/some/file.ps1", 1),
+                    new CommandBreakpoint(@"./path/to/some/file.ps1", new WildcardPattern("Write-Host"), "Write-Host"),
+                };
+
+                runspace.Open();
+
+                try
+                {
+                    runspace.Debugger.SetBreakpoints(expectedBreakpoints);
+                    List<Breakpoint> actualBreakpoints = runspace.Debugger.GetBreakpoints();
+                    Assert.Equal(expectedBreakpoints.Length, actualBreakpoints.Count);
+                    Assert.Equal(expectedBreakpoints, actualBreakpoints);
+                }
+                finally
+                {
+                    runspace.Close();
+                }
             }
         }
     }

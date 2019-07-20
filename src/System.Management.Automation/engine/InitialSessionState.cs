@@ -9,17 +9,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
+using System.Management.Automation.Host;
 using System.Management.Automation.Internal;
-using System.Management.Automation.Provider;
 using System.Management.Automation.Language;
+using System.Management.Automation.Provider;
 using System.Management.Automation.Security;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Microsoft.PowerShell.Commands;
-using System.Management.Automation.Host;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.PowerShell.Commands;
+
 using Debug = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation.Runspaces
@@ -54,13 +56,13 @@ namespace System.Management.Automation.Runspaces
             {
                 // Loading the resources for System.Management.Automation can be expensive, so force that to
                 // happen early on a background thread.
-                var unused0 = RunspaceInit.OutputEncodingDescription;
+                _ = RunspaceInit.OutputEncodingDescription;
 
                 // This will init some tables and could load some assemblies.
-                var unused1 = TypeAccelerators.builtinTypeAccelerators;
+                _ = TypeAccelerators.builtinTypeAccelerators;
 
                 // This will init some tables and could load some assemblies.
-                var unused2 = LanguagePrimitives.GetEnumerator(null);
+                LanguagePrimitives.GetEnumerator(null);
             });
         }
     }
@@ -167,7 +169,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Is internal so it can be set by the engine code...
         /// This is used to specify whether this command was imported or not
-        /// If noClobber is specified during Import-Module, it is set to false
+        /// If noClobber is specified during Import-Module, it is set to false.
         /// </summary>
         internal bool _isImported = true;
     }
@@ -273,10 +275,10 @@ namespace System.Management.Automation.Runspaces
         /// </summary>
         public bool IsRemove { get; }
 
-        //So that we can specify the type information on the fly,
-        //without using Types.ps1xml file
-        //public SessionStateTypeEntry(string name, xmlreader definition);
-        //public string Definition { get; }
+        // So that we can specify the type information on the fly,
+        // without using Types.ps1xml file
+        // public SessionStateTypeEntry(string name, xmlreader definition);
+        // public string Definition { get; }
     }
 
     /// <summary>
@@ -372,10 +374,10 @@ namespace System.Management.Automation.Runspaces
         /// </summary>
         public ExtendedTypeDefinition FormatData { get; }
 
-        //So that we can specify the format information on the fly,
-        //without using Format.ps1xml file
-        //public SessionStateFormatEntry(string name, xmlreader definition);
-        //public string Definition { get; }
+        // So that we can specify the format information on the fly,
+        // without using Format.ps1xml file
+        // public SessionStateFormatEntry(string name, xmlreader definition);
+        // public string Definition { get; }
     }
 
     /// <summary>
@@ -387,8 +389,8 @@ namespace System.Management.Automation.Runspaces
         /// Create a named entry for the assembly to load with both the
         /// name and the path to the assembly as a backup.
         /// </summary>
-        /// <param name="name">The name of the assembly to load</param>
-        /// <param name="fileName">The path to the assembly to use as an alternative</param>
+        /// <param name="name">The name of the assembly to load.</param>
+        /// <param name="fileName">The path to the assembly to use as an alternative.</param>
         public SessionStateAssemblyEntry(string name, string fileName)
             : base(name)
         {
@@ -399,7 +401,7 @@ namespace System.Management.Automation.Runspaces
         /// Create a named entry for the assembly to load, specifying
         /// just the name.
         /// </summary>
-        /// <param name="name">The name of the assembly to load</param>
+        /// <param name="name">The name of the assembly to load.</param>
         public SessionStateAssemblyEntry(string name)
             : base(name)
         {
@@ -527,7 +529,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Create a session state command entry instance.
         /// </summary>
-        /// <param name="path">The path to the script</param>
+        /// <param name="path">The path to the script.</param>
         public SessionStateScriptEntry(string path)
             : base(path, SessionStateEntryVisibility.Public)
         {
@@ -538,7 +540,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Create a session state command entry instance with the specified visibility.
         /// </summary>
-        /// <param name="path">The path to the script</param>
+        /// <param name="path">The path to the script.</param>
         /// <param name="visibility">Visibility of the script.</param>
         internal SessionStateScriptEntry(string path, SessionStateEntryVisibility visibility)
             : base(path, visibility)
@@ -568,7 +570,7 @@ namespace System.Management.Automation.Runspaces
     public sealed class SessionStateAliasEntry : SessionStateCommandEntry
     {
         /// <summary>
-        ///  Define an alias entry to add to the initial session state.
+        /// Define an alias entry to add to the initial session state.
         /// </summary>
         /// <param name="name">The name of the alias entry to add.</param>
         /// <param name="definition">The name of the command it resolves to.</param>
@@ -580,7 +582,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        ///  Define an alias entry to add to the initial session state.
+        /// Define an alias entry to add to the initial session state.
         /// </summary>
         /// <param name="name">The name of the alias entry to add.</param>
         /// <param name="definition">The name of the command it resolves to.</param>
@@ -594,7 +596,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        ///  Define an alias entry to add to the initial session state.
+        /// Define an alias entry to add to the initial session state.
         /// </summary>
         /// <param name="name">The name of the alias entry to add.</param>
         /// <param name="definition">The name of the command it resolves to.</param>
@@ -610,7 +612,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        ///  Define an alias entry to add to the initial session state.
+        /// Define an alias entry to add to the initial session state.
         /// </summary>
         /// <param name="name">The name of the alias entry to add.</param>
         /// <param name="definition">The name of the command it resolves to.</param>
@@ -645,7 +647,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// A string describing this alias...
         /// </summary>
-        public string Description { get; } = String.Empty;
+        public string Description { get; } = string.Empty;
 
         /// <summary>
         /// Options controling scope visibility and setability for this entry.
@@ -673,7 +675,7 @@ namespace System.Management.Automation.Runspaces
         /// Used to define a permitted script in this session state. If the path is
         /// "*", then any path is permitted.
         /// </summary>
-        /// <param name="path">The full path to the application</param>
+        /// <param name="path">The full path to the application.</param>
         /// <param name="visibility">Sets the external visibility of the path.</param>
         internal SessionStateApplicationEntry(string path, SessionStateEntryVisibility visibility)
             : base(path, visibility)
@@ -706,10 +708,10 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Represents a function definition in an Initial session state object.
         /// </summary>
-        /// <param name="name">The name of the function</param>
-        /// <param name="definition">The definition of the function</param>
-        /// <param name="options">Options controlling scope-related elements of this object</param>
-        /// <param name="helpFile">The name of the help file associated with the function</param>
+        /// <param name="name">The name of the function.</param>
+        /// <param name="definition">The definition of the function.</param>
+        /// <param name="options">Options controlling scope-related elements of this object.</param>
+        /// <param name="helpFile">The name of the help file associated with the function.</param>
         public SessionStateFunctionEntry(string name, string definition, ScopedItemOptions options, string helpFile)
             : base(name, SessionStateEntryVisibility.Public)
         {
@@ -827,8 +829,8 @@ namespace System.Management.Automation.Runspaces
         /// then the clone will contain a reference to the original object
         /// not a clone of it.
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value to set the variable to</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value to set the variable to.</param>
         /// <param name="description">A descriptive string to attach to the variable.</param>
         public SessionStateVariableEntry(string name, object value, string description)
             : base(name, SessionStateEntryVisibility.Public)
@@ -843,8 +845,8 @@ namespace System.Management.Automation.Runspaces
         /// then the clone will contain a reference to the original object
         /// not a clone of it.
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value to set the variable to</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value to set the variable to.</param>
         /// <param name="description">A descriptive string to attach to the variable.</param>
         /// <param name="options">Options like readonly, constant, allscope, etc.</param>
         public SessionStateVariableEntry(string name, object value, string description, ScopedItemOptions options)
@@ -861,8 +863,8 @@ namespace System.Management.Automation.Runspaces
         /// then the clone will contain a reference to the original object
         /// not a clone of it.
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value to set the variable to</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value to set the variable to.</param>
         /// <param name="description">A descriptive string to attach to the variable.</param>
         /// <param name="options">Options like readonly, constant, allscope, etc.</param>
         /// <param name="attributes">A list of attributes to attach to the variable.</param>
@@ -882,8 +884,8 @@ namespace System.Management.Automation.Runspaces
         /// then the clone will contain a reference to the original object
         /// not a clone of it.
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value to set the variable to</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value to set the variable to.</param>
         /// <param name="description">A descriptive string to attach to the variable.</param>
         /// <param name="options">Options like readonly, constant, allscope, etc.</param>
         /// <param name="attribute">A single attribute to attach to the variable.</param>
@@ -904,8 +906,8 @@ namespace System.Management.Automation.Runspaces
         /// then the clone will contain a reference to the original object
         /// not a clone of it.
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value to set the variable to</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value to set the variable to.</param>
         /// <param name="description">A descriptive string to attach to the variable.</param>
         /// <param name="options">Options like readonly, constant, allscope, etc.</param>
         /// <param name="attributes">A single attribute to attach to the variable.</param>
@@ -941,7 +943,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// The description associated with this variable.
         /// </summary>
-        public string Description { get; } = String.Empty;
+        public string Description { get; } = string.Empty;
 
         /// <summary>
         /// The options associated with this variable (e.g. readonly, allscope, etc.)
@@ -1145,7 +1147,7 @@ namespace System.Management.Automation.Runspaces
         /// and the type hasn't been specified.
         /// BUGBUG - brucepay - the throw thing is not implemented yet...
         /// </summary>
-        /// <param name="name">The name of the element to remove</param>
+        /// <param name="name">The name of the element to remove.</param>
         /// <param name="type">The type of object to remove, can be null to remove any type.</param>
         public void Remove(string name, object type)
         {
@@ -1168,7 +1170,7 @@ namespace System.Management.Automation.Runspaces
                     if (element == null)
                         continue;
                     if ((objType == null || element.GetType() == objType) &&
-                        String.Equals(element.Name, name, StringComparison.OrdinalIgnoreCase))
+                        string.Equals(element.Name, name, StringComparison.OrdinalIgnoreCase))
                     {
                         _internalCollection.RemoveAt(i);
                     }
@@ -1220,8 +1222,7 @@ namespace System.Management.Automation.Runspaces
             {
                 foreach (var element in items)
                 {
-                    var typeEntry = element as SessionStateTypeEntry;
-                    if (typeEntry.TypeData != null)
+                    if (element is SessionStateTypeEntry typeEntry && typeEntry.TypeData != null)
                     {
                         // Skip type file entries.
                         _internalCollection.Add(element);
@@ -1262,7 +1263,7 @@ namespace System.Management.Automation.Runspaces
 
         private Collection<T> _internalCollection;
 
-        //object to use for locking
+        // object to use for locking
         private object _syncObject = new object();
     }
 
@@ -1473,7 +1474,7 @@ namespace System.Management.Automation.Runspaces
         #endregion
 
         /// <summary>
-        /// ctor for Custom-Shell - Do we need this?
+        /// Ctor for Custom-Shell - Do we need this?
         /// </summary>
         protected InitialSessionState()
         {
@@ -1488,7 +1489,7 @@ namespace System.Management.Automation.Runspaces
         {
             InitialSessionState iss = new InitialSessionState();
 
-            //TODO: the following code is probably needed for the hosted constrained runspace
+            // TODO: the following code is probably needed for the hosted constrained runspace
             // There are too many things that depend on the built-in variables. At the same time,
             // these variables can't be public or they become a security issue.
             // This change still needs to be spec-reviewed before turning it on. It also seems to
@@ -1537,7 +1538,7 @@ namespace System.Management.Automation.Runspaces
                     throw pse;
                 }
 #if DEBUG
-                //NOTE:
+                // NOTE:
                 // This code is for testing a module-based shell. It is only available when the shell is complied
                 // in debug mode and is not intended to be a feature.
                 // July 31 2008 - brucepay
@@ -1790,7 +1791,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Specifies the execution policy to be used for this session state instance
+        /// Specifies the execution policy to be used for this session state instance.
         /// </summary>
         public Microsoft.PowerShell.ExecutionPolicy ExecutionPolicy
         {
@@ -1850,7 +1851,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Add a list of modules to import when the runspace is created.
         /// </summary>
-        /// <param name="name">The modules to add</param>
+        /// <param name="name">The modules to add.</param>
         /// <returns></returns>
         public void ImportPSModule(params string[] name)
         {
@@ -2491,7 +2492,7 @@ namespace System.Management.Automation.Runspaces
             }
 
             // Start transcribing
-            if (!String.IsNullOrEmpty(TranscriptDirectory))
+            if (!string.IsNullOrEmpty(TranscriptDirectory))
             {
                 using (PowerShell psToInvoke = PowerShell.Create())
                 {
@@ -2638,9 +2639,9 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Process a command modification for a specific parameter.
         /// </summary>
-        /// <param name="commandModification">The hashtable of command modifications for this command</param>
-        /// <param name="metadata">The metadata for the command being processed</param>
-        /// <param name="parameterName">The parameter being modified</param>
+        /// <param name="commandModification">The hashtable of command modifications for this command.</param>
+        /// <param name="metadata">The metadata for the command being processed.</param>
+        /// <param name="parameterName">The parameter being modified.</param>
         private static void ProcessCommandModification(Hashtable commandModification, CommandMetadata metadata, string parameterName)
         {
             // If the metadata doesn't actually contain the parameter, then we need to create one.
@@ -2664,7 +2665,7 @@ namespace System.Management.Automation.Runspaces
                         break;
 
                     case "ValidatePattern":
-                        string pattern = "^(" + String.Join("|", parameterValidationValues) + ")$";
+                        string pattern = "^(" + string.Join("|", parameterValidationValues) + ")$";
                         ValidatePatternAttribute validatePattern = new ValidatePatternAttribute(pattern);
                         metadata.Parameters[parameterName].Attributes.Add(validatePattern);
                         break;
@@ -2681,7 +2682,7 @@ namespace System.Management.Automation.Runspaces
                     string name = variable["Name"].ToString();
                     ScriptBlock sb = variable["Value"] as ScriptBlock;
 
-                    if (!String.IsNullOrEmpty(name) && (sb != null))
+                    if (!string.IsNullOrEmpty(name) && (sb != null))
                     {
                         sb.SessionStateInternal = initializedRunspace.ExecutionContext.EngineSessionState;
 
@@ -2767,9 +2768,9 @@ namespace System.Management.Automation.Runspaces
                 ? this.UserDriveUserName
                 // domain\user on Windows, just user on Unix
 #if UNIX
-                : Platform.Unix.UserName;
+                : Environment.UserName;
 #else
-                : System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                : Environment.UserDomainName + "_" + Environment.UserName;
 #endif
 
             // Ensure that user name contains no invalid path characters.
@@ -2780,7 +2781,7 @@ namespace System.Management.Automation.Runspaces
                 throw new PSInvalidOperationException(RemotingErrorIdStrings.InvalidUserDriveName);
             }
 
-            return userName.Replace("\\", "_");
+            return userName;
         }
 
         private Exception ProcessStartupScripts(Runspace initializedRunspace)
@@ -3042,7 +3043,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// if <paramref name="moduleInfoToLoad"/> is null, import module using <paramref name="name"/>. Otherwise,
+        /// If <paramref name="moduleInfoToLoad"/> is null, import module using <paramref name="name"/>. Otherwise,
         /// import module using <paramref name="moduleInfoToLoad"/>
         /// </summary>
         private RunspaceOpenModuleLoadException ProcessOneModule(Runspace initializedRunspace, string name, PSModuleInfo moduleInfoToLoad, string path, HashSet<CommandInfo> publicCommands)
@@ -3461,7 +3462,7 @@ namespace System.Management.Automation.Runspaces
         /// Update the type metadata loaded into this runspace.
         /// </summary>
         /// <param name="context">The execution context for the runspace to update.</param>
-        /// <param name="updateOnly">if true, re-initialize the metadata collection...</param>
+        /// <param name="updateOnly">If true, re-initialize the metadata collection...</param>
         internal void UpdateTypes(ExecutionContext context, bool updateOnly)
         {
             if (Types.Count == 1)
@@ -3505,7 +3506,7 @@ namespace System.Management.Automation.Runspaces
                     if (filesProcessed.TryAdd(sste.FileName, null))
                     {
                         string moduleName = string.Empty;
-                        if (sste.PSSnapIn != null && !String.IsNullOrEmpty(sste.PSSnapIn.Name))
+                        if (sste.PSSnapIn != null && !string.IsNullOrEmpty(sste.PSSnapIn.Name))
                         {
                             moduleName = sste.PSSnapIn.Name;
                         }
@@ -3794,7 +3795,7 @@ namespace System.Management.Automation.Runspaces
                 {
                     s_PSSnapInTracer.TraceError("Loading assembly for psSnapIn {0} failed", psSnapInInfo.Name);
                     warning = null;
-                    return null; //BUGBUG - should add something to the warnings list here instead of quitting...
+                    return null; // BUGBUG - should add something to the warnings list here instead of quitting...
                 }
 
                 s_PSSnapInTracer.WriteLine("Loading assembly for psSnapIn {0} succeeded", psSnapInInfo.Name);
@@ -4065,13 +4066,13 @@ End
         ";
 
         /// <summary>
-        /// This is the default function to use for clear-host. On Windows it rewrites the
-        /// host, and on Linux, it delegates to the native binary, 'clear'.
+        /// This is the default function to use for clear-host.
         /// </summary>
         internal static string GetClearHostFunctionText()
         {
             if (Platform.IsWindows)
             {
+                // use $RawUI so this works over remoting where there isn't a physical console
                 return @"
 $RawUI = $Host.UI.RawUI
 $RawUI.CursorPosition = @{X=0;Y=0}
@@ -4118,7 +4119,7 @@ param(
     [string]
     ${Path},
 
-    [ValidateSet('Alias','Cmdlet','Provider','General','FAQ','Glossary','HelpFile','ScriptCommand','Function','Filter','ExternalScript','All','DefaultHelp','Workflow','DscResource','Class','Configuration')]
+    [ValidateSet('Alias','Cmdlet','Provider','General','FAQ','Glossary','HelpFile','ScriptCommand','Function','Filter','ExternalScript','All','DefaultHelp','DscResource','Class','Configuration')]
     [string[]]
     ${Category},
 
@@ -4135,7 +4136,7 @@ param(
     ${Examples},
 
     [Parameter(ParameterSetName='Parameters', Mandatory=$true)]
-    [string]
+    [string[]]
     ${Parameter},
 
     [string[]]
@@ -4169,21 +4170,69 @@ param(
 
     $help = Get-Help @PSBoundParameters
 
-    # If a list of help is returned, don't pipe to more
-    if (($help | Select-Object -First 1).PSTypeNames -Contains 'HelpInfoShort')
+    # If a list of help is returned or AliasHelpInfo (because it is small), don't pipe to more
+    $psTypeNames = ($help | Select-Object -First 1).PSTypeNames
+    if ($psTypeNames -Contains 'HelpInfoShort' -Or $psTypeNames -Contains 'AliasHelpInfo')
     {
         $help
     }
-    else
+    elseif ($help -ne $null)
     {
-        # Respect PAGER, use more on Windows, and use less on Linux
-        $moreCommand,$moreArgs = $env:PAGER -split '\s+'
-        if ($moreCommand) {
-            $help | & $moreCommand $moreArgs
-        } elseif ($IsWindows) {
-            $help | more.com
-        } else {
-            $help | less -Ps""Page %db?B of %D:.\. Press h for help or q to quit\.$""
+        # By default use more on Windows and less on Linux.
+        if ($IsWindows) {
+            $pagerCommand = 'more.com'
+            $pagerArgs = $null
+        }
+        else {
+            $pagerCommand = 'less'
+            $pagerArgs = '-Ps""Page %db?B of %D:.\. Press h for help or q to quit\.$""'
+        }
+
+        # Respect PAGER environment variable which allows user to specify a custom pager.
+        # Ignore a pure whitespace PAGER value as that would cause the tokenizer to return 0 tokens.
+        if (![string]::IsNullOrWhitespace($env:PAGER)) {
+            if (Get-Command $env:PAGER -ErrorAction Ignore) {
+                # Entire PAGER value corresponds to a single command.
+                $pagerCommand = $env:PAGER
+                $pagerArgs = $null
+            }
+            else {
+                # PAGER value is not a valid command, check if PAGER command and arguments have been specified.
+                # Tokenize the specified $env:PAGER value. Ignore tokenizing errors since any errors may be valid
+                # argument syntax for the paging utility.
+                $errs = $null
+                $tokens = [System.Management.Automation.PSParser]::Tokenize($env:PAGER, [ref]$errs)
+
+                $customPagerCommand = $tokens[0].Content
+                if (!(Get-Command $customPagerCommand -ErrorAction Ignore)) {
+                    # Custom pager command is invalid, issue a warning.
+                    Write-Warning ""Custom-paging utility command not found. Ignoring command specified in `$env:PAGER: $env:PAGER""
+                }
+                else {
+                    # This approach will preserve all the pagers args.
+                    $pagerCommand = $customPagerCommand
+                    $pagerArgs = if ($tokens.Count -gt 1) {$env:PAGER.Substring($tokens[1].Start)} else {$null}
+                }
+            }
+        }
+
+        # If the pager is an application, format the output width before sending to the app.
+        if ((Get-Command $pagerCommand -ErrorAction Ignore).CommandType -eq 'Application') {
+            $consoleWidth = [System.Math]::Max([System.Console]::WindowWidth, 20)
+
+            if ($pagerArgs) {
+                # Supply pager arguments to an application without any PowerShell parsing of the arguments.
+                # Leave environment variable to help user debug arguments supplied in $env:PAGER.
+                $env:__PSPAGER_ARGS = $pagerArgs
+                $help | Out-String -Stream -Width ($consoleWidth - 1) | & $pagerCommand --% %__PSPAGER_ARGS%
+            }
+            else {
+                $help | Out-String -Stream -Width ($consoleWidth - 1) | & $pagerCommand
+            }
+        }
+        else {
+            # The pager command is a PowerShell function, script or alias, so pipe directly into it.
+            $help | & $pagerCommand $pagerArgs
         }
     }
 ";
@@ -4296,9 +4345,9 @@ end {
             // Bug fix for Win7:2202228 Engine halts if initial command fulls up variable table
             // Anytime a new variable that the engine depends on to run is added, this table
             // must be updated...
-            new SessionStateVariableEntry(SpecialVariables.LastToken, null, String.Empty),
-            new SessionStateVariableEntry(SpecialVariables.FirstToken, null, String.Empty),
-            new SessionStateVariableEntry(SpecialVariables.StackTrace, null, String.Empty),
+            new SessionStateVariableEntry(SpecialVariables.LastToken, null, string.Empty),
+            new SessionStateVariableEntry(SpecialVariables.FirstToken, null, string.Empty),
+            new SessionStateVariableEntry(SpecialVariables.StackTrace, null, string.Empty),
 
             // Variable which controls the encoding for piping data to a NativeCommand
             new SessionStateVariableEntry(
@@ -4389,10 +4438,10 @@ end {
                 RunspaceInit.FormatEnumerationLimitDescription
                 ),
 
-             //variable for PSEmailServer
+             // variable for PSEmailServer
             new SessionStateVariableEntry(
                 SpecialVariables.PSEmailServer,
-                String.Empty,
+                string.Empty,
                 RunspaceInit.PSEmailServerDescription
                 ),
 
@@ -4418,25 +4467,25 @@ end {
             new SessionStateVariableEntry(
                 SpecialVariables.IsLinux,
                 Platform.IsLinux,
-                String.Empty,
+                string.Empty,
                 ScopedItemOptions.ReadOnly | ScopedItemOptions.AllScope),
 
             new SessionStateVariableEntry(
                 SpecialVariables.IsMacOS,
                 Platform.IsMacOS,
-                String.Empty,
+                string.Empty,
                 ScopedItemOptions.ReadOnly | ScopedItemOptions.AllScope),
 
             new SessionStateVariableEntry(
                 SpecialVariables.IsWindows,
                 Platform.IsWindows,
-                String.Empty,
+                string.Empty,
                 ScopedItemOptions.ReadOnly | ScopedItemOptions.AllScope),
 
             new SessionStateVariableEntry(
                 SpecialVariables.IsCoreCLR,
                 Platform.IsCoreCLR,
-                String.Empty,
+                string.Empty,
                 ScopedItemOptions.ReadOnly | ScopedItemOptions.AllScope),
             #endregion
         };
@@ -4506,6 +4555,7 @@ end {
                     new SessionStateAliasEntry("mi", "Move-Item", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("mp", "Move-ItemProperty", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("nal", "New-Alias", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("nbp", "New-PSBreakpoint", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("ndr", "New-PSDrive", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("ni", "New-Item", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("nv", "New-Variable", string.Empty, ReadOnly),
@@ -4536,6 +4586,7 @@ end {
 #if !UNIX
                     // ac is a native command on macOS
                     new SessionStateAliasEntry("ac", "Add-Content", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("clear", "Clear-Host"),
                     new SessionStateAliasEntry("compare", "Compare-Object", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("cpp", "Copy-ItemProperty", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("diff", "Compare-Object", string.Empty, ReadOnly),
@@ -4565,11 +4616,11 @@ end {
                     new SessionStateAliasEntry("dir", "Get-ChildItem", string.Empty, AllScope),
                     new SessionStateAliasEntry("echo", "Write-Output", string.Empty, AllScope),
                     new SessionStateAliasEntry("fc", "Format-Custom", string.Empty, ReadOnly),
+#if !UNIX
                     new SessionStateAliasEntry("kill", "Stop-Process"),
+#endif
                     new SessionStateAliasEntry("pwd", "Get-Location"),
                     new SessionStateAliasEntry("type", "Get-Content"),
-                    // Native commands we keep because the functions act correctly on Linux
-                    new SessionStateAliasEntry("clear", "Clear-Host"),
 // #if !CORECLR is used to disable aliases for cmdlets which are not available on OneCore or not appropriate for PSCore6 due to conflicts
 #if !CORECLR
                     new SessionStateAliasEntry("gwmi", "Get-WmiObject", string.Empty, ReadOnly),
@@ -5317,7 +5368,7 @@ end {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool HasDefaultConstructor(Type type)
         {
-            return !(type.GetConstructor(PSTypeExtensions.EmptyTypes) == null);
+            return !(type.GetConstructor(Type.EmptyTypes) == null);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -2,20 +2,21 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
-using System.Reflection;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Management.Automation;
-using System.Management.Automation.Provider;
-using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
-using System.Management.Automation.Runspaces;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Dbg = System.Management.Automation;
 using System.Globalization;
+using System.IO;
+using System.Management.Automation;
+using System.Management.Automation.Provider;
+using System.Management.Automation.Runspaces;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Xml;
+
+using Dbg = System.Management.Automation;
 
 namespace Microsoft.WSMan.Management
 {
@@ -38,7 +39,7 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "GetInstance")]
         [Parameter(ParameterSetName = "Enumerate")]
-        public String ApplicationName
+        public string ApplicationName
         {
             get { return applicationname; }
 
@@ -48,13 +49,13 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String applicationname = null;
+        private string applicationname = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "BasePropertiesOnly".
         /// Enumerate only those properties that are part of the base class
         /// specification in the Resource URI. When
-        /// Shallow is specified then this flag has no effect
+        /// Shallow is specified then this flag has no effect.
         /// </summary>
         [Parameter(ParameterSetName = "Enumerate")]
         [Alias("UBPO", "Base")]
@@ -79,7 +80,7 @@ namespace Microsoft.WSMan.Management
         [Parameter(ParameterSetName = "GetInstance")]
         [Parameter(ParameterSetName = "Enumerate")]
         [Alias("CN")]
-        public String ComputerName
+        public string ComputerName
         {
             get { return computername; }
 
@@ -93,7 +94,7 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String computername = null;
+        private string computername = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ConnectionURI".
@@ -122,7 +123,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "Dialect".
-        /// Defines the dialect for the filter predicate
+        /// Defines the dialect for the filter predicate.
         /// </summary>
         [Parameter]
         public Uri Dialect
@@ -140,7 +141,7 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "Enumerate".
         /// Switch indicates list all instances of a management resource. Equivalent to
-        /// WSManagement Enumerate
+        /// WSManagement Enumerate.
         /// </summary>
 
         [Parameter(Mandatory = true,
@@ -159,11 +160,11 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "Filter".
-        /// Indicates the filter expression for the enumeration
+        /// Indicates the filter expression for the enumeration.
         /// </summary>
         [Parameter(ParameterSetName = "Enumerate")]
         [ValidateNotNullOrEmpty]
-        public String Filter
+        public string Filter
         {
             get { return filter; }
 
@@ -173,17 +174,17 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String filter;
+        private string filter;
 
         /// <summary>
         /// The following is the definition of the input parameter "Fragment".
         /// Specifies a section inside the instance that is to be updated or retrieved
-        /// for the given operation
+        /// for the given operation.
         /// </summary>
 
         [Parameter(ParameterSetName = "GetInstance")]
         [ValidateNotNullOrEmpty]
-        public String Fragment
+        public string Fragment
         {
             get { return fragment; }
 
@@ -193,7 +194,7 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String fragment;
+        private string fragment;
 
         /// <summary>
         /// The following is the definition of the input parameter "OptionSet".
@@ -239,7 +240,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "Associations".
         /// Associations indicates retrieval of association instances as opposed to
         /// associated instances. This can only be used when specifying the Dialect as
-        /// Association
+        /// Association.
         /// </summary>
 
         [Parameter(ParameterSetName = "Enumerate")]
@@ -257,7 +258,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "ResourceURI".
-        /// URI of the resource class/instance representation
+        /// URI of the resource class/instance representation.
         /// </summary>
         [Parameter(Mandatory = true,
                    Position = 0,
@@ -288,14 +289,14 @@ namespace Microsoft.WSMan.Management
         /// are returned. EPRs contain information about the Resource URI and selectors
         /// for the instance
         /// If ObjectAndEPR is specified, then both the object and the associated EPRs
-        /// are returned
+        /// are returned.
         /// </summary>
         [Parameter(ParameterSetName = "Enumerate")]
 
         [ValidateNotNullOrEmpty]
         [ValidateSetAttribute(new string[] { "object", "epr", "objectandepr" })]
         [Alias("RT")]
-        public String ReturnType
+        public string ReturnType
         {
             get { return returntype; }
 
@@ -305,13 +306,13 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String returntype="object";
+        private string returntype = "object";
 
         /// <summary>
         /// The following is the definition of the input parameter "SelectorSet".
         /// SelectorSet is a hash table which helps in identify an instance of the
         /// management resource if there are are more than 1 instance of the resource
-        /// class
+        /// class.
         /// </summary>
         [Parameter(
                    ParameterSetName = "GetInstance")]
@@ -332,7 +333,7 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "SessionOption".
         /// Defines a set of extended options for the WSMan session.  This can be
-        /// created by using the cmdlet New-WSManSessionOption
+        /// created by using the cmdlet New-WSManSessionOption.
         /// </summary>
         [Parameter]
         [ValidateNotNullOrEmpty]
@@ -354,7 +355,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "Shallow".
         /// Enumerate only instances of the base class specified in the resource URI. If
         /// this flag is not specified, instances of the base class specified in the URI
-        /// and all its derived classes are returned
+        /// and all its derived classes are returned.
         /// </summary>
         [Parameter(ParameterSetName = "Enumerate")]
 
@@ -401,17 +402,17 @@ namespace Microsoft.WSMan.Management
         {
             string name;
             string value;
-            string[] Split = filter.Trim().Split(new Char[] { '=', ';' });
-            if ((Split.Length)%2 != 0)
+            string[] Split = filter.Trim().Split(new char[] { '=', ';' });
+            if ((Split.Length) % 2 != 0)
             {
-                //mismatched property name/value pair
+                // mismatched property name/value pair
                 return null;
             }
 
             filter = "<wsman:SelectorSet xmlns:wsman='http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd'>";
-            for (int i = 0; i<Split.Length; i+=2)
+            for (int i = 0; i < Split.Length; i += 2)
             {
-                value = Split[i+1].Substring(1, Split[i+1].Length - 2);
+                value = Split[i + 1].Substring(1, Split[i + 1].Length - 2);
                 name = Split[i];
                 filter = filter + "<wsman:Selector Name='" + name + "'>" + value + "</wsman:Selector>";
             }
@@ -435,11 +436,11 @@ namespace Microsoft.WSMan.Management
                     }
                     else if (returntype.Equals("epr", StringComparison.OrdinalIgnoreCase))
                     {
-                            flags = wsmanObject.EnumerationFlagReturnEPR();
+                        flags = wsmanObject.EnumerationFlagReturnEPR();
                     }
                     else
                     {
-                            flags = wsmanObject.EnumerationFlagReturnObjectAndEPR();
+                        flags = wsmanObject.EnumerationFlagReturnObjectAndEPR();
                     }
                 }
 
@@ -458,7 +459,6 @@ namespace Microsoft.WSMan.Management
 
                 if (dialect != null && filter != null)
                 {
-
                     if (dialect.ToString().Equals(helper.ALIAS_WQL, StringComparison.OrdinalIgnoreCase) || dialect.ToString().Equals(helper.URI_WQL_DIALECT, StringComparison.OrdinalIgnoreCase))
                     {
                         fragment = helper.URI_WQL_DIALECT;
@@ -466,36 +466,36 @@ namespace Microsoft.WSMan.Management
                     }
                     else if (dialect.ToString().Equals(helper.ALIAS_ASSOCIATION, StringComparison.OrdinalIgnoreCase) || dialect.ToString().Equals(helper.URI_ASSOCIATION_DIALECT, StringComparison.OrdinalIgnoreCase))
                     {
-                            if (associations)
-                            {
-                                flags |= wsmanObject.EnumerationFlagAssociationInstance();
-                            }
-                            else
-                            {
-                                flags |= wsmanObject.EnumerationFlagAssociatedInstance();
-                            }
+                        if (associations)
+                        {
+                            flags |= wsmanObject.EnumerationFlagAssociationInstance();
+                        }
+                        else
+                        {
+                            flags |= wsmanObject.EnumerationFlagAssociatedInstance();
+                        }
 
-                            fragment = helper.URI_ASSOCIATION_DIALECT;
-                            dialect = new Uri(fragment);
+                        fragment = helper.URI_ASSOCIATION_DIALECT;
+                        dialect = new Uri(fragment);
                     }
                     else if (dialect.ToString().Equals(helper.ALIAS_SELECTOR, StringComparison.OrdinalIgnoreCase) || dialect.ToString().Equals(helper.URI_SELECTOR_DIALECT, StringComparison.OrdinalIgnoreCase))
                     {
-                                filter = GetFilter();
-                                fragment = helper.URI_SELECTOR_DIALECT;
-                                dialect = new Uri(fragment);
+                        filter = GetFilter();
+                        fragment = helper.URI_SELECTOR_DIALECT;
+                        dialect = new Uri(fragment);
                     }
 
                     obj = (IWSManEnumerator)wsmanSession.Enumerate(wsmanResourceLocator, filter, dialect.ToString(), flags);
                 }
                 else if (filter != null)
                 {
-                        fragment = helper.URI_WQL_DIALECT;
-                        dialect = new Uri(fragment);
-                        obj = (IWSManEnumerator)wsmanSession.Enumerate(wsmanResourceLocator, filter, dialect.ToString(), flags);
+                    fragment = helper.URI_WQL_DIALECT;
+                    dialect = new Uri(fragment);
+                    obj = (IWSManEnumerator)wsmanSession.Enumerate(wsmanResourceLocator, filter, dialect.ToString(), flags);
                 }
                 else
                 {
-                        obj = (IWSManEnumerator)wsmanSession.Enumerate(wsmanResourceLocator, filter, null, flags);
+                    obj = (IWSManEnumerator)wsmanSession.Enumerate(wsmanResourceLocator, filter, null, flags);
                 }
                 while (!obj.AtEndOfStream)
                 {
@@ -527,7 +527,7 @@ namespace Microsoft.WSMan.Management
             {
                 try
                 {
-                    //in the format http(s)://server[:port/applicationname]
+                    // in the format http(s)://server[:port/applicationname]
                     string[] constrsplit = connectionuri.OriginalString.Split(new string[] { ":" + port + "/" + applicationname }, StringSplitOptions.None);
                     string[] constrsplit1 = constrsplit[0].Split(new string[] { "//" }, StringSplitOptions.None);
                     computername = constrsplit1[1].Trim();
@@ -536,7 +536,6 @@ namespace Microsoft.WSMan.Management
                 {
                     helper.AssertError(helper.GetResourceMsgFromResourcetext("NotProperURI"), false, connectionuri);
                 }
-
             }
 
             try
@@ -551,7 +550,7 @@ namespace Microsoft.WSMan.Management
                     {
                         xmldoc.LoadXml(m_session.Get(m_resource, 0));
                     }
-                    catch(XmlException ex)
+                    catch (XmlException ex)
                     {
                         helper.AssertError(ex.Message, false, computername);
                     }
@@ -576,16 +575,15 @@ namespace Microsoft.WSMan.Management
                         helper.AssertError(ex.Message, false, computername);
                     }
                 }
-
             }
             finally
             {
-                if (!String.IsNullOrEmpty(m_wsmanObject.Error))
+                if (!string.IsNullOrEmpty(m_wsmanObject.Error))
                 {
                     helper.AssertError(m_wsmanObject.Error, true, resourceuri);
                 }
 
-                if (!String.IsNullOrEmpty(m_session.Error))
+                if (!string.IsNullOrEmpty(m_session.Error))
                 {
                     helper.AssertError(m_session.Error, true, resourceuri);
                 }
@@ -598,17 +596,17 @@ namespace Microsoft.WSMan.Management
         #region IDisposable Members
 
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
         Dispose()
         {
-            //CleanUp();
+            // CleanUp();
             GC.SuppressFinalize(this);
         }
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
@@ -625,10 +623,8 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         protected override void EndProcessing()
         {
-
             helper.CleanUp();
         }
-
     }
     #endregion
 
@@ -644,7 +640,6 @@ namespace Microsoft.WSMan.Management
     [Cmdlet(VerbsCommon.Set, "WSManInstance", DefaultParameterSetName = "ComputerName", HelpUri = "https://go.microsoft.com/fwlink/?LinkId=141458")]
     public class SetWSManInstanceCommand : AuthenticatingWSManCommand, IDisposable
     {
-
         #region Parameters
         /// <summary>
         /// The following is the definition of the input parameter "ApplicationName".
@@ -652,14 +647,14 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [ValidateNotNullOrEmpty]
-        public String ApplicationName
+        public string ApplicationName
         {
             get { return applicationname; }
 
             set { applicationname = value; }
         }
 
-        private String applicationname = null;
+        private string applicationname = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ComputerName".
@@ -669,7 +664,7 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [Alias("cn")]
-        public String ComputerName
+        public string ComputerName
         {
             get { return computername; }
 
@@ -683,7 +678,7 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String computername = null;
+        private string computername = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ConnectionURI".
@@ -705,7 +700,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "Dialect".
-        /// Defines the dialect for the filter predicate
+        /// Defines the dialect for the filter predicate.
         /// </summary>
         [Parameter]
         [ValidateNotNullOrEmpty]
@@ -721,7 +716,7 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "FilePath".
         /// Updates the management resource specified by the ResourceURI and SelectorSet
-        /// via this input file
+        /// via this input file.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [Alias("Path")]
@@ -738,25 +733,25 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "Fragment".
         /// Specifies a section inside the instance that is to be updated or retrieved
-        /// for the given operation
+        /// for the given operation.
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [Parameter(ParameterSetName = "URI")]
         [ValidateNotNullOrEmpty]
-        public String Fragment
+        public string Fragment
         {
             get { return fragment; }
 
             set { fragment = value; }
         }
 
-        private String fragment;
+        private string fragment;
 
         /// <summary>
         /// The following is the definition of the input parameter "OptionSet".
         /// OptionSet is a hahs table which help modify or refine the nature of the
         /// request. These are similar to switches used in command line shells in that
-        /// they are service-specific
+        /// they are service-specific.
         /// </summary>
 
         [Parameter]
@@ -790,7 +785,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "ResourceURI".
-        /// URI of the resource class/instance representation
+        /// URI of the resource class/instance representation.
         /// </summary>
 
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "URI")]
@@ -812,7 +807,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "SelectorSet".
         /// SelectorSet is a hash table which helps in identify an instance of the
         /// management resource if there are are more than 1 instance of the resource
-        /// class
+        /// class.
         /// </summary>
         [Parameter(Position = 1,
                    ValueFromPipeline = true,
@@ -831,7 +826,7 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "SessionOption".
         /// Defines a set of extended options for the WSMan session. This can be created
-        /// by using the cmdlet New-WSManSessionOption
+        /// by using the cmdlet New-WSManSessionOption.
         /// </summary>
         [Parameter]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -883,7 +878,7 @@ namespace Microsoft.WSMan.Management
 
         #endregion
 
-        private WSManHelper helper ;
+        private WSManHelper helper;
         /// <summary>
         /// ProcessRecord method.
         /// </summary>
@@ -906,13 +901,13 @@ namespace Microsoft.WSMan.Management
 
             try
             {
-                string connectionStr = String.Empty;
+                string connectionStr = string.Empty;
                 connectionStr = helper.CreateConnectionString(connectionuri, port, computername, applicationname);
                 if (connectionuri != null)
                 {
                     try
                     {
-                        //in the format http(s)://server[:port/applicationname]
+                        // in the format http(s)://server[:port/applicationname]
                         string[] constrsplit = connectionuri.OriginalString.Split(new string[] { ":" + port + "/" + applicationname }, StringSplitOptions.None);
                         string[] constrsplit1 = constrsplit[0].Split(new string[] { "//" }, StringSplitOptions.None);
                         computername = constrsplit1[1].Trim();
@@ -921,7 +916,6 @@ namespace Microsoft.WSMan.Management
                     {
                         helper.AssertError(helper.GetResourceMsgFromResourcetext("NotProperURI"), false, connectionuri);
                     }
-
                 }
 
                 IWSManResourceLocator m_resource = helper.InitializeResourceLocator(optionset, selectorset, fragment, dialect, m_wsmanObject, resourceuri);
@@ -934,7 +928,7 @@ namespace Microsoft.WSMan.Management
                 {
                     xmldoc.LoadXml(m_session.Put(m_resource, input, 0));
                 }
-                catch(XmlException ex)
+                catch (XmlException ex)
                 {
                     helper.AssertError(ex.Message, false, computername);
                 }
@@ -952,16 +946,15 @@ namespace Microsoft.WSMan.Management
                 }
                 else
                     WriteObject(xmldoc.DocumentElement);
-
             }
             finally
             {
-                if (!String.IsNullOrEmpty(m_wsmanObject.Error))
+                if (!string.IsNullOrEmpty(m_wsmanObject.Error))
                 {
                     helper.AssertError(m_wsmanObject.Error, true, resourceuri);
                 }
 
-                if (!String.IsNullOrEmpty(m_session.Error))
+                if (!string.IsNullOrEmpty(m_session.Error))
                 {
                     helper.AssertError(m_session.Error, true, resourceuri);
                 }
@@ -969,22 +962,22 @@ namespace Microsoft.WSMan.Management
                 if (m_session != null)
                     Dispose(m_session);
             }
-        }//End ProcessRecord()
+        }
 
         #region IDisposable Members
 
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
         Dispose()
         {
-            //CleanUp();
+            // CleanUp();
             GC.SuppressFinalize(this);
         }
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
@@ -1003,7 +996,6 @@ namespace Microsoft.WSMan.Management
         {
             helper.CleanUp();
         }
-
     }
 
     #endregion
@@ -1020,7 +1012,6 @@ namespace Microsoft.WSMan.Management
     [Cmdlet(VerbsCommon.Remove, "WSManInstance", DefaultParameterSetName = "ComputerName", HelpUri = "https://go.microsoft.com/fwlink/?LinkId=141453")]
     public class RemoveWSManInstanceCommand : AuthenticatingWSManCommand, IDisposable
     {
-
         #region Parameters
         /// <summary>
         /// The following is the definition of the input parameter "ApplicationName".
@@ -1028,14 +1019,14 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [ValidateNotNullOrEmpty]
-        public String ApplicationName
+        public string ApplicationName
         {
             get { return applicationname; }
 
             set { applicationname = value; }
         }
 
-        private String applicationname = null;
+        private string applicationname = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ComputerName".
@@ -1045,7 +1036,7 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [Alias("cn")]
-        public String ComputerName
+        public string ComputerName
         {
             get { return computername; }
 
@@ -1059,7 +1050,7 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String computername = null;
+        private string computername = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ConnectionURI".
@@ -1083,7 +1074,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "OptionSet".
         /// OptionSet is a hahs table which help modify or refine the nature of the
         /// request. These are similar to switches used in command line shells in that
-        /// they are service-specific
+        /// they are service-specific.
         /// </summary>
 
         [Parameter]
@@ -1117,7 +1108,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "ResourceURI".
-        /// URI of the resource class/instance representation
+        /// URI of the resource class/instance representation.
         /// </summary>
 
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "URI")]
@@ -1139,7 +1130,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "SelectorSet".
         /// SelectorSet is a hash table which helps in identify an instance of the
         /// management resource if there are are more than 1 instance of the resource
-        /// class
+        /// class.
         /// </summary>
         [Parameter(Position = 1, Mandatory = true,
                    ValueFromPipeline = true,
@@ -1158,7 +1149,7 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "SessionOption".
         /// Defines a set of extended options for the WSMan session. This can be created
-        /// by using the cmdlet New-WSManSessionOption
+        /// by using the cmdlet New-WSManSessionOption.
         /// </summary>
         [Parameter]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -1204,13 +1195,13 @@ namespace Microsoft.WSMan.Management
             IWSManSession m_session = null;
             try
             {
-                string connectionStr = String.Empty;
+                string connectionStr = string.Empty;
                 connectionStr = helper.CreateConnectionString(connectionuri, port, computername, applicationname);
                 if (connectionuri != null)
                 {
                     try
                     {
-                        //in the format http(s)://server[:port/applicationname]
+                        // in the format http(s)://server[:port/applicationname]
                         string[] constrsplit = connectionuri.OriginalString.Split(new string[] { ":" + port + "/" + applicationname }, StringSplitOptions.None);
                         string[] constrsplit1 = constrsplit[0].Split(new string[] { "//" }, StringSplitOptions.None);
                         computername = constrsplit1[1].Trim();
@@ -1219,7 +1210,6 @@ namespace Microsoft.WSMan.Management
                     {
                         helper.AssertError(helper.GetResourceMsgFromResourcetext("NotProperURI"), false, connectionuri);
                     }
-
                 }
 
                 IWSManResourceLocator m_resource = helper.InitializeResourceLocator(optionset, selectorset, null, null, m_wsmanObject, resourceuri);
@@ -1233,41 +1223,38 @@ namespace Microsoft.WSMan.Management
                 {
                     helper.AssertError(ex.Message, false, computername);
                 }
-
             }
             finally
             {
-                if (!String.IsNullOrEmpty(m_session.Error))
+                if (!string.IsNullOrEmpty(m_session.Error))
                 {
                     helper.AssertError(m_session.Error, true, resourceuri);
                 }
 
-                if (!String.IsNullOrEmpty(m_wsmanObject.Error))
+                if (!string.IsNullOrEmpty(m_wsmanObject.Error))
                 {
                     helper.AssertError(m_wsmanObject.Error, true, resourceuri);
                 }
 
                 if (m_session != null)
                     Dispose(m_session);
-
             }
-
-        }//End ProcessRecord()
+        }
 
         #region IDisposable Members
 
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
         Dispose()
         {
-            //CleanUp();
+            // CleanUp();
             GC.SuppressFinalize(this);
         }
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
@@ -1278,7 +1265,6 @@ namespace Microsoft.WSMan.Management
         }
 
         #endregion IDisposable Members
-
     }
 
     #endregion
@@ -1286,7 +1272,7 @@ namespace Microsoft.WSMan.Management
     #region New-WsManInstance
     /// <summary>
     /// Creates an instance of a management resource identified by the resource URI
-    /// using specified ValueSet or input File
+    /// using specified ValueSet or input File.
     /// </summary>
 
     [Cmdlet(VerbsCommon.New, "WSManInstance", DefaultParameterSetName = "ComputerName", HelpUri = "https://go.microsoft.com/fwlink/?LinkId=141448")]
@@ -1298,14 +1284,14 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [ValidateNotNullOrEmpty]
-        public String ApplicationName
+        public string ApplicationName
         {
             get { return applicationname; }
 
             set { applicationname = value; }
         }
 
-        private String applicationname = null;
+        private string applicationname = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ComputerName".
@@ -1315,7 +1301,7 @@ namespace Microsoft.WSMan.Management
         /// </summary>
         [Parameter(ParameterSetName = "ComputerName")]
         [Alias("cn")]
-        public String ComputerName
+        public string ComputerName
         {
             get { return computername; }
 
@@ -1329,7 +1315,7 @@ namespace Microsoft.WSMan.Management
             }
         }
 
-        private String computername = null;
+        private string computername = null;
 
         /// <summary>
         /// The following is the definition of the input parameter "ConnectionURI".
@@ -1353,19 +1339,19 @@ namespace Microsoft.WSMan.Management
         /// <summary>
         /// The following is the definition of the input parameter "FilePath".
         /// Updates the management resource specified by the ResourceURI and SelectorSet
-        /// via this input file
+        /// via this input file.
         /// </summary>
         [Parameter]
         [ValidateNotNullOrEmpty]
         [Alias("Path")]
-        public String FilePath
+        public string FilePath
         {
             get { return filepath; }
 
             set { filepath = value; }
         }
 
-        private String filepath;
+        private string filepath;
 
         /// <summary>
         /// The following is the definition of the input parameter "OptionSet".
@@ -1403,7 +1389,7 @@ namespace Microsoft.WSMan.Management
 
         /// <summary>
         /// The following is the definition of the input parameter "ResourceURI".
-        /// URI of the resource class/instance representation
+        /// URI of the resource class/instance representation.
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
         [ValidateNotNullOrEmpty]
@@ -1422,7 +1408,7 @@ namespace Microsoft.WSMan.Management
         /// The following is the definition of the input parameter "SelectorSet".
         /// SelectorSet is a hash table which helps in identify an instance of the
         /// management resource if there are are more than 1 instance of the resource
-        /// class
+        /// class.
         /// </summary>
         [Parameter(Mandatory = true, Position = 1,
                    ValueFromPipeline = true)]
@@ -1490,21 +1476,21 @@ namespace Microsoft.WSMan.Management
         private WSManHelper helper;
         IWSManEx m_wsmanObject = (IWSManEx)new WSManClass();
         IWSManSession m_session = null;
-        string connectionStr = String.Empty;
+        string connectionStr = string.Empty;
 
         /// <summary>
         /// BeginProcessing method.
         /// </summary>
         protected override void BeginProcessing()
         {
-            helper = new WSManHelper(this );
+            helper = new WSManHelper(this);
             helper.WSManOp = "new";
             connectionStr = helper.CreateConnectionString(connectionuri, port, computername, applicationname);
             if (connectionuri != null)
             {
                 try
                 {
-                    //in the format http(s)://server[:port/applicationname]
+                    // in the format http(s)://server[:port/applicationname]
                     string[] constrsplit = connectionuri.OriginalString.Split(new string[] { ":" + port + "/" + applicationname }, StringSplitOptions.None);
                     string[] constrsplit1 = constrsplit[0].Split(new string[] { "//" }, StringSplitOptions.None);
                     computername = constrsplit1[1].Trim();
@@ -1513,10 +1499,8 @@ namespace Microsoft.WSMan.Management
                 {
                     helper.AssertError(helper.GetResourceMsgFromResourcetext("NotProperURI"), false, connectionuri);
                 }
-
             }
-
-        }//End BeginProcessing()
+        }
 
         /// <summary>
         /// ProcessRecord method.
@@ -1526,7 +1510,7 @@ namespace Microsoft.WSMan.Management
             try
             {
                 IWSManResourceLocator m_resource = helper.InitializeResourceLocator(optionset, selectorset, null, null, m_wsmanObject, resourceuri);
-                //create the session object
+                // create the session object
                 m_session = helper.CreateSessionObject(m_wsmanObject, Authentication, sessionoption, Credential, connectionStr, CertificateThumbprint, usessl.IsPresent);
                 string rootNode = helper.GetRootNodeName(helper.WSManOp, m_resource.ResourceUri, null);
                 string input = helper.ProcessInput(m_wsmanObject, filepath, helper.WSManOp, rootNode, valueset, m_resource, m_session);
@@ -1545,12 +1529,12 @@ namespace Microsoft.WSMan.Management
             }
             finally
             {
-                if (!String.IsNullOrEmpty(m_wsmanObject.Error))
+                if (!string.IsNullOrEmpty(m_wsmanObject.Error))
                 {
                     helper.AssertError(m_wsmanObject.Error, true, resourceuri);
                 }
 
-                if (!String.IsNullOrEmpty(m_session.Error))
+                if (!string.IsNullOrEmpty(m_session.Error))
                 {
                     helper.AssertError(m_session.Error, true, resourceuri);
                 }
@@ -1560,23 +1544,22 @@ namespace Microsoft.WSMan.Management
                     Dispose(m_session);
                 }
             }
-
-        }//End ProcessRecord()
+        }
 
         #region IDisposable Members
 
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
         Dispose()
         {
-            //CleanUp();
+            // CleanUp();
             GC.SuppressFinalize(this);
         }
         /// <summary>
-        /// public dispose method
+        /// Public dispose method.
         /// </summary>
         public
         void
@@ -1594,9 +1577,8 @@ namespace Microsoft.WSMan.Management
         protected override void EndProcessing()
         {
             helper.CleanUp();
-
-        }//End EndProcessing()
-    }//End Class
+        }
+    }
 
     #endregion
 }

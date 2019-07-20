@@ -34,7 +34,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Initializes a new instance of the PSArgumentException class.
         /// </summary>
-        /// <param name="message">  </param>
+        /// <param name="message"></param>
         /// <returns>Constructed object.</returns>
         /// <remarks>
         /// Per MSDN, the parameter is message.
@@ -48,8 +48,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Initializes a new instance of the PSArgumentException class.
         /// </summary>
-        /// <param name="paramName">  </param>
-        /// <param name="message">  </param>
+        /// <param name="paramName"></param>
+        /// <param name="message"></param>
         /// <returns>Constructed object.</returns>
         /// <remarks>
         /// Note the unusual order of the construction parameters.
@@ -67,8 +67,8 @@ namespace System.Management.Automation
         /// using data serialized via
         /// <see cref="System.Runtime.Serialization.ISerializable"/>
         /// </summary>
-        /// <param name="info"> serialization information </param>
-        /// <param name="context"> streaming context </param>
+        /// <param name="info">Serialization information.</param>
+        /// <param name="context">Streaming context.</param>
         /// <returns>Constructed object.</returns>
         protected PSArgumentException(SerializationInfo info,
                            StreamingContext context)
@@ -81,8 +81,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Serializer for <see cref="System.Runtime.Serialization.ISerializable"/>
         /// </summary>
-        /// <param name="info"> serialization information </param>
-        /// <param name="context"> streaming context </param>
+        /// <param name="info">Serialization information.</param>
+        /// <param name="context">Streaming context.</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -100,8 +100,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Initializes a new instance of the PSArgumentException class.
         /// </summary>
-        /// <param name="message">  </param>
-        /// <param name="innerException">  </param>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         /// <returns>Constructed object.</returns>
         public PSArgumentException(string message,
                                     Exception innerException)
@@ -112,7 +112,7 @@ namespace System.Management.Automation
         #endregion ctor
 
         /// <summary>
-        /// Additional information about the error
+        /// Additional information about the error.
         /// </summary>
         /// <value></value>
         /// <remarks>
@@ -140,7 +140,7 @@ namespace System.Management.Automation
         private string _errorId = "Argument";
 
         /// <summary>
-        /// see <see cref="System.Exception.Message"/>
+        /// See <see cref="System.Exception.Message"/>
         /// </summary>
         /// <remarks>
         /// Exception.Message is get-only, but you can effectively
@@ -149,7 +149,7 @@ namespace System.Management.Automation
         /// <value></value>
         public override string Message
         {
-            get { return String.IsNullOrEmpty(_message) ? base.Message : _message; }
+            get { return string.IsNullOrEmpty(_message) ? base.Message : _message; }
         }
 
         private string _message;

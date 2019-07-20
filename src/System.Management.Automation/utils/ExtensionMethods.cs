@@ -38,7 +38,7 @@ namespace System.Management.Automation
 
         internal static int SequenceGetHashCode<T>(this IEnumerable<T> xs)
         {
-            // algorithm based on http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
+            // algorithm based on https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
             if (xs == null)
             {
                 return 82460653; // random number
@@ -71,14 +71,9 @@ namespace System.Management.Automation
     internal static partial class PSTypeExtensions
     {
         /// <summary>
-        /// Type.EmptyTypes is not in CoreCLR. Use this one to replace it.
-        /// </summary>
-        internal static Type[] EmptyTypes = new Type[0];
-
-        /// <summary>
         /// Check does the type have an instance default constructor with visibility that allows calling it from subclass.
         /// </summary>
-        /// <param name="type">type</param>
+        /// <param name="type">Type.</param>
         /// <returns>True when type has a default ctor.</returns>
         internal static bool HasDefaultCtor(this Type type)
         {

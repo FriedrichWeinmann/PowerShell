@@ -7,16 +7,16 @@ using System.Management.Automation.Remoting;
 namespace System.Management.Automation
 {
     /// <summary>
-    /// class which has list of job objects currently active in the system.
+    /// Class which has list of job objects currently active in the system.
     /// </summary>
     public abstract class Repository<T> where T : class
     {
         #region Public Methods
 
         /// <summary>
-        /// Add an item to the repository
+        /// Add an item to the repository.
         /// </summary>
-        /// <param name="item">object to add</param>
+        /// <param name="item">Object to add.</param>
         public void Add(T item)
         {
             if (item == null)
@@ -40,9 +40,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Remove the specified item from the repository
+        /// Remove the specified item from the repository.
         /// </summary>
-        /// <param name="item">object to remove</param>
+        /// <param name="item">Object to remove.</param>
         public void Remove(T item)
         {
             if (item == null)
@@ -77,14 +77,14 @@ namespace System.Management.Automation
         #region Private/Internal Methods
 
         /// <summary>
-        /// Get a key for the specified item
+        /// Get a key for the specified item.
         /// </summary>
-        /// <param name="item">item for which the key is required</param>
+        /// <param name="item">Item for which the key is required.</param>
         /// <returns>Returns a key.</returns>
         protected abstract Guid GetKey(T item);
 
         /// <summary>
-        /// internal constructor
+        /// Internal constructor.
         /// </summary>
         protected Repository(string identifier)
         {
@@ -92,7 +92,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Creates a repository with the specified values
+        /// Creates a repository with the specified values.
         /// </summary>
         internal List<T> Items
         {
@@ -106,7 +106,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the specified Item
+        /// Gets the specified Item.
         /// </summary>
         /// <param name="instanceId"></param>
         /// <returns></returns>
@@ -140,12 +140,12 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// class which has list of job objects currently active in the system.
+    /// Class which has list of job objects currently active in the system.
     /// </summary>
     public class JobRepository : Repository<Job>
     {
         /// <summary>
-        /// Returns the list of available job objects
+        /// Returns the list of available job objects.
         /// </summary>
         public List<Job> Jobs
         {
@@ -169,16 +169,16 @@ namespace System.Management.Automation
         #region Internal Methods
 
         /// <summary>
-        /// internal constructor
+        /// Internal constructor.
         /// </summary>
         internal JobRepository() : base("job")
         {
         }
 
         /// <summary>
-        /// Returns the instance id of the job as key
+        /// Returns the instance id of the job as key.
         /// </summary>
-        /// <param name="item">job for which a key is required</param>
+        /// <param name="item">Job for which a key is required.</param>
         /// <returns>Returns jobs guid.</returns>
         protected override Guid GetKey(Job item)
         {

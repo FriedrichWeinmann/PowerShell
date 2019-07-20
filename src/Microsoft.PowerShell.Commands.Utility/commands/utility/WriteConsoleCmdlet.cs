@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
 using System.Collections;
+using System.Management.Automation;
 using System.Text;
 
 namespace Microsoft.PowerShell.Commands
@@ -121,6 +121,6 @@ namespace Microsoft.PowerShell.Commands
             this.WriteInformation(informationMessage, new string[] { "PSHOST" });
         }
 
-        private Boolean _notAppendNewline = false;
+        private bool _notAppendNewline = false;
     }
 }

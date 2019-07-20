@@ -25,13 +25,13 @@ namespace Microsoft.PowerShell
         internal enum DataFormat
         {
             /// <summary>
-            /// text format -- i.e. stream text just as out-default would display it.
+            /// Text format -- i.e. stream text just as out-default would display it.
             /// </summary>
 
             Text = 0,
 
             /// <summary>
-            /// XML-serialized format
+            /// XML-serialized format.
             /// </summary>
 
             XML = 1,
@@ -162,7 +162,7 @@ namespace Microsoft.PowerShell
 
             textReader = input;
             _firstLine = textReader.ReadLine();
-            if (String.Compare(_firstLine, Serialization.XmlCliTag, StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(_firstLine, Serialization.XmlCliTag, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 // format should be XML
 
@@ -172,7 +172,7 @@ namespace Microsoft.PowerShell
             switch (format)
             {
                 case DataFormat.XML:
-                    _xmlReader = XmlReader.Create(textReader,  new XmlReaderSettings { XmlResolver = null });
+                    _xmlReader = XmlReader.Create(textReader, new XmlReaderSettings { XmlResolver = null });
                     _xmlDeserializer = new Deserializer(_xmlReader);
                     break;
                 case DataFormat.Text:

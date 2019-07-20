@@ -1,16 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
-using System.Management.Automation.Runspaces;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Management.Automation.Language;
+using System.Management.Automation.Runspaces;
+using System.Management.Automation.Tracing;
 using System.Runtime.Serialization;
 using System.Text;
-using System.ComponentModel;
-using System.Management.Automation.Tracing;
-using System.Management.Automation.Language;
+using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 // Stops compiler from warning about unknown warnings
@@ -34,7 +35,7 @@ namespace System.Management.Automation
     /// compatibility of PowerShell job cmdlets they will have
     /// to work with the old interface and hence deprecating
     /// the Job class did not add any benefit rather than
-    /// deriving from the same
+    /// deriving from the same.
     /// </summary>
     /// <remarks>The following are some of the notes about
     /// why the asynchronous operations are provided this way
@@ -54,12 +55,12 @@ namespace System.Management.Automation
         /// <summary>
         /// These are the parameters that can be used by a job
         /// implementation when they want to specify parameters
-        /// to start a job
+        /// to start a job.
         /// </summary>
         private List<CommandParameterCollection> _parameters;
 
         /// <summary>
-        /// Object that will be used for thread synchronization
+        /// Object that will be used for thread synchronization.
         /// </summary>
         private readonly object _syncobject = new object();
 
@@ -80,7 +81,7 @@ namespace System.Management.Automation
         /// This is a property because CommandParameterCollection
         /// does not have a public constructor. Hence the
         /// infrastructure creates an instance and provides
-        /// it for the implementations to use
+        /// it for the implementations to use.
         /// </summary>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
@@ -126,55 +127,55 @@ namespace System.Management.Automation
         #region Protected Methods
 
         /// <summary>
-        /// Default no argument constructor
+        /// Default no argument constructor.
         /// </summary>
         protected Job2() : base() { }
 
         /// <summary>
         /// Constructor which will initialize the job
-        /// with the associated command string
+        /// with the associated command string.
         /// </summary>
         /// <param name="command">string representation
         /// of the command the job is running</param>
         protected Job2(string command) : base(command) { }
 
         /// <summary>
-        /// Creates an instance of this class
+        /// Creates an instance of this class.
         /// </summary>
-        /// <param name="command">Command invoked by this job object</param>
-        /// <param name="name">Friendly name for the job object</param>
+        /// <param name="command">Command invoked by this job object.</param>
+        /// <param name="name">Friendly name for the job object.</param>
         protected Job2(string command, string name)
             : base(command, name)
         {
         }
 
         /// <summary>
-        /// Creates an instance of this class
+        /// Creates an instance of this class.
         /// </summary>
-        /// <param name="command">Command invoked by this job object</param>
-        /// <param name="name">Friendly name for the job object</param>
-        /// <param name="childJobs">Child jobs of this job object</param>
+        /// <param name="command">Command invoked by this job object.</param>
+        /// <param name="name">Friendly name for the job object.</param>
+        /// <param name="childJobs">Child jobs of this job object.</param>
         protected Job2(string command, string name, IList<Job> childJobs)
             : base(command, name, childJobs)
         {
         }
 
         /// <summary>
-        /// Creates an instance of this class
+        /// Creates an instance of this class.
         /// </summary>
-        /// <param name="command">Command invoked by this job object</param>
-        /// <param name="name">Friendly name for the job object</param>
-        /// <param name="token">JobIdentifier token used to assign Id and InstanceId</param>
+        /// <param name="command">Command invoked by this job object.</param>
+        /// <param name="name">Friendly name for the job object.</param>
+        /// <param name="token">JobIdentifier token used to assign Id and InstanceId.</param>
         protected Job2(string command, string name, JobIdentifier token)
             : base(command, name, token)
         {
         }
 
         /// <summary>
-        /// Creates an instance of this class
+        /// Creates an instance of this class.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
         /// <param name="instanceId">Instance ID to allow job identification across sessions.</param>
         protected Job2(string command, string name, Guid instanceId)
             : base(command, name, instanceId)
@@ -187,9 +188,9 @@ namespace System.Management.Automation
         /// implementing a job it has to be added here. If the
         /// original method is made public it has changes of
         /// colliding with some implementation which may have
-        /// added that method
+        /// added that method.
         /// </summary>
-        /// <param name="state">state of the job</param>
+        /// <param name="state">State of the job.</param>
         /// <param name="reason">exception associated with the
         /// job entering this state</param>
         protected new void SetJobState(JobState state, Exception reason)
@@ -202,8 +203,8 @@ namespace System.Management.Automation
         #region State Management
 
         /// <summary>
-        /// start a job. The job will be started with the parameters
-        /// specified in StartParameters
+        /// Start a job. The job will be started with the parameters
+        /// specified in StartParameters.
         /// </summary>
         /// <remarks>It is redundant to have a method named StartJob
         /// on a job class. However, this is done so as to avoid
@@ -214,21 +215,21 @@ namespace System.Management.Automation
         public abstract void StartJob();
 
         /// <summary>
-        /// Start a job asynchronously
+        /// Start a job asynchronously.
         /// </summary>
         public abstract void StartJobAsync();
 
         /// <summary>
         /// Event to be raise when the start job activity is completed.
         /// This event should not be raised for
-        /// synchronous operation
+        /// synchronous operation.
         /// </summary>
         public event EventHandler<AsyncCompletedEventArgs> StartJobCompleted;
 
         /// <summary>
         /// Method which can be extended or called by derived
         /// classes to raise the event when start of
-        /// the job is completed
+        /// the job is completed.
         /// </summary>
         /// <param name="eventArgs">arguments describing
         /// an exception that is associated with the event</param>
@@ -240,7 +241,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Method which can be extended or called by derived
         /// classes to raise the event when stopping a
-        /// job is completed
+        /// job is completed.
         /// </summary>
         /// <param name="eventArgs">argument describing
         /// an exception that is associated with the event</param>
@@ -252,7 +253,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Method which can be extended or called by derived
         /// classes to raise the event when suspending a
-        /// job is completed
+        /// job is completed.
         /// </summary>
         /// <param name="eventArgs">argument describing
         /// an exception that is associated with the event</param>
@@ -264,7 +265,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Method which can be extended or called by derived
         /// classes to raise the event when resuming a
-        /// suspended job is completed
+        /// suspended job is completed.
         /// </summary>
         /// <param name="eventArgs">argument describing
         /// an exception that is associated with the event</param>
@@ -276,7 +277,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Method which can be extended or called by derived
         /// classes to raise the event when unblocking a
-        /// blocked job is completed
+        /// blocked job is completed.
         /// </summary>
         /// <param name="eventArgs">argument describing
         /// an exception that is associated with the event</param>
@@ -287,7 +288,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Raises the appropriate event based on the operation
-        /// and the associated event arguments
+        /// and the associated event arguments.
         /// </summary>
         /// <param name="operation">operation for which the event
         /// needs to be raised</param>
@@ -356,36 +357,36 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Stop a job asynchronously
+        /// Stop a job asynchronously.
         /// </summary>
         public abstract void StopJobAsync();
 
         /// <summary>
         /// Event to be raised when the asynchronous stopping of a job
         /// is completed.This event should not be raised for
-        /// synchronous operation
+        /// synchronous operation.
         /// </summary>
         public event EventHandler<AsyncCompletedEventArgs> StopJobCompleted;
 
         /// <summary>
-        /// Suspend a job
+        /// Suspend a job.
         /// </summary>
         public abstract void SuspendJob();
 
         /// <summary>
-        /// Asynchronously suspend a job
+        /// Asynchronously suspend a job.
         /// </summary>
         public abstract void SuspendJobAsync();
 
         /// <summary>
         /// This event should be raised whenever the asynchronous suspend of
         /// a job is completed. This event should not be raised for
-        /// synchronous operation
+        /// synchronous operation.
         /// </summary>
         public event EventHandler<AsyncCompletedEventArgs> SuspendJobCompleted;
 
         /// <summary>
-        /// Resume a suspended job
+        /// Resume a suspended job.
         /// </summary>
         public abstract void ResumeJob();
 
@@ -397,43 +398,43 @@ namespace System.Management.Automation
         /// <summary>
         /// This event should be raised whenever the asynchronous resume of
         /// a suspended job is completed. This event should not be raised for
-        /// synchronous operation
+        /// synchronous operation.
         /// </summary>
         public event EventHandler<AsyncCompletedEventArgs> ResumeJobCompleted;
 
         /// <summary>
-        /// Unblock a blocked job
+        /// Unblock a blocked job.
         /// </summary>
         public abstract void UnblockJob();
 
         /// <summary>
-        /// Unblock a blocked job asynchronously
+        /// Unblock a blocked job asynchronously.
         /// </summary>
         public abstract void UnblockJobAsync();
 
         /// <summary>
-        /// StopJob
+        /// StopJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
         public abstract void StopJob(bool force, string reason);
 
         /// <summary>
-        /// StopJobAsync
+        /// StopJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
         public abstract void StopJobAsync(bool force, string reason);
 
         /// <summary>
-        /// SuspendJob
+        /// SuspendJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
         public abstract void SuspendJob(bool force, string reason);
 
         /// <summary>
-        /// SuspendJobAsync
+        /// SuspendJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -442,7 +443,7 @@ namespace System.Management.Automation
         /// <summary>
         /// This event should be raised whenever the asynchronous unblock
         /// of a blocked job is completed. This event should not be raised for
-        /// synchronous operation
+        /// synchronous operation.
         /// </summary>
         public event EventHandler<AsyncCompletedEventArgs> UnblockJobCompleted;
 
@@ -451,23 +452,23 @@ namespace System.Management.Automation
 
     /// <summary>
     /// Specifies the various thread options that can be used
-    /// for the ThreadBasedJob
+    /// for the ThreadBasedJob.
     /// </summary>
     public enum JobThreadOptions
     {
         /// <summary>
         /// Use the default behavior, which is to use a
-        /// ThreadPoolThread
+        /// ThreadPoolThread.
         /// </summary>
         Default = 0,
 
         /// <summary>
-        /// Use a thread pool thread
+        /// Use a thread pool thread.
         /// </summary>
         UseThreadPoolThread = 1,
 
         /// <summary>
-        /// Create a new thread everything and reuse
+        /// Create a new thread everything and reuse.
         /// </summary>
         UseNewThread = 2,
     }
@@ -476,7 +477,7 @@ namespace System.Management.Automation
     /// This job will provide asynchronous behavior by running
     /// the user specified script block in a separate process.
     /// There will be options for running the scriptblock
-    /// in a new process or an existing process
+    /// in a new process or an existing process.
     /// </summary>
     /// <remarks>Jobs for the out-of-process activity manager
     /// can be implemented using this interface</remarks>
@@ -494,7 +495,7 @@ namespace System.Management.Automation
     }*/
 
     /// <summary>
-    /// Top level container job
+    /// Top level container job.
     /// </summary>
     public sealed class ContainerParentJob : Job2
     {
@@ -506,7 +507,7 @@ namespace System.Management.Automation
         private int _isDisposed = 0;
         private const int DisposedTrue = 1;
         private const int DisposedFalse = 0;
-        //This variable is set to true if atleast one child job failed.
+        // This variable is set to true if atleast one child job failed.
 
         // count of number of child jobs which have finished
         private int _finishedChildJobsCount = 0;
@@ -595,10 +596,10 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string and name
+        /// specified command string and name.
         /// </summary>
-        /// <param name="command">command string</param>
-        /// <param name="name">friendly name for display</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for display.</param>
         public ContainerParentJob(string command, string name)
             : base(command, name)
         {
@@ -607,9 +608,9 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string
+        /// specified command string.
         /// </summary>
-        /// <param name="command">Command string</param>
+        /// <param name="command">Command string.</param>
         public ContainerParentJob(string command)
             : base(command)
         {
@@ -618,11 +619,11 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string
+        /// specified command string.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
-        /// <param name="jobId">JobIdentifier token that allows reuse of an Id and Instance Id</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
+        /// <param name="jobId">JobIdentifier token that allows reuse of an Id and Instance Id.</param>
         public ContainerParentJob(string command, string name, JobIdentifier jobId)
             : base(command, name, jobId)
         {
@@ -631,10 +632,10 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string
+        /// specified command string.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
         /// <param name="instanceId">Instance ID to allow job identification across sessions.</param>
         public ContainerParentJob(string command, string name, Guid instanceId)
             : base(command, name, instanceId)
@@ -644,12 +645,12 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string
+        /// specified command string.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
-        /// <param name="jobId">JobIdentifier token that allows reuse of an Id and Instance Id</param>
-        /// <param name="jobType">Job type name</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
+        /// <param name="jobId">JobIdentifier token that allows reuse of an Id and Instance Id.</param>
+        /// <param name="jobType">Job type name.</param>
         public ContainerParentJob(string command, string name, JobIdentifier jobId, string jobType)
             : base(command, name, jobId)
         {
@@ -659,12 +660,12 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Create a container parent job with the
-        /// specified command string
+        /// specified command string.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
         /// <param name="instanceId">Instance ID to allow job identification across sessions.</param>
-        /// <param name="jobType">Job type name</param>
+        /// <param name="jobType">Job type name.</param>
         public ContainerParentJob(string command, string name, Guid instanceId, string jobType)
             : base(command, name, instanceId)
         {
@@ -676,9 +677,9 @@ namespace System.Management.Automation
         /// Create a container parent job with the specified command, name,
         /// job type strings.
         /// </summary>
-        /// <param name="command">Command string</param>
-        /// <param name="name">Friendly name for the job</param>
-        /// <param name="jobType">Job type name</param>
+        /// <param name="command">Command string.</param>
+        /// <param name="name">Friendly name for the job.</param>
+        /// <param name="jobType">Job type name.</param>
         public ContainerParentJob(string command, string name, string jobType)
             : base(command, name)
         {
@@ -693,9 +694,9 @@ namespace System.Management.Automation
         #region Public Methods
 
         /// <summary>
-        /// Add a child job to the parent job
+        /// Add a child job to the parent job.
         /// </summary>
-        /// <param name="childJob">child job to add</param>
+        /// <param name="childJob">Child job to add.</param>
         /// <exception cref="ObjectDisposedException">Thrown if the job is disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if child being added is null.</exception>
         public void AddChildJob(Job2 childJob)
@@ -722,7 +723,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// indicates if more data is available
+        /// Indicates if more data is available.
         /// </summary>
         /// <remarks>
         /// This has more data if any of the child jobs have more data.
@@ -755,7 +756,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Message indicating status of the job
+        /// Message indicating status of the job.
         /// </summary>
         public override string StatusMessage
         {
@@ -1172,7 +1173,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// StopJob
+        /// StopJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -1182,7 +1183,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// StopJobAsync
+        /// StopJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -1467,7 +1468,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Internal SuspendJobAsync. Calls appropriate method if Force is specified
+        /// Internal SuspendJobAsync. Calls appropriate method if Force is specified.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -1535,7 +1536,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// StopJob
+        /// StopJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -1644,7 +1645,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// StopJobAsync
+        /// StopJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -1764,7 +1765,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handles the StateChanged event from each of the child job objects
+        /// Handles the StateChanged event from each of the child job objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1802,7 +1803,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handles the StateChanged event from each of the child job objects
+        /// Handles the StateChanged event from each of the child job objects.
         /// </summary>
         /// <param name="traceClassName"></param>
         /// <param name="e"></param>
@@ -1940,7 +1941,7 @@ namespace System.Management.Automation
 
                 int finishedChildJobsCountNew = Interlocked.Increment(ref finishedChildJobsCount);
 
-                //We are done
+                // We are done
                 if (finishedChildJobsCountNew == childJobsCount)
                 {
                     allChildJobsFinished = true;
@@ -1948,9 +1949,9 @@ namespace System.Management.Automation
 
                 if (allChildJobsFinished)
                 {
-                    //if any child job failed, set status to failed
-                    //If stop was called set, status to stopped
-                    //else completed);
+                    // if any child job failed, set status to failed
+                    // If stop was called set, status to stopped
+                    // else completed);
                     if (failedChildJobsCount > 0)
                     {
                         tracer.WriteMessage(traceClassName, ": JobState is failed, at least one child job failed.");
@@ -2045,7 +2046,7 @@ namespace System.Management.Automation
 
             for (int i = 0; i < ChildJobs.Count; i++)
             {
-                if (!String.IsNullOrEmpty(ChildJobs[i].StatusMessage))
+                if (!string.IsNullOrEmpty(ChildJobs[i].StatusMessage))
                 {
                     sb.Append(ChildJobs[i].StatusMessage);
                 }
@@ -2060,7 +2061,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Computers on which this job is running
+        /// Computers on which this job is running.
         /// </summary>
         public override string Location
         {
@@ -2076,7 +2077,7 @@ namespace System.Management.Automation
 
             _tracer.WriteMessage("Unregistering StateChanged event for job ", job.InstanceId);
             foreach (PSEventSubscriber subscriber in
-                EventManager.Subscribers.Where(subscriber => String.Equals(subscriber.SourceIdentifier, sourceIdentifier, StringComparison.OrdinalIgnoreCase)))
+                EventManager.Subscribers.Where(subscriber => string.Equals(subscriber.SourceIdentifier, sourceIdentifier, StringComparison.OrdinalIgnoreCase)))
             {
                 EventManager.UnsubscribeEvent(subscriber);
                 break;
@@ -2110,25 +2111,25 @@ namespace System.Management.Automation
     public class JobFailedException : SystemException
     {
         /// <summary>
-        /// Creates a new JobFailedException
+        /// Creates a new JobFailedException.
         /// </summary>
         public JobFailedException()
         {
         }
 
         /// <summary>
-        /// Creates a new JobFailedException
+        /// Creates a new JobFailedException.
         /// </summary>
-        /// <param name="message">The message of the exception</param>
+        /// <param name="message">The message of the exception.</param>
         public JobFailedException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Creates a new JobFailedException
+        /// Creates a new JobFailedException.
         /// </summary>
-        /// <param name="message">The message of the exception</param>
+        /// <param name="message">The message of the exception.</param>
         /// <param name="innerException">The actual exception that caused this error.</param>
         public JobFailedException(string message, Exception innerException)
             : base(message, innerException)
@@ -2136,7 +2137,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Creates a new JobFailedException
+        /// Creates a new JobFailedException.
         /// </summary>
         /// <param name="innerException">The actual exception that caused this error.</param>
         /// <param name="displayScriptPosition">A ScriptExtent that describes where this error originated from.</param>
@@ -2147,10 +2148,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Class constructor
+        /// Class constructor.
         /// </summary>
-        /// <param name="serializationInfo">serialization info</param>
-        /// <param name="streamingContext">streaming context</param>
+        /// <param name="serializationInfo">Serialization info.</param>
+        /// <param name="streamingContext">Streaming context.</param>
         protected JobFailedException(SerializationInfo serializationInfo, StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
@@ -2173,10 +2174,10 @@ namespace System.Management.Automation
         private ScriptExtent _displayScriptPosition;
 
         /// <summary>
-        /// Gets the information for serialization
+        /// Gets the information for serialization.
         /// </summary>
-        /// <param name="info">The standard SerializationInfo</param>
-        /// <param name="context">The standard StreaminContext</param>
+        /// <param name="info">The standard SerializationInfo.</param>
+        /// <param name="context">The standard StreaminContext.</param>
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
@@ -2189,7 +2190,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Returns the reason for this exception
+        /// Returns the reason for this exception.
         /// </summary>
         public override string Message
         {

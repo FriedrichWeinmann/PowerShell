@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Management.Automation.Internal;
 using System.Text;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands.Internal.Format
@@ -13,7 +14,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
     internal class TableWriter
     {
         /// <summary>
-        /// Information about each column boundaries
+        /// Information about each column boundaries.
         /// </summary>
         private class ColumnInfo
         {
@@ -22,7 +23,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             internal int alignment = TextAlignment.Left;
         }
         /// <summary>
-        /// Class containing information about the tabular layout
+        /// Class containing information about the tabular layout.
         /// </summary>
         private class ScreenInfo
         {
@@ -77,12 +78,12 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
         /// <summary>
         /// Initialize the table specifying the width of each column.
         /// </summary>
-        /// <param name="leftMarginIndent">Left margin indentation</param>
-        /// <param name="screenColumns">Number of character columns on the screen</param>
-        /// <param name="columnWidths">Array of specified column widths</param>
-        /// <param name="alignment">Array of alignment flags</param>
-        /// <param name="suppressHeader">If true, suppress header printing</param>
-        /// <param name="screenRows">Number of rows on the screen</param>
+        /// <param name="leftMarginIndent">Left margin indentation.</param>
+        /// <param name="screenColumns">Number of character columns on the screen.</param>
+        /// <param name="columnWidths">Array of specified column widths.</param>
+        /// <param name="alignment">Array of alignment flags.</param>
+        /// <param name="suppressHeader">If true, suppress header printing.</param>
+        /// <param name="screenRows">Number of rows on the screen.</param>
         internal void Initialize(int leftMarginIndent, int screenColumns, Span<int> columnWidths, ReadOnlySpan<int> alignment, bool suppressHeader, int screenRows = int.MaxValue)
         {
             if (leftMarginIndent < 0)
@@ -258,7 +259,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             for (int k = 0; k < scArray.Length; k++)
             {
                 // for the last column, don't pad it with trailing spaces
-                if (k == scArray.Length-1)
+                if (k == scArray.Length - 1)
                 {
                     addPadding = false;
                 }
@@ -408,7 +409,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             for (int k = 0; k < _si.columnInfo.Length; k++)
             {
                 // don't pad the last column
-                if (k == _si.columnInfo.Length -1)
+                if (k == _si.columnInfo.Length - 1)
                 {
                     addPadding = false;
                 }

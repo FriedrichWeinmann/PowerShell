@@ -57,7 +57,7 @@ namespace System.Management.Automation
         /// of objects that the cmdlet would return without paging
         /// (this can be more than the size of the page specified in the <see cref="First"/> cmdlet parameter).
         /// </summary>
-        /// <param name="totalCount">a total count of objects that the cmdlet would return without paging</param>
+        /// <param name="totalCount">A total count of objects that the cmdlet would return without paging.</param>
         /// <param name="accuracy">
         /// accuracy of the <paramref name="totalCount"/> parameter.
         /// <c>1.0</c> means 100% accurate;
@@ -106,7 +106,7 @@ namespace System.Management.Automation.Internal
         #region ctor
 
         /// <summary>
-        /// Constructs an instance with the specified command instance
+        /// Constructs an instance with the specified command instance.
         /// </summary>
         /// <param name="commandRuntime">
         /// The instance of the command that the parameters should set the
@@ -168,13 +168,13 @@ namespace System.Management.Automation.Internal
     /// <summary>
     /// The declaration of parameters for the Transactions mechanisms. -UseTransaction, and -BypassTransaction.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.MSInternal", "CA903:InternalNamespaceShouldNotContainPublicTypes", Justification = "These are only exposed by way of the PowerShell core cmdlets that surface them.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.MSInternal", "CA903:InternalNamespaceShouldNotContainPublicTypes", Justification = "These are only exposed by way of the PowerShell cmdlets that surface them.")]
     public sealed class TransactionParameters
     {
         #region ctor
 
         /// <summary>
-        /// Constructs an instance with the specified command instance
+        /// Constructs an instance with the specified command instance.
         /// </summary>
         /// <param name="commandRuntime">
         /// The instance of the command that the parameters should set the

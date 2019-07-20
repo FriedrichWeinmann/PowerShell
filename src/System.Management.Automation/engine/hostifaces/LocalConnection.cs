@@ -1,20 +1,22 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
-using System.Runtime.Serialization;
-using System.Management.Automation.Host;
-using System.Management.Automation.Remoting;
-using Microsoft.PowerShell.Commands;
-using System.Management.Automation.Internal;
-using System.Diagnostics.CodeAnalysis; // for fxcop
-using Dbg = System.Management.Automation.Diagnostics;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis; // for fxcop
+using System.IO;
 using System.Linq;
+using System.Management.Automation.Host;
+using System.Management.Automation.Internal;
+using System.Management.Automation.Remoting;
+using System.Runtime.Serialization;
+using System.Threading;
+
+using Microsoft.PowerShell.Commands;
+
+using Dbg = System.Management.Automation.Diagnostics;
 #if LEGACYTELEMETRY
 using Microsoft.PowerShell.Telemetry.Internal;
 #endif
@@ -24,7 +26,7 @@ using Microsoft.PowerShell.Telemetry.Internal;
 namespace System.Management.Automation.Runspaces
 {
     /// <summary>
-    /// Runspace class for local runspace
+    /// Runspace class for local runspace.
     /// </summary>
     internal sealed partial class LocalRunspace : RunspaceBase
     {
@@ -93,7 +95,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// A method that runspace pools can use to propagate application private data into runspaces
+        /// A method that runspace pools can use to propagate application private data into runspaces.
         /// </summary>
         /// <param name="applicationPrivateData"></param>
         internal override void SetApplicationPrivateData(PSPrimitiveDictionary applicationPrivateData)
@@ -104,7 +106,7 @@ namespace System.Management.Automation.Runspaces
         private PSPrimitiveDictionary _applicationPrivateData;
 
         /// <summary>
-        /// Gets the event manager
+        /// Gets the event manager.
         /// </summary>
         public override PSEventManager Events
         {
@@ -122,7 +124,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// This property determines whether a new thread is create for each invocation
+        /// This property determines whether a new thread is create for each invocation.
         /// </summary>
         /// <remarks>
         /// Any updates to the value of this property must be done before the Runspace is opened
@@ -212,11 +214,11 @@ namespace System.Management.Automation.Runspaces
         #region protected_methods
 
         /// <summary>
-        /// Create a pipeline from a command string
+        /// Create a pipeline from a command string.
         /// </summary>
-        /// <param name="command">A valid command string. Can be null</param>
-        /// <param name="addToHistory">if true command is added to history</param>
-        /// <param name="isNested">True for nested pipeline</param>
+        /// <param name="command">A valid command string. Can be null.</param>
+        /// <param name="addToHistory">If true command is added to history.</param>
+        /// <param name="isNested">True for nested pipeline.</param>
         /// <returns>
         /// A pipeline pre-filled with Commands specified in commandString.
         /// </returns>
@@ -236,7 +238,7 @@ namespace System.Management.Automation.Runspaces
         #region protected_properties
 
         /// <summary>
-        /// Gets the execution context
+        /// Gets the execution context.
         /// </summary>
         internal override System.Management.Automation.ExecutionContext GetExecutionContext
         {
@@ -250,7 +252,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Returns true if the internal host is in a nested prompt
+        /// Returns true if the internal host is in a nested prompt.
         /// </summary>
         internal override bool InNestedPrompt
         {
@@ -263,8 +265,19 @@ namespace System.Management.Automation.Runspaces
                     return false;
                 }
 
-                return context.InternalHost.HostInNestedPrompt();
+                return context.InternalHost.HostInNestedPrompt() || InInternalNestedPrompt;
             }
+        }
+
+        /// <summary>
+        /// Allows internal nested commands to be run as "HostInNestedPrompt" so that CreatePipelineProcessor() does
+        /// not set CommandOrigin to Internal as it normally does by default.  This then allows cmdlets like Invoke-History
+        /// to replay history command lines in the current runspace with the same language mode context as the host.
+        /// </summary>
+        internal bool InInternalNestedPrompt
+        {
+            get;
+            set;
         }
 
         #endregion protected_properties
@@ -272,7 +285,7 @@ namespace System.Management.Automation.Runspaces
         #region internal_properties
 
         /// <summary>
-        /// Gets history manager for this runspace
+        /// Gets history manager for this runspace.
         /// </summary>
         /// <value></value>
         internal History History
@@ -284,7 +297,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Gets transcription data for this runspace
+        /// Gets transcription data for this runspace.
         /// </summary>
         /// <value></value>
         internal TranscriptionData TranscriptionData
@@ -299,7 +312,7 @@ namespace System.Management.Automation.Runspaces
 
         private JobRepository _jobRepository;
         /// <summary>
-        /// List of jobs in this runspace
+        /// List of jobs in this runspace.
         /// </summary>
         internal JobRepository JobRepository
         {
@@ -325,7 +338,7 @@ namespace System.Management.Automation.Runspaces
         private RunspaceRepository _runspaceRepository;
 
         /// <summary>
-        /// List of remote runspaces in this runspace
+        /// List of remote runspaces in this runspace.
         /// </summary>
         internal RunspaceRepository RunspaceRepository
         {
@@ -340,7 +353,7 @@ namespace System.Management.Automation.Runspaces
         #region Debugger
 
         /// <summary>
-        /// Debugger
+        /// Debugger.
         /// </summary>
         public override Debugger Debugger
         {
@@ -363,9 +376,9 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// CreateDebugPerfStruct is a helper method to populate DebugPreference
+        /// CreateDebugPerfStruct is a helper method to populate DebugPreference.
         /// </summary>
-        /// <param name="AppDomainNames">App Domain Names</param>
+        /// <param name="AppDomainNames">App Domain Names.</param>
         /// <returns>DebugPreference.</returns>
         private static DebugPreference CreateDebugPreference(string[] AppDomainNames)
         {
@@ -377,8 +390,8 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// SetDebugPreference is a helper method used to enable and disable debug preference.
         /// </summary>
-        /// <param name="processName">Process Name</param>
-        /// <param name="appDomainName">App Domain Name</param>
+        /// <param name="processName">Process Name.</param>
+        /// <param name="appDomainName">App Domain Name.</param>
         /// <param name="enable">Indicates if the debug preference has to be enabled or disabled.</param>
         internal static void SetDebugPreference(string processName, List<string> appDomainName, bool enable)
         {
@@ -525,7 +538,7 @@ namespace System.Management.Automation.Runspaces
         /// GetDebugPreferenceCache is a helper method used to fetch
         /// the debug preference cache contents as a Hashtable.
         /// </summary>
-        /// <param name="runspace">Runspace</param>
+        /// <param name="runspace">Runspace.</param>
         /// <returns>If the Debug preference is persisted then a hashtable containing
         /// the debug preference is returned or else Null is returned.</returns>
         private static Hashtable GetDebugPreferenceCache(Runspace runspace)
@@ -573,7 +586,7 @@ namespace System.Management.Automation.Runspaces
         #endregion
 
         /// <summary>
-        /// Open the runspace
+        /// Open the runspace.
         /// </summary>
         /// <param name="syncCall">
         /// parameter which control if Open is done synchronously or asynchronously
@@ -582,12 +595,12 @@ namespace System.Management.Automation.Runspaces
         {
             if (syncCall)
             {
-                //Open runspace synchronously
+                // Open runspace synchronously
                 DoOpenHelper();
             }
             else
             {
-                //Open runspace in another thread
+                // Open runspace in another thread
                 Thread asyncThread = new Thread(new ThreadStart(this.OpenThreadProc));
 
                 asyncThread.Start();
@@ -595,7 +608,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Start method for asynchronous open
+        /// Start method for asynchronous open.
         /// </summary>
         private void OpenThreadProc()
         {
@@ -606,14 +619,14 @@ namespace System.Management.Automation.Runspaces
             }
             catch (Exception)
             {
-                //This exception is reported by raising RunspaceState
-                //change event.
+                // This exception is reported by raising RunspaceState
+                // change event.
             }
 #pragma warning restore 56500
         }
 
         /// <summary>
-        /// Helper function used for opening a runspace
+        /// Helper function used for opening a runspace.
         /// </summary>
         private void DoOpenHelper()
         {
@@ -636,7 +649,7 @@ namespace System.Management.Automation.Runspaces
                 _engine = new AutomationEngine(Host, InitialSessionState);
                 _engine.Context.CurrentRunspace = this;
 
-                //Log engine for start of engine life
+                // Log engine for start of engine life
                 MshLog.LogEngineLifecycleEvent(_engine.Context, EngineState.Available);
                 startLifeCycleEventWritten = true;
 
@@ -652,32 +665,32 @@ namespace System.Management.Automation.Runspaces
             {
                 s_runspaceInitTracer.WriteLine("Runspace open failed");
 
-                //Log engine health event
+                // Log engine health event
                 LogEngineHealthEvent(exception);
 
-                //Log engine for end of engine life
+                // Log engine for end of engine life
                 if (startLifeCycleEventWritten)
                 {
                     Dbg.Assert(_engine.Context != null, "if startLifeCycleEventWritten is true, ExecutionContext must be present");
                     MshLog.LogEngineLifecycleEvent(_engine.Context, EngineState.Stopped);
                 }
 
-                //Open failed. Set the RunspaceState to Broken.
+                // Open failed. Set the RunspaceState to Broken.
                 SetRunspaceState(RunspaceState.Broken, exception);
 
-                //Raise the event
+                // Raise the event
                 RaiseRunspaceStateEvents();
 
-                //Rethrow the exception. For asynchronous execution,
-                //OpenThreadProc will catch it. For synchronous execution
-                //caller of open will catch it.
+                // Rethrow the exception. For asynchronous execution,
+                // OpenThreadProc will catch it. For synchronous execution
+                // caller of open will catch it.
                 throw;
             }
 
             SetRunspaceState(RunspaceState.Opened);
             RunspaceOpening.Set();
 
-            //Raise the event
+            // Raise the event
             RaiseRunspaceStateEvents();
             s_runspaceInitTracer.WriteLine("runspace opened successfully");
 
@@ -711,7 +724,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Logs engine health event
+        /// Logs engine health event.
         /// </summary>
         internal void LogEngineHealthEvent(Exception exception)
         {
@@ -723,7 +736,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Logs engine health event
+        /// Logs engine health event.
         /// </summary>
         internal void LogEngineHealthEvent(Exception exception,
                              Severity severity,
@@ -748,7 +761,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Returns the thread that must be used to execute pipelines when CreateThreadOptions is ReuseThread
+        /// Returns the thread that must be used to execute pipelines when CreateThreadOptions is ReuseThread.
         /// </summary>
         /// <remarks>
         /// The pipeline calls this function after ensuring there is a single thread in the pipeline, so no locking is necessary
@@ -773,12 +786,12 @@ namespace System.Management.Automation.Runspaces
         {
             if (syncCall)
             {
-                //Do close synchronously
+                // Do close synchronously
                 DoCloseHelper();
             }
             else
             {
-                //Do close asynchronously
+                // Do close asynchronously
                 Thread asyncThread = new Thread(new ThreadStart(this.CloseThreadProc));
 
                 asyncThread.Start();
@@ -786,7 +799,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Start method for asynchronous close
+        /// Start method for asynchronous close.
         /// </summary>
         private void CloseThreadProc()
         {
@@ -844,19 +857,19 @@ namespace System.Management.Automation.Runspaces
             if (Events != null)
                 Events.GenerateEvent(PSEngineEvent.Exiting, null, new object[] { }, null, true, false);
 
-            //Stop all running pipelines
-            //Note:Do not perform the Cancel in lock. Reason is
-            //Pipeline executes in separate thread, say threadP.
-            //When pipeline is canceled/failed/completed in
-            //Pipeline.ExecuteThreadProc it removes the pipeline
-            //from the list of running pipelines. threadP will need
-            //lock to remove the pipelines from the list of running pipelines
-            //And we will deadlock.
-            //Note:It is possible that one or more pipelines in the list
-            //of active pipelines have completed before we call cancel.
-            //That is fine since Pipeline.Cancel handles that( It ignores
-            //the cancel request if pipeline execution has already
-            //completed/failed/canceled.
+            // Stop all running pipelines
+            // Note:Do not perform the Cancel in lock. Reason is
+            // Pipeline executes in separate thread, say threadP.
+            // When pipeline is canceled/failed/completed in
+            // Pipeline.ExecuteThreadProc it removes the pipeline
+            // from the list of running pipelines. threadP will need
+            // lock to remove the pipelines from the list of running pipelines
+            // And we will deadlock.
+            // Note:It is possible that one or more pipelines in the list
+            // of active pipelines have completed before we call cancel.
+            // That is fine since Pipeline.Cancel handles that( It ignores
+            // the cancel request if pipeline execution has already
+            // completed/failed/canceled.
             StopPipelines();
 
             // Disconnect all disconnectable jobs in the job repository.
@@ -875,18 +888,18 @@ namespace System.Management.Automation.Runspaces
                     return runspaces;
                 });
 
-            //Notify Engine components that that runspace is closing.
+            // Notify Engine components that that runspace is closing.
             _engine.Context.RunspaceClosingNotification();
 
-            //Log engine lifecycle event.
+            // Log engine lifecycle event.
             MshLog.LogEngineLifecycleEvent(_engine.Context, EngineState.Stopped);
 
-            //All pipelines have been canceled. Close the runspace.
+            // All pipelines have been canceled. Close the runspace.
             _engine = null;
 
             SetRunspaceState(RunspaceState.Closed);
 
-            //Raise Event
+            // Raise Event
             RaiseRunspaceStateEvents();
 
             if (closeAllOpenRunspaces)
@@ -1199,7 +1212,7 @@ namespace System.Management.Automation.Runspaces
         #region IDisposable Members
 
         /// <summary>
-        /// Set to true when object is disposed
+        /// Set to true when object is disposed.
         /// </summary>
         private bool _disposed;
 
@@ -1264,7 +1277,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Close the runspace
+        /// Close the runspace.
         /// </summary>
         public override void Close()
         {
@@ -1285,7 +1298,7 @@ namespace System.Management.Automation.Runspaces
         #region private fields
 
         /// <summary>
-        /// AutomationEngine instance for this runspace
+        /// AutomationEngine instance for this runspace.
         /// </summary>
         private AutomationEngine _engine;
 
@@ -1298,7 +1311,7 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Manages history for this runspace
+        /// Manages history for this runspace.
         /// </summary>
         private History _history;
 
@@ -1325,7 +1338,7 @@ namespace System.Management.Automation.Runspaces
         private Job _job;
 
         /// <summary>
-        /// Internal constructor
+        /// Internal constructor.
         /// </summary>
         /// <param name="job">Job object to stop.</param>
         internal StopJobOperationHelper(Job job)
@@ -1337,7 +1350,7 @@ namespace System.Management.Automation.Runspaces
         /// <summary>
         /// Handles the Job state change event.
         /// </summary>
-        /// <param name="sender">Originator of event, unused</param>
+        /// <param name="sender">Originator of event, unused.</param>
         /// <param name="eventArgs">Event arguments containing Job state.</param>
         private void HandleJobStateChanged(object sender, JobStateEventArgs eventArgs)
         {
@@ -1402,7 +1415,7 @@ namespace System.Management.Automation.Runspaces
         private RemoteRunspace _remoteRunspace;
 
         /// <summary>
-        /// Internal constructor
+        /// Internal constructor.
         /// </summary>
         /// <param name="remoteRunspace"></param>
         internal CloseOrDisconnectRunspaceOperationHelper(RemoteRunspace remoteRunspace)
@@ -1412,10 +1425,10 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Handle the runspace state changed event
+        /// Handle the runspace state changed event.
         /// </summary>
-        /// <param name="sender">sender of this information, unused</param>
-        /// <param name="eventArgs">runspace event args</param>
+        /// <param name="sender">Sender of this information, unused.</param>
+        /// <param name="eventArgs">Runspace event args.</param>
         private void HandleRunspaceStateChanged(object sender, RunspaceStateEventArgs eventArgs)
         {
             switch (eventArgs.RunspaceStateInfo.State)
@@ -1428,13 +1441,13 @@ namespace System.Management.Automation.Runspaces
                     return;
             }
 
-            //remoteRunspace.Dispose();
-            //remoteRunspace = null;
+            // remoteRunspace.Dispose();
+            // remoteRunspace = null;
             RaiseOperationCompleteEvent();
         }
 
         /// <summary>
-        /// Start the operation of closing the runspace
+        /// Start the operation of closing the runspace.
         /// </summary>
         internal override void StartOperation()
         {
@@ -1469,19 +1482,19 @@ namespace System.Management.Automation.Runspaces
 
         /// <summary>
         /// There is no scenario where we are going to cancel this close
-        /// Hence this method is intentionally empty
+        /// Hence this method is intentionally empty.
         /// </summary>
         internal override void StopOperation()
         {
         }
 
         /// <summary>
-        /// Event raised when the required operation is complete
+        /// Event raised when the required operation is complete.
         /// </summary>
         internal override event EventHandler<OperationStateEventArgs> OperationComplete;
 
         /// <summary>
-        /// Raise the operation completed event
+        /// Raise the operation completed event.
         /// </summary>
         private void RaiseOperationCompleteEvent()
         {
@@ -1499,7 +1512,7 @@ namespace System.Management.Automation.Runspaces
 
     /// <summary>
     /// Defines the exception thrown an error loading modules occurs while opening the runspace. It
-    /// contains a list of all of the module errors that have occurred
+    /// contains a list of all of the module errors that have occurred.
     /// </summary>
     [Serializable]
     public class RunspaceOpenModuleLoadException : RuntimeException
@@ -1508,7 +1521,7 @@ namespace System.Management.Automation.Runspaces
 
         /// <summary>
         /// Initializes a new instance of ScriptBlockToPowerShellNotSupportedException
-        /// with the message set to typeof(ScriptBlockToPowerShellNotSupportedException).FullName
+        /// with the message set to typeof(ScriptBlockToPowerShellNotSupportedException).FullName.
         /// </summary>
         public RunspaceOpenModuleLoadException()
             : base(typeof(ScriptBlockToPowerShellNotSupportedException).FullName)
@@ -1516,34 +1529,34 @@ namespace System.Management.Automation.Runspaces
         }
 
         /// <summary>
-        /// Initializes a new instance of ScriptBlockToPowerShellNotSupportedException setting the message
+        /// Initializes a new instance of ScriptBlockToPowerShellNotSupportedException setting the message.
         /// </summary>
-        /// <param name="message">the exception's message</param>
+        /// <param name="message">The exception's message.</param>
         public RunspaceOpenModuleLoadException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of ScriptBlockToPowerShellNotSupportedException setting the message and innerException
+        /// Initializes a new instance of ScriptBlockToPowerShellNotSupportedException setting the message and innerException.
         /// </summary>
-        /// <param name="message">the exception's message</param>
-        /// <param name="innerException">the exceptions's inner exception</param>
+        /// <param name="message">The exception's message.</param>
+        /// <param name="innerException">The exceptions's inner exception.</param>
         public RunspaceOpenModuleLoadException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Recommended constructor for the class
+        /// Recommended constructor for the class.
         /// </summary>
-        /// <param name="moduleName">The name of the module that cause the error</param>
-        /// <param name="errors">The collection of errors that occurred during module processing</param>
+        /// <param name="moduleName">The name of the module that cause the error.</param>
+        /// <param name="errors">The collection of errors that occurred during module processing.</param>
         internal RunspaceOpenModuleLoadException(
             string moduleName,
             PSDataCollection<ErrorRecord> errors)
             : base(StringUtil.Format(RunspaceStrings.ErrorLoadingModulesOnRunspaceOpen, moduleName,
-                (errors != null && errors.Count > 0 && errors[0] != null) ? errors[0].ToString() : String.Empty), null)
+                (errors != null && errors.Count > 0 && errors[0] != null) ? errors[0].ToString() : string.Empty), null)
         {
             _errors = errors;
             this.SetErrorId("ErrorLoadingModulesOnRunspaceOpen");
@@ -1564,10 +1577,10 @@ namespace System.Management.Automation.Runspaces
 
         #region Serialization
         /// <summary>
-        /// Initializes a new instance of RunspaceOpenModuleLoadException with serialization parameters
+        /// Initializes a new instance of RunspaceOpenModuleLoadException with serialization parameters.
         /// </summary>
-        /// <param name="info"> serialization information </param>
-        /// <param name="context"> streaming context </param>
+        /// <param name="info">Serialization information.</param>
+        /// <param name="context">Streaming context.</param>
         protected RunspaceOpenModuleLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

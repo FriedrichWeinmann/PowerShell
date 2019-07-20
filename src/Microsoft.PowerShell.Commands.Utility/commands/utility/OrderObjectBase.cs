@@ -2,13 +2,14 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
-using System.Globalization;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -490,7 +491,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Utility function used to create OrderByPropertyEntry for the supplied input object.
         /// </summary>
-        /// <param name="cmdlet">PSCmdlet</param>
+        /// <param name="cmdlet">PSCmdlet.</param>
         /// <param name="inputObject">Input Object.</param>
         /// <param name="isCaseSensitive">Indicates if the Property value comparisons need to be case sensitive or not.</param>
         /// <param name="cultureInfo">Culture Info that needs to be used for comparison.</param>

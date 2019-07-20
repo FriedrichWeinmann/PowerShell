@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace System.Management.Automation
 
     /// <summary>
     /// This class wraps a RunspacePoolInternal object. It is used to function
-    /// as a server side runspacepool
+    /// as a server side runspacepool.
     /// </summary>
     internal class ServerRunspacePoolDriver : IRSPDriverInvoke
     {
@@ -97,15 +97,15 @@ namespace System.Management.Automation
 
 #if CORECLR // No ApartmentState In CoreCLR
         /// <summary>
-        /// Creates the runspace pool driver
+        /// Creates the runspace pool driver.
         /// </summary>
-        /// <param name="clientRunspacePoolId">client runspace pool id to associate</param>
+        /// <param name="clientRunspacePoolId">Client runspace pool id to associate.</param>
         /// <param name="transportManager">transport manager associated with this
         /// runspace pool driver</param>
-        /// <param name="maxRunspaces">maximum runspaces to open</param>
-        /// <param name="minRunspaces">minimum runspaces to open</param>
-        /// <param name="threadOptions">threading options for the runspaces in the pool</param>
-        /// <param name="hostInfo">host information about client side host</param>
+        /// <param name="maxRunspaces">Maximum runspaces to open.</param>
+        /// <param name="minRunspaces">Minimum runspaces to open.</param>
+        /// <param name="threadOptions">Threading options for the runspaces in the pool.</param>
+        /// <param name="hostInfo">Host information about client side host.</param>
         /// <param name="configData">
         /// Contains:
         /// 1. Script to run after a RunspacePool/Runspace is created in this session.
@@ -114,10 +114,10 @@ namespace System.Management.Automation
         /// 2. ThreadOptions for RunspacePool/Runspace
         /// 3. ThreadApartment for RunspacePool/Runspace
         /// </param>
-        /// <param name="initialSessionState">configuration of the runspace</param>
-        /// <param name="applicationPrivateData">application private data</param>
-        /// <param name="isAdministrator">True if the driver is being created by an administrator</param>
-        /// <param name="serverCapability">server capability reported to the client during negotiation (not the actual capability)</param>
+        /// <param name="initialSessionState">Configuration of the runspace.</param>
+        /// <param name="applicationPrivateData">Application private data.</param>
+        /// <param name="isAdministrator">True if the driver is being created by an administrator.</param>
+        /// <param name="serverCapability">Server capability reported to the client during negotiation (not the actual capability).</param>
         /// <param name="psClientVersion">Client PowerShell version.</param>
         /// <param name="configurationName">Optional endpoint configuration name to create a pushed configured runspace.</param>
         internal ServerRunspacePoolDriver(
@@ -136,16 +136,16 @@ namespace System.Management.Automation
             string configurationName)
 #else
         /// <summary>
-        /// Creates the runspace pool driver
+        /// Creates the runspace pool driver.
         /// </summary>
-        /// <param name="clientRunspacePoolId">client runspace pool id to associate</param>
+        /// <param name="clientRunspacePoolId">Client runspace pool id to associate.</param>
         /// <param name="transportManager">transport manager associated with this
         /// runspace pool driver</param>
-        /// <param name="maxRunspaces">maximum runspaces to open</param>
-        /// <param name="minRunspaces">minimum runspaces to open</param>
-        /// <param name="threadOptions">threading options for the runspaces in the pool</param>
-        /// <param name="apartmentState">apartment state for the runspaces in the pool</param>
-        /// <param name="hostInfo">host information about client side host</param>
+        /// <param name="maxRunspaces">Maximum runspaces to open.</param>
+        /// <param name="minRunspaces">Minimum runspaces to open.</param>
+        /// <param name="threadOptions">Threading options for the runspaces in the pool.</param>
+        /// <param name="apartmentState">Apartment state for the runspaces in the pool.</param>
+        /// <param name="hostInfo">Host information about client side host.</param>
         /// <param name="configData">
         /// Contains:
         /// 1. Script to run after a RunspacePool/Runspace is created in this session.
@@ -154,10 +154,10 @@ namespace System.Management.Automation
         /// 2. ThreadOptions for RunspacePool/Runspace
         /// 3. ThreadApartment for RunspacePool/Runspace
         /// </param>
-        /// <param name="initialSessionState">configuration of the runspace</param>
-        /// <param name="applicationPrivateData">application private data</param>
-        /// <param name="isAdministrator">True if the driver is being created by an administrator</param>
-        /// <param name="serverCapability">server capability reported to the client during negotiation (not the actual capability)</param>
+        /// <param name="initialSessionState">Configuration of the runspace.</param>
+        /// <param name="applicationPrivateData">Application private data.</param>
+        /// <param name="isAdministrator">True if the driver is being created by an administrator.</param>
+        /// <param name="serverCapability">Server capability reported to the client during negotiation (not the actual capability).</param>
         /// <param name="psClientVersion">Client PowerShell version.</param>
         /// <param name="configurationName">Optional endpoint configuration name to create a pushed configured runspace.</param>
         internal ServerRunspacePoolDriver(
@@ -271,7 +271,7 @@ namespace System.Management.Automation
         #region Internal Methods
 
         /// <summary>
-        /// data structure handler for communicating with client
+        /// Data structure handler for communicating with client.
         /// </summary>
         internal ServerRunspacePoolDataStructureHandler DataStructureHandler { get; }
 
@@ -284,13 +284,13 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// the client runspacepool id
+        /// The client runspacepool id.
         /// </summary>
         internal Guid InstanceId { get; }
 
         /// <summary>
         /// The local runspace pool associated with
-        /// this driver
+        /// this driver.
         /// </summary>
         internal RunspacePool RunspacePool { get; private set; }
 
@@ -307,7 +307,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Send application private data to client
         /// will be called during runspace creation
-        /// and each time a new client connects to the server session
+        /// and each time a new client connects to the server session.
         /// </summary>
         internal void SendApplicationPrivateDataToClient()
         {
@@ -379,7 +379,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Dispose the runspace pool driver and release all its resources
+        /// Dispose the runspace pool driver and release all its resources.
         /// </summary>
         internal void Close()
         {
@@ -541,7 +541,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Invokes a script
+        /// Invokes a script.
         /// </summary>
         /// <param name="cmdToRun"></param>
         /// <param name="args"></param>
@@ -561,7 +561,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Invokes a PowerShell instance
+        /// Invokes a PowerShell instance.
         /// </summary>
         /// <param name="powershell"></param>
         /// <param name="args"></param>
@@ -703,9 +703,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// handler to the runspace pool state changed events
+        /// Handler to the runspace pool state changed events.
         /// </summary>
-        /// <param name="sender">sender of this events</param>
+        /// <param name="sender">Sender of this events.</param>
         /// <param name="eventArgs">arguments which describe the
         /// RunspacePool's StateChanged event</param>
         private void HandleRunspacePoolStateChanged(object sender,
@@ -736,7 +736,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// handler to the runspace pool psevents
+        /// Handler to the runspace pool psevents.
         /// </summary>
         private void HandleRunspacePoolForwardEvent(object sender, PSEventArgs e)
         {
@@ -747,10 +747,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handle the invocation of powershell
+        /// Handle the invocation of powershell.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
-        /// <param name="eventArgs">arguments describing this event</param>
+        /// <param name="sender">Sender of this event, unused.</param>
+        /// <param name="eventArgs">Arguments describing this event.</param>
         private void HandleCreateAndInvokePowerShell(object sender, RemoteDataEventArgs<RemoteDataObject<PSObject>> eventArgs)
         {
             RemoteDataObject<PSObject> data = eventArgs.Data;
@@ -1028,10 +1028,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handle the invocation of command discovery pipeline
+        /// Handle the invocation of command discovery pipeline.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
-        /// <param name="eventArgs">arguments describing this event</param>
+        /// <param name="sender">Sender of this event, unused.</param>
+        /// <param name="eventArgs">Arguments describing this event.</param>
         private void HandleGetCommandMetadata(object sender, RemoteDataEventArgs<RemoteDataObject<PSObject>> eventArgs)
         {
             RemoteDataObject<PSObject> data = eventArgs.Data;
@@ -1098,10 +1098,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handles host responses
+        /// Handles host responses.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
-        /// <param name="eventArgs">arguments describing this event</param>
+        /// <param name="sender">Sender of this event, unused.</param>
+        /// <param name="eventArgs">Arguments describing this event.</param>
         private void HandleHostResponseReceived(object sender,
             RemoteDataEventArgs<RemoteHostResponse> eventArgs)
         {
@@ -1109,9 +1109,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Sets the maximum runspace of the runspace pool and sends a response back
+        /// Sets the maximum runspace of the runspace pool and sends a response back.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
+        /// <param name="sender">Sender of this event, unused.</param>
         /// <param name="eventArgs">contains information about the new maxRunspaces
         /// and the callId at the client</param>
         private void HandleSetMaxRunspacesReceived(object sender, RemoteDataEventArgs<PSObject> eventArgs)
@@ -1125,9 +1125,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Sets the minimum runspace of the runspace pool and sends a response back
+        /// Sets the minimum runspace of the runspace pool and sends a response back.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
+        /// <param name="sender">Sender of this event, unused.</param>
         /// <param name="eventArgs">contains information about the new minRunspaces
         /// and the callId at the client</param>
         private void HandleSetMinRunspacesReceived(object sender, RemoteDataEventArgs<PSObject> eventArgs)
@@ -1142,10 +1142,10 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Gets the available runspaces from the server and sends it across
-        /// to the client
+        /// to the client.
         /// </summary>
-        /// <param name="sender">sender of this event, unused</param>
-        /// <param name="eventArgs">contains information on the callid</param>
+        /// <param name="sender">Sender of this event, unused.</param>
+        /// <param name="eventArgs">Contains information on the callid.</param>
         private void HandleGetAvailableRunspacesReceived(object sender, RemoteDataEventArgs<PSObject> eventArgs)
         {
             PSObject data = eventArgs.Data;
@@ -1195,16 +1195,16 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Starts the PowerShell command on the currently pushed Runspace
+        /// Starts the PowerShell command on the currently pushed Runspace.
         /// </summary>
-        /// <param name="powershell">PowerShell command or script</param>
-        /// <param name="extraPowerShell">PowerShell command to run after first completes</param>
-        /// <param name="powershellId">PowerShell Id</param>
-        /// <param name="runspacePoolId">RunspacePool Id</param>
-        /// <param name="hostInfo">Host Info</param>
-        /// <param name="streamOptions">Remote stream options</param>
-        /// <param name="noInput">False when input is provided</param>
-        /// <param name="addToHistory">Add to history</param>
+        /// <param name="powershell">PowerShell command or script.</param>
+        /// <param name="extraPowerShell">PowerShell command to run after first completes.</param>
+        /// <param name="powershellId">PowerShell Id.</param>
+        /// <param name="runspacePoolId">RunspacePool Id.</param>
+        /// <param name="hostInfo">Host Info.</param>
+        /// <param name="streamOptions">Remote stream options.</param>
+        /// <param name="noInput">False when input is provided.</param>
+        /// <param name="addToHistory">Add to history.</param>
         private void StartPowerShellCommandOnPushedRunspace(
             PowerShell powershell,
             PowerShell extraPowerShell,
@@ -1255,7 +1255,7 @@ namespace System.Management.Automation
         private enum PreProcessCommandResult
         {
             /// <summary>
-            /// No debugger pre-processing
+            /// No debugger pre-processing.
             /// </summary>
             None = 0,
 
@@ -1266,27 +1266,27 @@ namespace System.Management.Automation
             ValidNotProcessed,
 
             /// <summary>
-            /// GetDebuggerStopArgs
+            /// GetDebuggerStopArgs.
             /// </summary>
             GetDebuggerStopArgs,
 
             /// <summary>
-            /// SetDebuggerAction
+            /// SetDebuggerAction.
             /// </summary>
             SetDebuggerAction,
 
             /// <summary>
-            /// SetDebugMode
+            /// SetDebugMode.
             /// </summary>
             SetDebugMode,
 
             /// <summary>
-            /// SetDebuggerStepMode
+            /// SetDebuggerStepMode.
             /// </summary>
             SetDebuggerStepMode,
 
             /// <summary>
-            /// SetPreserveUnhandledBreakpointMode
+            /// SetPreserveUnhandledBreakpointMode.
             /// </summary>
             SetPreserveUnhandledBreakpointMode
         };
@@ -1306,7 +1306,7 @@ namespace System.Management.Automation
         /// Pre-processor for debugger commands.
         /// Parses special debugger commands and converts to equivalent script for remote execution as needed.
         /// </summary>
-        /// <param name="commands">PSCommand</param>
+        /// <param name="commands">PSCommand.</param>
         /// <param name="isDebuggerActive">True if debugger is active.</param>
         /// <param name="isDebuggerRemote">True if active debugger is pushed and is a remote debugger.</param>
         /// <param name="commandArgument">Command argument.</param>
@@ -1489,7 +1489,7 @@ namespace System.Management.Automation
             #region Constructor
 
             /// <summary>
-            /// Constructor
+            /// Constructor.
             /// </summary>
             public PowerShellDriverInvoker()
             {
@@ -1501,7 +1501,7 @@ namespace System.Management.Automation
             #region Properties
 
             /// <summary>
-            /// IsActive
+            /// IsActive.
             /// </summary>
             public bool IsActive
             {
@@ -1532,7 +1532,7 @@ namespace System.Management.Automation
             /// <summary>
             /// Submit a driver object to be invoked.
             /// </summary>
-            /// <param name="driver">ServerPowerShellDriver</param>
+            /// <param name="driver">ServerPowerShellDriver.</param>
             public void InvokeDriverAsync(ServerPowerShellDriver driver)
             {
                 InvokePump currentPump;
@@ -1768,9 +1768,31 @@ namespace System.Management.Automation
         }
 
         /// <summary>
+        /// Adds the provided set of breakpoints to the debugger.
+        /// </summary>
+        /// <param name="breakpoints">Breakpoints.</param>
+        public override void SetBreakpoints(IEnumerable<Breakpoint> breakpoints)
+        {
+            _wrappedDebugger.Value.SetBreakpoints(breakpoints);
+        }
+
+        /// <summary>
+        /// Get a breakpoint by id, primarily for Enable/Disable/Remove-PSBreakpoint cmdlets.
+        /// </summary>
+        /// <param name="id">Id of the breakpoint you want.</param>
+        public override Breakpoint GetBreakpoint(int id) =>
+            _wrappedDebugger.Value.GetBreakpoint(id);
+
+        /// <summary>
+        /// Returns breakpoints primarily for the Get-PSBreakpoint cmdlet.
+        /// </summary>
+        public override List<Breakpoint> GetBreakpoints() =>
+            _wrappedDebugger.Value.GetBreakpoints();
+
+        /// <summary>
         /// Exits debugger mode with the provided resume action.
         /// </summary>
-        /// <param name="resumeAction">DebuggerResumeAction</param>
+        /// <param name="resumeAction">DebuggerResumeAction.</param>
         public override void SetDebuggerAction(DebuggerResumeAction resumeAction)
         {
             if (!_inDebugMode)
@@ -1792,10 +1814,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// ProcessCommand
+        /// ProcessCommand.
         /// </summary>
-        /// <param name="command">Command</param>
-        /// <param name="output">Output</param>
+        /// <param name="command">Command.</param>
+        /// <param name="output">Output.</param>
         /// <returns></returns>
         public override DebuggerCommandResults ProcessCommand(PSCommand command, PSDataCollection<PSObject> output)
         {
@@ -1827,7 +1849,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// StopProcessCommand
+        /// StopProcessCommand.
         /// </summary>
         public override void StopProcessCommand()
         {
@@ -1844,7 +1866,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// SetDebugMode
+        /// SetDebugMode.
         /// </summary>
         /// <param name="mode"></param>
         public override void SetDebugMode(DebugModes mode)
@@ -1868,7 +1890,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Sets debugger stepping mode.
         /// </summary>
-        /// <param name="enabled">True if stepping is to be enabled</param>
+        /// <param name="enabled">True if stepping is to be enabled.</param>
         public override void SetDebuggerStepMode(bool enabled)
         {
             // Enable both the wrapper and wrapped debuggers for debugging before setting step mode.
@@ -1880,7 +1902,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// InternalProcessCommand
+        /// InternalProcessCommand.
         /// </summary>
         /// <param name="command"></param>
         /// <param name="output"></param>
@@ -1906,7 +1928,7 @@ namespace System.Management.Automation
         /// Removes job from debugger job list and pops its
         /// debugger from the active debugger stack.
         /// </summary>
-        /// <param name="job">Job</param>
+        /// <param name="job">Job.</param>
         internal override void StopDebugJob(Job job)
         {
             _wrappedDebugger.Value.StopDebugJob(job);
@@ -1915,23 +1937,33 @@ namespace System.Management.Automation
         /// <summary>
         /// Sets up debugger to debug provided Runspace in a nested debug session.
         /// </summary>
-        /// <param name="runspace">Runspace to debug</param>
+        /// <param name="runspace">Runspace to debug.</param>
         internal override void DebugRunspace(Runspace runspace)
         {
             _wrappedDebugger.Value.DebugRunspace(runspace);
         }
 
         /// <summary>
+        /// Sets up debugger to debug provided Runspace in a nested debug session.
+        /// </summary>
+        /// <param name="runspace">Runspace to debug.</param>
+        /// <param name="disableBreakAll"></param>
+        internal override void DebugRunspace(Runspace runspace, bool disableBreakAll)
+        {
+            _wrappedDebugger.Value.DebugRunspace(runspace, disableBreakAll);
+        }
+
+        /// <summary>
         /// Removes the provided Runspace from the nested "active" debugger state.
         /// </summary>
-        /// <param name="runspace">Runspace</param>
+        /// <param name="runspace">Runspace.</param>
         internal override void StopDebugRunspace(Runspace runspace)
         {
             _wrappedDebugger.Value.StopDebugRunspace(runspace);
         }
 
         /// <summary>
-        /// IsPushed
+        /// IsPushed.
         /// </summary>
         internal override bool IsPushed
         {
@@ -1942,7 +1974,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// IsRemote
+        /// IsRemote.
         /// </summary>
         internal override bool IsRemote
         {
@@ -1953,7 +1985,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// IsDebuggerSteppingEnabled
+        /// IsDebuggerSteppingEnabled.
         /// </summary>
         internal override bool IsDebuggerSteppingEnabled
         {
@@ -1964,7 +1996,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// UnhandledBreakpointMode
+        /// UnhandledBreakpointMode.
         /// </summary>
         internal override UnhandledBreakpointProcessingMode UnhandledBreakpointMode
         {
@@ -1986,7 +2018,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// IsPendingDebugStopEvent
+        /// IsPendingDebugStopEvent.
         /// </summary>
         internal override bool IsPendingDebugStopEvent
         {
@@ -1994,7 +2026,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// ReleaseSavedDebugStop
+        /// ReleaseSavedDebugStop.
         /// </summary>
         internal override void ReleaseSavedDebugStop()
         {
@@ -2015,7 +2047,7 @@ namespace System.Management.Automation
         #region IDisposable
 
         /// <summary>
-        /// Dispose
+        /// Dispose.
         /// </summary>
         public void Dispose()
         {
@@ -2120,7 +2152,7 @@ namespace System.Management.Automation
                     {
                         _results = WindowsIdentity.RunImpersonated(
                             _identityToImpersonate.AccessToken,
-                            () =>_wrappedDebugger.ProcessCommand(_command, _output));
+                            () => _wrappedDebugger.ProcessCommand(_command, _output));
                         return;
                     }
 #endif
@@ -2208,7 +2240,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Handler for debugger events
+        /// Handler for debugger events.
         /// </summary>
         private void HandleDebuggerStop(object sender, DebuggerStopEventArgs e)
         {
@@ -2262,7 +2294,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// HandleBreakpointUpdated
+        /// HandleBreakpointUpdated.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -2443,7 +2475,7 @@ namespace System.Management.Automation
         #region Internal Methods
 
         /// <summary>
-        /// HandleStopSignal
+        /// HandleStopSignal.
         /// </summary>
         /// <returns>True if stop signal is handled.</returns>
         internal bool HandleStopSignal()

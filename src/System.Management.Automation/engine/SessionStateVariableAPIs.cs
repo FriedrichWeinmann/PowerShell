@@ -4,9 +4,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Management.Automation.Provider;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Provider;
 using System.Management.Automation.Runspaces;
+
 using Dbg = System.Management.Automation;
 
 #pragma warning disable 1634, 1691 // Stops compiler from warning about unknown warnings
@@ -15,7 +16,7 @@ using Dbg = System.Management.Automation;
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the state of a Monad Shell session
+    /// Holds the state of a Monad Shell session.
     /// </summary>
     internal sealed partial class SessionStateInternal
     {
@@ -24,7 +25,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionStateVariable entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
+        /// <param name="entry">The entry to add.</param>
         internal void AddSessionStateEntry(SessionStateVariableEntry entry)
         {
             PSVariable v = new PSVariable(entry.Name, entry.Value,
@@ -391,7 +392,7 @@ namespace System.Management.Automation
                 {
                     // Since more than one path was resolved, this is an error.
 
-                    //Before throwing exception. Close the readers to avoid sharing violation.
+                    // Before throwing exception. Close the readers to avoid sharing violation.
                     foreach (IContentReader r in readers)
                     {
                         r.Close();
@@ -1027,7 +1028,7 @@ namespace System.Management.Automation
         /// </exception>
         internal object SetVariable(PSVariable variable, bool force, CommandOrigin origin)
         {
-            if (variable == null || String.IsNullOrEmpty(variable.Name))
+            if (variable == null || string.IsNullOrEmpty(variable.Name))
             {
                 throw PSTraceSource.NewArgumentException("variable");
             }
@@ -1402,7 +1403,7 @@ namespace System.Management.Automation
         /// </exception>
         internal object SetVariableAtScope(PSVariable variable, string scopeID, bool force, CommandOrigin origin)
         {
-            if (variable == null || String.IsNullOrEmpty(variable.Name))
+            if (variable == null || string.IsNullOrEmpty(variable.Name))
             {
                 throw PSTraceSource.NewArgumentException("variable");
             }
@@ -1438,7 +1439,7 @@ namespace System.Management.Automation
         /// </exception>
         internal object NewVariable(PSVariable variable, bool force)
         {
-            if (variable == null || String.IsNullOrEmpty(variable.Name))
+            if (variable == null || string.IsNullOrEmpty(variable.Name))
             {
                 throw PSTraceSource.NewArgumentException("variable");
             }
@@ -1451,7 +1452,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Creates a new variable in the specified scope
+        /// Creates a new variable in the specified scope.
         /// </summary>
         /// <param name="variable">
         /// The variable to create
@@ -1482,7 +1483,7 @@ namespace System.Management.Automation
         /// </exception>
         internal object NewVariableAtScope(PSVariable variable, string scopeID, bool force)
         {
-            if (variable == null || String.IsNullOrEmpty(variable.Name))
+            if (variable == null || string.IsNullOrEmpty(variable.Name))
             {
                 throw PSTraceSource.NewArgumentException("variable");
             }
@@ -1695,7 +1696,7 @@ namespace System.Management.Automation
         /// </exception>
         internal void RemoveVariableAtScope(string name, string scopeID, bool force)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }

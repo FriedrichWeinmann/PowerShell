@@ -88,7 +88,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         /// Base on parametersetName to retrieve ciminstances
         /// </para>
         /// </summary>
-        /// <param name="cmdlet"><see cref="GetCimInstanceCommand"/> object</param>
+        /// <param name="cmdlet"><see cref="GetCimInstanceCommand"/> object.</param>
         public void InvokeCimMethod(InvokeCimMethodCommand cmdlet)
         {
             IEnumerable<string> computerNames = ConstValue.GetComputerNames(cmdlet.ComputerName);
@@ -323,7 +323,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         }
 
         /// <summary>
-        /// Create <see cref="CimSessionProxy"/> and set properties
+        /// Create <see cref="CimSessionProxy"/> and set properties.
         /// </summary>
         /// <param name="session"></param>
         /// <param name="cmdlet"></param>
@@ -348,8 +348,8 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         /// <param name="cimInstance"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">See CimProperty.Create</exception>
-        /// <exception cref="ArgumentException">CimProperty.Create</exception>
+        /// <exception cref="ArgumentNullException">See CimProperty.Create.</exception>
+        /// <exception cref="ArgumentException">CimProperty.Create.</exception>
         private CimMethodParametersCollection CreateParametersCollection(
             IDictionary parameters,
             CimClass cimClass,
@@ -391,7 +391,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
                     declaration = cimClass.CimClassMethods[methodName];
                     if (declaration == null)
                     {
-                        throw new ArgumentException(String.Format(
+                        throw new ArgumentException(string.Format(
                                 CultureInfo.CurrentUICulture, Strings.InvalidMethod, methodName, className));
                     }
                 }
@@ -406,7 +406,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
                     CimMethodParameterDeclaration paramDeclaration = declaration.Parameters[parameterName];
                     if (paramDeclaration == null)
                     {
-                        throw new ArgumentException(String.Format(
+                        throw new ArgumentException(string.Format(
                             CultureInfo.CurrentUICulture, Strings.InvalidMethodParameter, parameterName, methodName, className));
                     }
 
@@ -461,14 +461,14 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
 
         #region const strings
         /// <summary>
-        /// operation target
+        /// Operation target.
         /// </summary>
         private const string targetClass = @"{0}";
 
         /// <summary>
-        /// action
+        /// Action.
         /// </summary>
         private const string actionTemplate = @"Invoke-CimMethod: {0}";
         #endregion
-    }//End Class
-}//End namespace
+    }
+}

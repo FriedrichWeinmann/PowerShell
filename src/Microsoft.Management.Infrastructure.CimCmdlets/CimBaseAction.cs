@@ -58,7 +58,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         }
 
         private XOperationContextBase context;
-    }//End Class
+    }
 
     /// <summary>
     /// <para>
@@ -69,7 +69,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
     internal class CimSyncAction : CimBaseAction, IDisposable
     {
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         public CimSyncAction()
         {
@@ -124,12 +124,12 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         #region members
 
         /// <summary>
-        /// action completed event
+        /// Action completed event.
         /// </summary>
         private ManualResetEventSlim completeEvent;
 
         /// <summary>
-        /// response result
+        /// Response result.
         /// </summary>
         protected CimResponseType responseType;
 
@@ -137,7 +137,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
 
         #region IDisposable interface
         /// <summary>
-        /// IDisposable interface
+        /// IDisposable interface.
         /// </summary>
         private bool _disposed;
 
@@ -170,7 +170,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         /// other objects. Only unmanaged resources can be disposed.
         /// </para>
         /// </summary>
-        /// <param name="disposing">Whether it is directly called</param>
+        /// <param name="disposing">Whether it is directly called.</param>
         protected virtual void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
@@ -197,5 +197,5 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
             }
         }
         #endregion
-    }//End Class
-}//End namespace
+    }
+}

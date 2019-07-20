@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
 using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace System.Management.Automation
 {
@@ -128,7 +128,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Constructs a variable with the given name, value, options, and attributes
+        /// Constructs a variable with the given name, value, options, and attributes.
         /// </summary>
         /// <param name="name">
         /// The name of the variable.
@@ -157,7 +157,7 @@ namespace System.Management.Automation
             ScopedItemOptions options,
             Collection<Attribute> attributes)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -202,7 +202,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Gets the name of the variable.
         /// </summary>
-        public string Name { get; } = String.Empty;
+        public string Name { get; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the description of the variable.
@@ -220,7 +220,7 @@ namespace System.Management.Automation
             }
         }
 
-        private string _description = String.Empty;
+        private string _description = string.Empty;
 
         internal void DebuggerCheckVariableRead()
         {
@@ -245,7 +245,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets or sets the value of the variable
+        /// Gets or sets the value of the variable.
         /// </summary>
         /// <exception cref="SessionStateUnauthorizedAccessException">
         /// If the variable is read-only or constant upon call to set.
@@ -427,7 +427,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Determines if the value is valid for the specified attribute
+        /// Determines if the value is valid for the specified attribute.
         /// </summary>
         /// <param name="value">
         /// The variable value to validate.
@@ -518,7 +518,7 @@ namespace System.Management.Automation
         /// attributes, so repeating that process is slow and wrong.  This function
         /// applies the attributes without repeating the checks.
         /// </summary>
-        /// <param name="attributes">The list of attributes to add</param>
+        /// <param name="attributes">The list of attributes to add.</param>
         internal void AddParameterAttributesNoChecks(Collection<Attribute> attributes)
         {
             foreach (Attribute attribute in attributes)
@@ -611,7 +611,7 @@ namespace System.Management.Automation
         #endregion internal members
 
         /// <summary>
-        /// Verifies the constraints and attributes before setting the value
+        /// Verifies the constraints and attributes before setting the value.
         /// </summary>
         /// <param name="value">
         /// The value to be set.
@@ -892,7 +892,7 @@ namespace System.Management.Automation
         AllScope = 0x8,
 
         /// <summary>
-        /// The option is not specified by the user
+        /// The option is not specified by the user.
         /// </summary>
         Unspecified = 0x10
     }

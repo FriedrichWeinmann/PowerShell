@@ -2,18 +2,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Management.Automation.Runspaces;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Management.Automation;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Management.Automation.Internal;
-using System.Management.Automation.Help;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Management.Automation.Help;
+using System.Management.Automation.Internal;
+using System.Management.Automation.Runspaces;
+using System.Runtime.InteropServices;
 #if !UNIX
 using Microsoft.Win32;
 #endif
@@ -21,13 +21,13 @@ using Microsoft.Win32;
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// This class implements get-help command
+    /// This class implements get-help command.
     /// </summary>
     [Cmdlet(VerbsCommon.Get, "Help", DefaultParameterSetName = "AllUsersView", HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113316")]
     public sealed class GetHelpCommand : PSCmdlet
     {
         /// <summary>
-        /// Help Views
+        /// Help Views.
         /// </summary>
         internal enum HelpView
         {
@@ -38,7 +38,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Default constructor for the GetHelpCommand class
+        /// Default constructor for the GetHelpCommand class.
         /// </summary>
         public GetHelpCommand()
         {
@@ -47,7 +47,7 @@ namespace Microsoft.PowerShell.Commands
         #region Cmdlet Parameters
 
         /// <summary>
-        /// Target to search for help
+        /// Target to search for help.
         /// </summary>
         [Parameter(Position = 0, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty()]
@@ -60,18 +60,18 @@ namespace Microsoft.PowerShell.Commands
         public string Path { get; set; }
 
         /// <summary>
-        /// List of help categories to search for help
+        /// List of help categories to search for help.
         /// </summary>
         [Parameter]
         [ValidateSet(
-            "Alias", "Cmdlet", "Provider", "General", "FAQ", "Glossary", "HelpFile", "ScriptCommand", "Function", "Filter", "ExternalScript", "All", "DefaultHelp", "Workflow", "DscResource", "Class", "Configuration",
+            "Alias", "Cmdlet", "Provider", "General", "FAQ", "Glossary", "HelpFile", "ScriptCommand", "Function", "Filter", "ExternalScript", "All", "DefaultHelp", "DscResource", "Class", "Configuration",
              IgnoreCase = true)]
         public string[] Category { get; set; }
 
         private string _provider = string.Empty;
 
         /// <summary>
-        /// Changes the view of HelpObject returned
+        /// Changes the view of HelpObject returned.
         /// </summary>
         /// <remarks>
         /// Currently we support following views:
@@ -98,7 +98,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Changes the view of HelpObject returned
+        /// Changes the view of HelpObject returned.
         /// </summary>
         /// <remarks>
         /// Currently we support following views:
@@ -125,7 +125,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Changes the view of HelpObject returned
+        /// Changes the view of HelpObject returned.
         /// </summary>
         /// <remarks>
         /// Currently we support following views:
@@ -157,7 +157,7 @@ namespace Microsoft.PowerShell.Commands
         /// Support WildCard strings as supported by WildcardPattern class.
         /// </remarks>
         [Parameter(ParameterSetName = "Parameters", Mandatory = true)]
-        public string Parameter { set; get; }
+        public string[] Parameter { get; set; }
 
         /// <summary>
         /// Gets and sets list of Component's to search on.
@@ -215,7 +215,7 @@ namespace Microsoft.PowerShell.Commands
         #region Cmdlet API implementation
 
         /// <summary>
-        /// Implements the BeginProcessing() method for get-help command
+        /// Implements the BeginProcessing() method for get-help command.
         /// </summary>
         protected override void BeginProcessing()
         {
@@ -236,13 +236,14 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Implements the ProcessRecord() method for get-help command
+        /// Implements the ProcessRecord() method for get-help command.
         /// </summary>
         protected override void ProcessRecord()
         {
+            HelpSystem helpSystem = this.Context.HelpSystem;
             try
             {
-                this.Context.HelpSystem.OnProgress += new HelpSystem.HelpProgressHandler(HelpSystem_OnProgress);
+                helpSystem.OnProgress += new HelpSystem.HelpProgressHandler(HelpSystem_OnProgress);
 
                 bool failed = false;
                 HelpCategory helpCategory = ToHelpCategory(Category, ref failed);
@@ -268,7 +269,7 @@ namespace Microsoft.PowerShell.Commands
                 // the idea is to use yield statement in the help lookup to speed up
                 // perceived user experience....So HelpSystem.GetHelp returns an
                 // IEnumerable..
-                IEnumerable<HelpInfo> helpInfos = this.Context.HelpSystem.GetHelp(helpRequest);
+                IEnumerable<HelpInfo> helpInfos = helpSystem.GetHelp(helpRequest);
                 // HelpCommand acts differently when there is just one help object and when
                 // there are more than one object...so handling this behavior through
                 // some variables.
@@ -319,13 +320,13 @@ namespace Microsoft.PowerShell.Commands
 
                 // show errors only if there is no wildcard search or VerboseHelpErrors is true.
                 if (((countOfHelpInfos == 0) && (!WildcardPattern.ContainsWildcardCharacters(helpRequest.Target)))
-                    || this.Context.HelpSystem.VerboseHelpErrors)
+                    || helpSystem.VerboseHelpErrors)
                 {
                     // Check if there is any error happened. If yes,
                     // pipe out errors.
-                    if (this.Context.HelpSystem.LastErrors.Count > 0)
+                    if (helpSystem.LastErrors.Count > 0)
                     {
-                        foreach (ErrorRecord errorRecord in this.Context.HelpSystem.LastErrors)
+                        foreach (ErrorRecord errorRecord in helpSystem.LastErrors)
                         {
                             WriteError(errorRecord);
                         }
@@ -334,9 +335,11 @@ namespace Microsoft.PowerShell.Commands
             }
             finally
             {
-                this.Context.HelpSystem.OnProgress -= new HelpSystem.HelpProgressHandler(HelpSystem_OnProgress);
+                helpSystem.OnProgress -= new HelpSystem.HelpProgressHandler(HelpSystem_OnProgress);
+                HelpSystem_OnComplete();
+
                 // finally clear the ScriptBlockAst -> Token[] cache
-                this.Context.HelpSystem.ClearScriptBlockTokenCache();
+                helpSystem.ClearScriptBlockTokenCache();
             }
         }
 
@@ -433,7 +436,27 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Gets the parameter info for patterns identified Parameter property.
+        /// Gets the parameter info for patterns identified by Parameter property.
+        /// </summary>
+        /// <param name="helpInfo">HelpInfo object to look for the parameter.</param>
+        /// <returns>Array of parameter infos.</returns>
+        private PSObject[] GetParameterInfo(HelpInfo helpInfo)
+        {
+            List<PSObject> parameterInfosList = new List<PSObject>(Parameter.Length);
+
+            foreach (var parameter in Parameter)
+            {
+                foreach (var parameterInfo in helpInfo.GetParameter(parameter))
+                {
+                    parameterInfosList.Add(parameterInfo);
+                }
+            }
+
+            return parameterInfosList.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the parameter info for patterns identified by Parameter property.
         /// Writes the parameter info(s) to the output stream. An error is thrown
         /// if a parameter with a given pattern is not found.
         /// </summary>
@@ -441,7 +464,8 @@ namespace Microsoft.PowerShell.Commands
         private void GetAndWriteParameterInfo(HelpInfo helpInfo)
         {
             s_tracer.WriteLine("Searching parameters for {0}", helpInfo.Name);
-            PSObject[] pInfos = helpInfo.GetParameter(Parameter);
+
+            PSObject[] pInfos = GetParameterInfo(helpInfo);
 
             if ((pInfos == null) || (pInfos.Length == 0))
             {
@@ -459,9 +483,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Validates input parameters
+        /// Validates input parameters.
         /// </summary>
-        /// <param name="cat">Category specified by the user</param>
+        /// <param name="cat">Category specified by the user.</param>
         /// <exception cref="ArgumentException">
         /// If the request cant be serviced.
         /// </exception>
@@ -479,7 +503,7 @@ namespace Microsoft.PowerShell.Commands
 
             if ((cat & supportedCategories) == 0)
             {
-                if (!string.IsNullOrEmpty(Parameter))
+                if (Parameter != null)
                 {
                     throw PSTraceSource.NewArgumentException("Parameter",
                         HelpErrors.ParamNotSupported, "-Parameter");
@@ -540,7 +564,7 @@ namespace Microsoft.PowerShell.Commands
                     // show inline help
                     if (showFullHelp)
                     {
-                        if (!string.IsNullOrEmpty(Parameter))
+                        if (Parameter != null)
                         {
                             GetAndWriteParameterInfo(helpInfo);
                         }
@@ -553,9 +577,10 @@ namespace Microsoft.PowerShell.Commands
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(Parameter))
+                        if (Parameter != null)
                         {
-                            PSObject[] pInfos = helpInfo.GetParameter(Parameter);
+                            PSObject[] pInfos = GetParameterInfo(helpInfo);
+
                             if ((pInfos == null) || (pInfos.Length == 0))
                             {
                                 return;
@@ -635,15 +660,26 @@ namespace Microsoft.PowerShell.Commands
 
         private void HelpSystem_OnProgress(object sender, HelpProgressInfo arg)
         {
-            ProgressRecord record = new ProgressRecord(0, this.CommandInfo.Name, arg.Activity);
+            var record = new ProgressRecord(0, this.CommandInfo.Name, arg.Activity)
+            {
+                PercentComplete = arg.PercentComplete
+            };
 
-            record.PercentComplete = arg.PercentComplete;
+            WriteProgress(record);
+        }
+
+        private void HelpSystem_OnComplete()
+        {
+            var record = new ProgressRecord(0, this.CommandInfo.Name, "Completed")
+            {
+                RecordType = ProgressRecordType.Completed
+            };
 
             WriteProgress(record);
         }
 
         /// <summary>
-        /// Checks if we can connect to the internet
+        /// Checks if we can connect to the internet.
         /// </summary>
         /// <returns></returns>
         private bool HasInternetConnection()
@@ -682,7 +718,7 @@ namespace Microsoft.PowerShell.Commands
     public static class GetHelpCodeMethods
     {
         /// <summary>
-        /// Verifies if the InitialSessionState of the current process
+        /// Verifies if the InitialSessionState of the current process.
         /// </summary>
         /// <returns></returns>
         private static bool DoesCurrentRunspaceIncludeCoreHelpCmdlet()

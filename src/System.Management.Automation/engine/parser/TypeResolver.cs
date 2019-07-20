@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Management.Infrastructure;
-using Microsoft.PowerShell.Commands;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,6 +21,9 @@ using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Xml;
+
+using Microsoft.Management.Infrastructure;
+using Microsoft.PowerShell.Commands;
 
 namespace System.Management.Automation.Language
 {
@@ -482,13 +483,13 @@ namespace System.Management.Automation.Language
         /// <summary>
         /// This routine converts a string into a Type object using the msh rules.
         /// </summary>
-        /// <param name="strTypeName">A string representing the name of the type to convert</param>
-        /// <param name="exception">The exception, if one happened, trying to find the type</param>
+        /// <param name="strTypeName">A string representing the name of the type to convert.</param>
+        /// <param name="exception">The exception, if one happened, trying to find the type.</param>
         /// <returns>A type if the conversion was successful, null otherwise.</returns>
         internal static Type ResolveType(string strTypeName, out Exception exception)
         {
             exception = null;
-            if (String.IsNullOrWhiteSpace(strTypeName))
+            if (string.IsNullOrWhiteSpace(strTypeName))
             {
                 return null;
             }
@@ -518,7 +519,7 @@ namespace System.Management.Automation.Language
     internal class TypeResolutionState
     {
         internal static readonly string[] systemNamespace = { "System" };
-        internal static readonly Assembly[] emptyAssemblies = Utils.EmptyArray<Assembly>();
+        internal static readonly Assembly[] emptyAssemblies = Array.Empty<Assembly>();
         internal static readonly TypeResolutionState UsingSystem = new TypeResolutionState();
 
         internal readonly string[] namespaces;

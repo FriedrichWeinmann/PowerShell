@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Management.Automation.Tracing;
 using System.IO;
+using System.Management.Automation.Tracing;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+
 using Dbg = System.Diagnostics.Debug;
 
 namespace System.Management.Automation.Remoting
@@ -288,7 +289,7 @@ namespace System.Management.Automation.Remoting
         #region IDisposable
 
         /// <summary>
-        /// Dispose
+        /// Dispose.
         /// </summary>
         public void Dispose()
         {
@@ -438,7 +439,7 @@ namespace System.Management.Automation.Remoting
         #region IDisposable
 
         /// <summary>
-        /// Dispose
+        /// Dispose.
         /// </summary>
         public void Dispose()
         {
@@ -486,9 +487,9 @@ namespace System.Management.Automation.Remoting
         /// Connect to Hyper-V socket server.  This is a blocking call until a
         /// connection occurs or the timeout time has elapsed.
         /// </summary>
-        /// <param name="networkCredential">The credential used for authentication</param>
-        /// <param name="configurationName">The configuration name of the PS session</param>
-        /// <param name="isFirstConnection">Whether this is the first connection</param>
+        /// <param name="networkCredential">The credential used for authentication.</param>
+        /// <param name="configurationName">The configuration name of the PS session.</param>
+        /// <param name="isFirstConnection">Whether this is the first connection.</param>
         public bool Connect(
             NetworkCredential networkCredential,
             string configurationName,
@@ -502,7 +503,7 @@ namespace System.Management.Automation.Remoting
             //
             if (isFirstConnection)
             {
-                if (String.IsNullOrEmpty(networkCredential.UserName))
+                if (string.IsNullOrEmpty(networkCredential.UserName))
                 {
                     throw new PSDirectException(
                         PSRemotingErrorInvariants.FormatResourceString(RemotingErrorIdStrings.InvalidUsername));
@@ -520,13 +521,13 @@ namespace System.Management.Automation.Remoting
 
                 if (isFirstConnection)
                 {
-                    if (String.IsNullOrEmpty(networkCredential.Domain))
+                    if (string.IsNullOrEmpty(networkCredential.Domain))
                     {
                         networkCredential.Domain = "localhost";
                     }
 
-                    bool emptyPassword = String.IsNullOrEmpty(networkCredential.Password);
-                    bool emptyConfiguration = String.IsNullOrEmpty(configurationName);
+                    bool emptyPassword = string.IsNullOrEmpty(networkCredential.Password);
+                    bool emptyConfiguration = string.IsNullOrEmpty(configurationName);
 
                     byte[] domain = Encoding.Unicode.GetBytes(networkCredential.Domain);
                     byte[] userName = Encoding.Unicode.GetBytes(networkCredential.UserName);
@@ -574,7 +575,7 @@ namespace System.Management.Automation.Remoting
                     //
                     // Credential is invalid.
                     //
-                    if (String.Compare(responseString, "FAIL", StringComparison.Ordinal) == 0)
+                    if (string.Compare(responseString, "FAIL", StringComparison.Ordinal) == 0)
                     {
                         HyperVSocket.Send(response);
 
@@ -585,7 +586,7 @@ namespace System.Management.Automation.Remoting
                     //
                     // If PowerShell Direct in VM supports configuration, send configuration name.
                     //
-                    if (String.Compare(responseString, "CONF", StringComparison.Ordinal) == 0)
+                    if (string.Compare(responseString, "CONF", StringComparison.Ordinal) == 0)
                     {
                         if (emptyConfiguration)
                         {

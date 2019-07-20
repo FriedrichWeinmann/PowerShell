@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
-using System.Diagnostics.CodeAnalysis;
 
 //
 // Now define the set of commands for manipulating modules.
@@ -15,7 +15,7 @@ namespace Microsoft.PowerShell.Commands
 {
     #region Export-ModuleMember
     /// <summary>
-    /// Implements a cmdlet that loads a module
+    /// Implements a cmdlet that loads a module.
     /// </summary>
     [Cmdlet(VerbsData.Export, "ModuleMember", HelpUri = "https://go.microsoft.com/fwlink/?LinkID=141551")]
     public sealed class ExportModuleMemberCommand : PSCmdlet

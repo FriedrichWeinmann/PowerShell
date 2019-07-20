@@ -2,15 +2,16 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using System.Globalization;
 using System.Management.Automation;
-using System.Management.Automation.Internal;
 using System.Management.Automation.Host;
+using System.Management.Automation.Internal;
 using System.Security;
+using System.Text;
+
 using Dbg = System.Management.Automation.Diagnostics;
 using InternalHostUserInterface = System.Management.Automation.Internal.Host.InternalHostUserInterface;
 
@@ -21,20 +22,20 @@ namespace Microsoft.PowerShell
     {
         /// <summary>
         /// Used by Prompt to indicate any common errors when converting the user input string to
-        ///  the type of the parameter
+        ///  the type of the parameter.
         /// </summary>
         private enum PromptCommonInputErrors
         {
             /// <summary>
-            /// No error or not an error prompt handles
+            /// No error or not an error prompt handles.
             /// </summary>
             None,
             /// <summary>
-            /// Format error
+            /// Format error.
             /// </summary>
             Format,
             /// <summary>
-            /// Overflow error
+            /// Overflow error.
             /// </summary>
             Overflow
         }
@@ -47,7 +48,7 @@ namespace Microsoft.PowerShell
             {
                 if (fd != null)
                 {
-                    if (!String.IsNullOrEmpty(fd.HelpMessage))
+                    if (!string.IsNullOrEmpty(fd.HelpMessage))
                     {
                         return true;
                     }
@@ -58,7 +59,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// See base class
+        /// See base class.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="message"></param>
@@ -111,18 +112,17 @@ namespace Microsoft.PowerShell
             {
                 Dictionary<string, PSObject> results = new Dictionary<string, PSObject>();
 
-                Boolean cancelInput = false;
+                bool cancelInput = false;
 
-                if (!String.IsNullOrEmpty(caption))
+                if (!string.IsNullOrEmpty(caption))
                 {
                     // Should be a skin lookup
 
                     WriteLineToConsole();
-                    WriteToConsole(PromptColor, RawUI.BackgroundColor, WrapToCurrentWindowWidth(caption));
-                    WriteLineToConsole();
+                    WriteLineToConsole(PromptColor, RawUI.BackgroundColor, WrapToCurrentWindowWidth(caption));
                 }
 
-                if (!String.IsNullOrEmpty(message))
+                if (!string.IsNullOrEmpty(message))
                 {
                     WriteLineToConsole(WrapToCurrentWindowWidth(message));
                 }
@@ -208,7 +208,7 @@ namespace Microsoft.PowerShell
                         {
                             fieldPromptList.Append(
                                 string.Format(CultureInfo.InvariantCulture, "{0}]: ", inputList.Count));
-                            Boolean inputListEnd = false;
+                            bool inputListEnd = false;
                             object convertedObj = null;
                             string inputString = PromptForSingleItem(elementType, fieldPromptList.ToString(), fieldPrompt, caption, message,
                                 desc, fieldEchoOnPrompt, true, out inputListEnd, out cancelInput, out convertedObj);
@@ -244,7 +244,7 @@ namespace Microsoft.PowerShell
                             fieldPrompt);
                         // field is not a list
                         object convertedObj = null;
-                        Boolean dummy = false;
+                        bool dummy = false;
 
                         PromptForSingleItem(fieldType, printFieldPrompt, fieldPrompt, caption, message, desc,
                                             fieldEchoOnPrompt, false, out dummy, out cancelInput, out convertedObj);
@@ -334,12 +334,12 @@ namespace Microsoft.PowerShell
         /// <summary>
         /// Called by Prompt. Reads user input and processes tilde commands.
         /// </summary>
-        /// <param name="fieldPrompt">prompt written to host for the field</param>
-        /// <param name="desc">the field to be read</param>
-        /// <param name="fieldEchoOnPrompt">true to echo user input</param>
-        /// <param name="listInput">true if the field is a list</param>
-        /// <param name="endListInput">valid only if listInput is true. set to true if the input signals end of list input </param>
-        /// <param name="cancelled">true iff the input is canceled, e.g., by Ctrl-C or Ctrl-Break</param>
+        /// <param name="fieldPrompt">Prompt written to host for the field.</param>
+        /// <param name="desc">The field to be read.</param>
+        /// <param name="fieldEchoOnPrompt">True to echo user input.</param>
+        /// <param name="listInput">True if the field is a list.</param>
+        /// <param name="endListInput">Valid only if listInput is true. set to true if the input signals end of list input.</param>
+        /// <param name="cancelled">True iff the input is canceled, e.g., by Ctrl-C or Ctrl-Break.</param>
         /// <returns>Processed input string to be converted with LanguagePrimitives.ConvertTo.</returns>
         private string PromptReadInput(string fieldPrompt, FieldDescription desc, bool fieldEchoOnPrompt,
                         bool listInput, out bool endListInput, out bool cancelled)
@@ -375,7 +375,7 @@ namespace Microsoft.PowerShell
                     break;
                 }
                 else
-                if (rawInputString.StartsWith(PromptCommandPrefix, StringComparison.Ordinal))
+                if (!string.IsNullOrEmpty(desc.Label) && rawInputString.StartsWith(PromptCommandPrefix, StringComparison.Ordinal))
                 {
                     processedInputString = PromptCommandMode(rawInputString, desc, out inputDone);
                 }
@@ -398,9 +398,9 @@ namespace Microsoft.PowerShell
         /// Uses LanguagePrimitives.ConvertTo to parse inputString for fieldType. Handles two most common parse
         ///  exceptions: OverflowException and FormatException.
         /// </summary>
-        /// <param name="fieldType">the type that inputString is to be interpreted</param>
-        /// <param name="isFromRemoteHost">is the call coming from a remote host</param>
-        /// <param name="inputString">the string to be converted</param>
+        /// <param name="fieldType">The type that inputString is to be interpreted.</param>
+        /// <param name="isFromRemoteHost">Is the call coming from a remote host.</param>
+        /// <param name="inputString">The string to be converted.</param>
         /// <param name="convertedObj">if there's no error in the conversion, the converted object will be assigned here;
         /// otherwise, this will be the same as the inputString</param>
         /// <returns>An object of type fieldType that inputString represents.</returns>
@@ -469,7 +469,7 @@ namespace Microsoft.PowerShell
         /// !h  prints out field's Quick Help, returns null
         /// All others tilde comments are invalid and return null
         ///
-        /// returns null iff there's nothing the caller can process
+        /// returns null iff there's nothing the caller can process.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="desc"></param>

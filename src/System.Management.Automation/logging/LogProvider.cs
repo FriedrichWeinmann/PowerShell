@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Text;
 using System.Management.Automation.Internal;
+using System.Text;
 
 namespace System.Management.Automation
 {
@@ -26,12 +26,12 @@ namespace System.Management.Automation
     ///     b. EngineLifecycleEvent
     ///     c. CommandLifecycleEvent
     ///     d. ProviderLifecycleEvent
-    ///     e. SettingsEvent
+    ///     e. SettingsEvent.
     /// </summary>
     internal abstract class LogProvider
     {
         /// <summary>
-        /// constructor
+        /// Constructor.
         /// </summary>
         internal LogProvider()
         {
@@ -40,7 +40,7 @@ namespace System.Management.Automation
         #region Provider api
 
         /// <summary>
-        /// Provider interface function for logging health event
+        /// Provider interface function for logging health event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="eventId"></param>
@@ -49,7 +49,7 @@ namespace System.Management.Automation
         internal abstract void LogEngineHealthEvent(LogContext logContext, int eventId, Exception exception, Dictionary<string, string> additionalInfo);
 
         /// <summary>
-        /// Provider interface function for logging engine lifecycle event
+        /// Provider interface function for logging engine lifecycle event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="newState"></param>
@@ -57,14 +57,14 @@ namespace System.Management.Automation
         internal abstract void LogEngineLifecycleEvent(LogContext logContext, EngineState newState, EngineState previousState);
 
         /// <summary>
-        /// Provider interface function for logging command health event
+        /// Provider interface function for logging command health event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="exception"></param>
         internal abstract void LogCommandHealthEvent(LogContext logContext, Exception exception);
 
         /// <summary>
-        /// Provider interface function for logging command lifecycle event
+        /// Provider interface function for logging command lifecycle event.
         /// </summary>
         /// <param name="getLogContext"></param>
         /// <param name="newState"></param>
@@ -78,7 +78,7 @@ namespace System.Management.Automation
         internal abstract void LogPipelineExecutionDetailEvent(LogContext logContext, List<string> pipelineExecutionDetail);
 
         /// <summary>
-        /// Provider interface function for logging provider health event
+        /// Provider interface function for logging provider health event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="providerName"></param>
@@ -86,7 +86,7 @@ namespace System.Management.Automation
         internal abstract void LogProviderHealthEvent(LogContext logContext, string providerName, Exception exception);
 
         /// <summary>
-        /// Provider interface function for logging provider lifecycle event
+        /// Provider interface function for logging provider lifecycle event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="providerName"></param>
@@ -94,7 +94,7 @@ namespace System.Management.Automation
         internal abstract void LogProviderLifecycleEvent(LogContext logContext, string providerName, ProviderState newState);
 
         /// <summary>
-        /// Provider interface function for logging settings event
+        /// Provider interface function for logging settings event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="variableName"></param>
@@ -103,7 +103,7 @@ namespace System.Management.Automation
         internal abstract void LogSettingsEvent(LogContext logContext, string variableName, string value, string previousValue);
 
         /// <summary>
-        /// True if the log provider needs to use logging variables
+        /// True if the log provider needs to use logging variables.
         /// </summary>
         /// <returns></returns>
         internal virtual bool UseLoggingVariables()
@@ -147,14 +147,14 @@ namespace System.Management.Automation
         {
             if (context == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             object logData = context.GetVariableValue(SpecialVariables.PSLogUserDataPath);
 
             if (logData == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             return logData.ToString();
@@ -163,8 +163,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Appends exception information.
         /// </summary>
-        /// <param name="sb">string builder.</param>
-        /// <param name="except">exception.</param>
+        /// <param name="sb">String builder.</param>
+        /// <param name="except">Exception.</param>
         protected static void AppendException(StringBuilder sb, Exception except)
         {
             sb.AppendLine(StringUtil.Format(EtwLoggingStrings.ErrorRecordMessage, except.Message));
@@ -192,8 +192,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Appends additional information.
         /// </summary>
-        /// <param name="sb">string builder.</param>
-        /// <param name="additionalInfo">additional information.</param>
+        /// <param name="sb">String builder.</param>
+        /// <param name="additionalInfo">Additional information.</param>
         protected static void AppendAdditionalInfo(StringBuilder sb, Dictionary<string, string> additionalInfo)
         {
             if (additionalInfo != null)
@@ -208,7 +208,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Gets PSLevel from severity.
         /// </summary>
-        /// <param name="severity">error severity.</param>
+        /// <param name="severity">Error severity.</param>
         /// <returns>PS log level.</returns>
         protected static PSLevel GetPSLevelFromSeverity(string severity)
         {
@@ -231,9 +231,9 @@ namespace System.Management.Automation
         const int LogContextInitialSize = 30 * 16 + 13 * 20 + 255;
 
         /// <summary>
-        /// Converts log context to string
+        /// Converts log context to string.
         /// </summary>
-        /// <param name="context">log context</param>
+        /// <param name="context">Log context.</param>
         /// <returns>String representation.</returns>
         protected static string LogContextToString(LogContext context)
         {
@@ -283,7 +283,7 @@ namespace System.Management.Automation
     internal class DummyLogProvider : LogProvider
     {
         /// <summary>
-        /// constructor
+        /// Constructor.
         /// </summary>
         internal DummyLogProvider()
         {
@@ -292,7 +292,7 @@ namespace System.Management.Automation
         #region Provider api
 
         /// <summary>
-        /// DummyLogProvider does nothing to Logging EngineHealthEvent
+        /// DummyLogProvider does nothing to Logging EngineHealthEvent.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="eventId"></param>
@@ -303,7 +303,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// DummyLogProvider does nothing to Logging EngineLifecycleEvent
+        /// DummyLogProvider does nothing to Logging EngineLifecycleEvent.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="newState"></param>
@@ -313,7 +313,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Provider interface function for logging command health event
+        /// Provider interface function for logging command health event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="exception"></param>
@@ -322,7 +322,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// DummyLogProvider does nothing to Logging CommandLifecycleEvent
+        /// DummyLogProvider does nothing to Logging CommandLifecycleEvent.
         /// </summary>
         /// <param name="getLogContext"></param>
         /// <param name="newState"></param>
@@ -340,7 +340,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Provider interface function for logging provider health event
+        /// Provider interface function for logging provider health event.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="providerName"></param>
@@ -350,7 +350,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// DummyLogProvider does nothing to Logging ProviderLifecycleEvent
+        /// DummyLogProvider does nothing to Logging ProviderLifecycleEvent.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="providerName"></param>
@@ -360,7 +360,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// DummyLogProvider does nothing to Logging SettingsEvent
+        /// DummyLogProvider does nothing to Logging SettingsEvent.
         /// </summary>
         /// <param name="logContext"></param>
         /// <param name="variableName"></param>

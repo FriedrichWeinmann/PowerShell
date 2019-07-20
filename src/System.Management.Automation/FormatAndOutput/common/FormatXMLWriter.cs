@@ -2,16 +2,16 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
-using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Management.Automation;
 using System.Xml;
 
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// Helper class for writing formatting directives to XML
+    /// Helper class for writing formatting directives to XML.
     /// </summary>
     internal class FormatXmlWriter
     {
@@ -21,15 +21,15 @@ namespace Microsoft.PowerShell.Commands
         private FormatXmlWriter() { }
 
         /// <summary>
-        /// Writes a collection of format view definitions to XML file
+        /// Writes a collection of format view definitions to XML file.
         /// </summary>
-        /// <param name="typeDefinitions">collection of PSTypeDefinition</param>
-        /// <param name="filepath">path to XML file</param>
-        /// <param name="cmdlet">cmdlet from which this si used</param>
-        /// <param name="force">true - to force write the file</param>
-        /// <param name="writeScriptBlock">true - to export scriptblocks</param>
-        /// <param name="noclobber">true - do not overwrite the file</param>
-        /// <param name="isLiteralPath">true - bypass wildcard expansion on the file name</param>
+        /// <param name="typeDefinitions">Collection of PSTypeDefinition.</param>
+        /// <param name="filepath">Path to XML file.</param>
+        /// <param name="cmdlet">Cmdlet from which this si used.</param>
+        /// <param name="force">True - to force write the file.</param>
+        /// <param name="writeScriptBlock">True - to export scriptblocks.</param>
+        /// <param name="noclobber">True - do not overwrite the file.</param>
+        /// <param name="isLiteralPath">True - bypass wildcard expansion on the file name.</param>
         internal static void WriteToPs1Xml(PSCmdlet cmdlet, List<ExtendedTypeDefinition> typeDefinitions,
             string filepath, bool force, bool noclobber, bool writeScriptBlock, bool isLiteralPath)
         {

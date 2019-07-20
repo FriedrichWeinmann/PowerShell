@@ -9,18 +9,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using System.Management.Automation.Remoting;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// This is the base class for job cmdlet and contains some helper functions
+    /// This is the base class for job cmdlet and contains some helper functions.
     /// </summary>
     public class JobCmdletBase : PSRemotingCmdlet
     {
         #region Strings
 
-        //Parametersets used by job cmdlets
+        // Parametersets used by job cmdlets
         internal const string JobParameterSet = "JobParameterSet";
         internal const string InstanceIdParameterSet = "InstanceIdParameterSet";
         internal const string SessionIdParameterSet = "SessionIdParameterSet";
@@ -29,7 +30,7 @@ namespace Microsoft.PowerShell.Commands
         internal const string CommandParameterSet = "CommandParameterSet";
         internal const string FilterParameterSet = "FilterParameterSet";
 
-        //common parameter names
+        // common parameter names
         internal const string JobParameter = "Job";
         internal const string InstanceIdParameter = "InstanceId";
         internal const string SessionIdParameter = "SessionId";
@@ -43,13 +44,13 @@ namespace Microsoft.PowerShell.Commands
         #region Job Matches
 
         /// <summary>
-        /// Find the jobs in repository which match matching the specified names
+        /// Find the jobs in repository which match matching the specified names.
         /// </summary>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
-        /// <param name="writeErrorOnNoMatch">write error if no match is found</param>
-        /// <param name="checkIfJobCanBeRemoved">check if this job can be removed</param>
-        /// <param name="recurse">recurse and check in child jobs</param>
+        /// in list (an empty list is returned).</param>
+        /// <param name="writeErrorOnNoMatch">Write error if no match is found.</param>
+        /// <param name="checkIfJobCanBeRemoved">Check if this job can be removed.</param>
+        /// <param name="recurse">Recurse and check in child jobs.</param>
         /// <returns>List of matching jobs.</returns>
         internal List<Job> FindJobsMatchingByName(
             bool recurse,
@@ -121,7 +122,7 @@ namespace Microsoft.PowerShell.Commands
         private bool FindJobsMatchingByNameHelper(List<Job> matches, IList<Job> jobsToSearch, string name,
                         Hashtable duplicateDetector, bool recurse, bool writeobject, bool checkIfJobCanBeRemoved)
         {
-            Dbg.Assert(!String.IsNullOrEmpty(name), "Caller should ensure that name is not null or empty");
+            Dbg.Assert(!string.IsNullOrEmpty(name), "Caller should ensure that name is not null or empty");
 
             bool jobFound = false;
 
@@ -141,7 +142,7 @@ namespace Microsoft.PowerShell.Commands
                 // check if the job is available in any of the
                 // top level jobs
 
-                //if (String.Equals(job.Name, name, StringComparison.OrdinalIgnoreCase))
+                // if (string.Equals(job.Name, name, StringComparison.OrdinalIgnoreCase))
                 if (pattern.IsMatch(job.Name))
                 {
                     jobFound = true;
@@ -156,7 +157,7 @@ namespace Microsoft.PowerShell.Commands
                             matches.Add(job);
                         }
                     }
-                    //break;
+                    // break;
                 }
 
                 // check if the job is available in any of the childjobs
@@ -176,13 +177,13 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Find the jobs in repository which match the specified instanceid
+        /// Find the jobs in repository which match the specified instanceid.
         /// </summary>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
-        /// <param name="writeErrorOnNoMatch">write error if no match is found</param>
-        /// <param name="checkIfJobCanBeRemoved">check if this job can be removed</param>
-        /// <param name="recurse">look in all child jobs</param>
+        /// in list (an empty list is returned).</param>
+        /// <param name="writeErrorOnNoMatch">Write error if no match is found.</param>
+        /// <param name="checkIfJobCanBeRemoved">Check if this job can be removed.</param>
+        /// <param name="recurse">Look in all child jobs.</param>
         /// <returns>List of matching jobs.</returns>
         internal List<Job> FindJobsMatchingByInstanceId(bool recurse, bool writeobject, bool writeErrorOnNoMatch, bool checkIfJobCanBeRemoved)
         {
@@ -199,7 +200,7 @@ namespace Microsoft.PowerShell.Commands
                 bool jobFound = FindJobsMatchingByInstanceIdHelper(matches, JobRepository.Jobs, id,
                                     duplicateDetector, recurse, writeobject, checkIfJobCanBeRemoved);
 
-                //TODO: optimize this to not search JobManager since matching by InstanceId is unique
+                // TODO: optimize this to not search JobManager since matching by InstanceId is unique
                 // search all jobs in JobManager
                 Job2 job2 = JobManager.GetJobByInstanceId(id, this, false, writeobject, recurse);
 
@@ -293,13 +294,13 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Find the jobs in repository which match the specified session ids
+        /// Find the jobs in repository which match the specified session ids.
         /// </summary>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
-        /// <param name="writeErrorOnNoMatch">write error if no match is found</param>
-        /// <param name="checkIfJobCanBeRemoved">check if this job can be removed</param>
-        /// <param name="recurse">look in child jobs as well</param>
+        /// in list (an empty list is returned).</param>
+        /// <param name="writeErrorOnNoMatch">Write error if no match is found.</param>
+        /// <param name="checkIfJobCanBeRemoved">Check if this job can be removed.</param>
+        /// <param name="recurse">Look in child jobs as well.</param>
         /// <returns>List of matching jobs.</returns>
         internal List<Job> FindJobsMatchingBySessionId(bool recurse, bool writeobject, bool writeErrorOnNoMatch, bool checkIfJobCanBeRemoved)
         {
@@ -397,10 +398,10 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Find the jobs in repository which match the specified command
+        /// Find the jobs in repository which match the specified command.
         /// </summary>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
+        /// in list (an empty list is returned).</param>
         /// <returns>List of matching jobs.</returns>
         internal List<Job> FindJobsMatchingByCommand(
             bool writeobject)
@@ -450,10 +451,10 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Find the jobs in repository which match the specified state
+        /// Find the jobs in repository which match the specified state.
         /// </summary>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
+        /// in list (an empty list is returned).</param>
         /// <returns>List of matching jobs.</returns>
         internal List<Job> FindJobsMatchingByState(
             bool writeobject)
@@ -551,8 +552,8 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         /// <param name="jobs"></param>
         /// <param name="writeobject">if true, method writes the object instead of returning it
-        /// in list (an empty list is returned). </param>
-        /// <param name="checkIfJobCanBeRemoved">if true, only jobs which can be removed will be checked</param>
+        /// in list (an empty list is returned).</param>
+        /// <param name="checkIfJobCanBeRemoved">If true, only jobs which can be removed will be checked.</param>
         /// <returns></returns>
         internal List<Job> CopyJobsToList(Job[] jobs, bool writeobject, bool checkIfJobCanBeRemoved)
         {
@@ -580,11 +581,11 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Checks that this job object can be removed. If not, writes an error record.
         /// </summary>
-        /// <param name="job">Job object to be removed</param>
+        /// <param name="job">Job object to be removed.</param>
         /// <param name="parameterName">Name of the parameter which is associated with this job object.
         /// </param>
-        /// <param name="resourceString">Resource String in case of error</param>
-        /// <param name="list">Parameters for resource message</param>
+        /// <param name="resourceString">Resource String in case of error.</param>
+        /// <param name="list">Parameters for resource message.</param>
         /// <returns>True if object should be removed, else false.</returns>
         private bool CheckJobCanBeRemoved(Job job, string parameterName, string resourceString, params object[] list)
         {
@@ -601,7 +602,7 @@ namespace Microsoft.PowerShell.Commands
         #region Parameters
 
         /// <summary>
-        /// Name of the jobs to retrieve
+        /// Name of the jobs to retrieve.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true, Position = 0,
                   Mandatory = true,
@@ -626,7 +627,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// InstanceIds for which job
-        /// need to be obtained
+        /// need to be obtained.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true, Position = 0,
                    Mandatory = true,
@@ -651,7 +652,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// SessionId for which job
-        /// need to be obtained
+        /// need to be obtained.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true, Position = 0,
                   Mandatory = true,
@@ -722,7 +723,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _commands;
 
         /// <summary>
-        /// All the job objects matching the values in filter
+        /// All the job objects matching the values in filter.
         /// </summary>
         [Parameter(Mandatory = true,
                    Position = 0, ValueFromPipelineByPropertyName = true,
@@ -748,7 +749,7 @@ namespace Microsoft.PowerShell.Commands
         /// enabled. This is because jobs are based out of APIs
         /// and there can be other job implementations like
         /// eventing or WMI which are not based on PowerShell
-        /// remoting
+        /// remoting.
         /// </summary>
         protected override void BeginProcessing()
         {
@@ -775,7 +776,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Specifies the Jobs objects which need to be
-        /// removed
+        /// removed.
         /// </summary>
         [Parameter(Mandatory = true,
                    Position = 0,
@@ -886,7 +887,7 @@ namespace Microsoft.PowerShell.Commands
                     break;
             }
 
-            //Now actually remove the jobs
+            // Now actually remove the jobs
             foreach (Job job in listOfJobsToRemove)
             {
                 string message = GetMessage(RemotingErrorIdStrings.StopPSJobWhatIfTarget,
@@ -929,7 +930,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Wait for all the stop jobs to be completed
+        /// Wait for all the stop jobs to be completed.
         /// </summary>
         protected override void EndProcessing()
         {
@@ -946,7 +947,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// release waiting for jobs
+        /// Release waiting for jobs.
         /// </summary>
         protected override void StopProcessing()
         {

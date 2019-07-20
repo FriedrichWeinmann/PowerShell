@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Management.Automation.Runspaces;
 using System.Runtime.CompilerServices;
+
 using Microsoft.PowerShell.Commands;
-using System.IO;
 
 namespace System.Management.Automation.Language
 {
@@ -405,7 +406,7 @@ namespace System.Management.Automation.Language
                                 var typeAst = _symbolTable.GetCurrentTypeDefinitionAst();
                                 Diagnostics.Assert(typeAst != null, "Method scopes can exist only inside type definitions.");
 
-                                string typeString = String.Format(CultureInfo.InvariantCulture, "[{0}]::", typeAst.Name);
+                                string typeString = string.Format(CultureInfo.InvariantCulture, "[{0}]::", typeAst.Name);
                                 _parser.ReportError(variableExpressionAst.Extent,
                                     nameof(ParserStrings.MissingTypeInStaticPropertyAssignment),
                                     ParserStrings.MissingTypeInStaticPropertyAssignment,
@@ -446,7 +447,7 @@ namespace System.Management.Automation.Language
         /// PSModuleInfo objects are returned in the right order: i.e. if multiply versions of the module
         /// is presented on the system and user didn't specify version, we will return all of them, but newer one would go first.
         /// </summary>
-        /// <param name="usingStatementAst">using statement</param>
+        /// <param name="usingStatementAst">Using statement.</param>
         /// <param name="exception">If exception happens, return exception object.</param>
         /// <param name="wildcardCharactersUsed">
         /// True if in the module name uses wildcardCharacter.

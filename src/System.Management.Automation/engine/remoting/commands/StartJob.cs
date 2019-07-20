@@ -2,14 +2,15 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
 using System.Management.Automation.Security;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -78,7 +79,7 @@ namespace Microsoft.PowerShell.Commands
         private string _definitionType;
 
         /// <summary>
-        /// Friendly name for this job object
+        /// Friendly name for this job object.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true,
                    ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
@@ -95,7 +96,7 @@ namespace Microsoft.PowerShell.Commands
 
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     _name = value;
                 }
@@ -107,7 +108,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Command to execute specified as a string. This can be a single
         /// cmdlet, an expression or anything that can be internally
-        /// converted into a ScriptBlock
+        /// converted into a ScriptBlock.
         /// </summary>
         /// <remarks>This is used in the in process case with a
         /// "ValueFromPipelineProperty" enabled in order to maintain
@@ -136,7 +137,7 @@ namespace Microsoft.PowerShell.Commands
         // which should not be part of Start-PSJob
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override PSSession[] Session
         {
@@ -147,7 +148,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string[] ComputerName
         {
@@ -166,7 +167,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Suppress SSHTransport
+        /// Suppress SSHTransport.
         /// </summary>
         public override SwitchParameter SSHTransport
         {
@@ -174,7 +175,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Suppress SSHConnection
+        /// Suppress SSHConnection.
         /// </summary>
         public override Hashtable[] SSHConnection
         {
@@ -182,7 +183,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Suppress UserName
+        /// Suppress UserName.
         /// </summary>
         public override string UserName
         {
@@ -190,9 +191,25 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Suppress KeyFilePath
+        /// Suppress KeyFilePath.
         /// </summary>
         public override string KeyFilePath
+        {
+            get { return null; }
+        }
+
+        /// <summary>
+        /// Suppress HostName.
+        /// </summary>
+        public override string[] HostName
+        {
+            get { return null; }
+        }
+
+        /// <summary>
+        /// Suppress Subsystem.
+        /// </summary>
+        public override string Subsystem
         {
             get { return null; }
         }
@@ -200,7 +217,7 @@ namespace Microsoft.PowerShell.Commands
         #endregion
 
         /// <summary>
-        /// Credential to use for this job
+        /// Credential to use for this job.
         /// </summary>
         [Parameter(ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
@@ -220,7 +237,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override int Port
         {
@@ -231,7 +248,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override SwitchParameter UseSSL
         {
@@ -242,7 +259,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string ConfigurationName
         {
@@ -258,7 +275,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override Int32 ThrottleLimit
         {
@@ -269,7 +286,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string ApplicationName
         {
@@ -280,7 +297,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override Uri[] ConnectionUri
         {
@@ -291,7 +308,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Filepath to execute as a script
+        /// Filepath to execute as a script.
         /// </summary>
         [Parameter(
             Position = 0,
@@ -312,13 +329,13 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Literal Filepath to execute as a script
+        /// Literal Filepath to execute as a script.
         /// </summary>
         [Parameter(
             Mandatory = true,
             ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
         [ValidateTrustedData]
-        [Alias("PSPath","LP")]
+        [Alias("PSPath", "LP")]
         public string LiteralPath
         {
             get
@@ -353,7 +370,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string CertificateThumbprint
         {
@@ -369,7 +386,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override SwitchParameter AllowRedirection
         {
@@ -380,7 +397,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override Guid[] VMId
         {
@@ -391,7 +408,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string[] VMName
         {
@@ -402,7 +419,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string[] ContainerId
         {
@@ -413,7 +430,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override SwitchParameter RunAsAdministrator
         {
@@ -464,23 +481,16 @@ namespace Microsoft.PowerShell.Commands
         private ScriptBlock _initScript;
 
         /// <summary>
-        /// Launces the background job as a 32-bit process. This can be used on
+        /// Launches the background job as a 32-bit process. This can be used on
         /// 64-bit systems to launch a 32-bit wow process for the background job.
         /// </summary>
         [Parameter(ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
-        public virtual SwitchParameter RunAs32
-        {
-            get { return _shouldRunAs32; }
-
-            set { _shouldRunAs32 = value; }
-        }
-
-        private bool _shouldRunAs32;
+        public virtual SwitchParameter RunAs32 { get; set; }
 
         /// <summary>
-        /// Powershell Version to execute the background job
+        /// Powershell Version to execute the background job.
         /// </summary>
         [Parameter(ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
@@ -544,10 +554,41 @@ namespace Microsoft.PowerShell.Commands
         /// 1. Set the throttling limit and reset operations complete
         /// 2. Create helper objects
         /// 3. For async case, write the async result object down the
-        ///    pipeline
+        ///    pipeline.
         /// </summary>
         protected override void BeginProcessing()
         {
+            if (!File.Exists(PowerShellProcessInstance.PwshExePath))
+            {
+                // The pwsh executable file is not found under $PSHOME.
+                // This means that PowerShell is currently being hosted in another application,
+                // and 'Start-Job' is not supported by design in that scenario.
+                string message = StringUtil.Format(
+                    RemotingErrorIdStrings.IPCPwshExecutableNotFound,
+                    PowerShellProcessInstance.PwshExePath);
+
+                var errorRecord = new ErrorRecord(
+                    new PSNotSupportedException(message),
+                    "IPCPwshExecutableNotFound",
+                    ErrorCategory.NotInstalled,
+                    PowerShellProcessInstance.PwshExePath);
+
+                ThrowTerminatingError(errorRecord);
+            }
+
+            if (RunAs32.IsPresent && Environment.Is64BitProcess)
+            {
+                // We cannot start a 32-bit 'pwsh' process from a 64-bit 'pwsh' installation.
+                string message = RemotingErrorIdStrings.RunAs32NotSupported;
+                var errorRecord = new ErrorRecord(
+                    new PSNotSupportedException(message),
+                    "RunAs32NotSupported",
+                    ErrorCategory.InvalidOperation,
+                    targetObject: null);
+
+                ThrowTerminatingError(errorRecord);
+            }
+
             CommandDiscovery.AutoloadModulesWithJobSourceAdapters(this.Context, this.CommandOrigin);
 
             if (ParameterSetName == DefinitionNameParameterSet)
@@ -584,7 +625,6 @@ namespace Microsoft.PowerShell.Commands
             }
 
             NewProcessConnectionInfo connectionInfo = new NewProcessConnectionInfo(this.Credential);
-            connectionInfo.RunAs32 = _shouldRunAs32;
             connectionInfo.InitializationScript = _initScript;
             connectionInfo.AuthenticationMechanism = this.Authentication;
             connectionInfo.PSVersion = this.PSVersion;
@@ -722,7 +762,7 @@ namespace Microsoft.PowerShell.Commands
         #region IDisposable Overrides
 
         /// <summary>
-        /// Dispose the cmdlet
+        /// Dispose the cmdlet.
         /// </summary>
         public void Dispose()
         {
@@ -731,9 +771,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// internal dispose method which does the actual disposing
+        /// Internal dispose method which does the actual disposing.
         /// </summary>
-        /// <param name="disposing">whether called from dispose or finalize</param>
+        /// <param name="disposing">Whether called from dispose or finalize.</param>
         private void Dispose(bool disposing)
         {
             if (disposing)

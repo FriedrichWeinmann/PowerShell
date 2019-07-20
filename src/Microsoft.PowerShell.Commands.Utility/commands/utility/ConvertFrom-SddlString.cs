@@ -5,12 +5,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Management.Automation;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
-using System.ComponentModel;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -32,14 +32,14 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter]
         public AccessRightTypeNames Type
-        { 
+        {
             get { return _type; }
 
             set
             {
                 _isTypeSet = true;
                 _type = value;
-            } 
+            }
         }
 
         private AccessRightTypeNames _type;
@@ -138,7 +138,7 @@ namespace Microsoft.PowerShell.Commands
                 List<string> accessRightList = GetApplicableAccessRights(ace.AccessMask, typeName);
                 if (accessRightList.Count > 0)
                 {
-                    string accessRights = String.Join(", ", accessRightList);
+                    string accessRights = string.Join(", ", accessRightList);
                     aceString.Append($" ({accessRights})");
                 }
 
@@ -167,7 +167,7 @@ namespace Microsoft.PowerShell.Commands
             string owner = ConvertToNTAccount(rawSecurityDescriptor.Owner);
             string group = ConvertToNTAccount(rawSecurityDescriptor.Group);
 
-            AccessRightTypeNames? typeToUse = _isTypeSet ? _type : (AccessRightTypeNames?) null;
+            AccessRightTypeNames? typeToUse = _isTypeSet ? _type : (AccessRightTypeNames?)null;
             string[] discretionaryAcl = ConvertAccessControlListToStrings(rawSecurityDescriptor.DiscretionaryAcl, typeToUse);
             string[] systemAcl = ConvertAccessControlListToStrings(rawSecurityDescriptor.SystemAcl, typeToUse);
 
@@ -184,7 +184,7 @@ namespace Microsoft.PowerShell.Commands
             /// FileSystemRights.
             /// </summary>
             FileSystemRights,
-            
+
             /// <summary>
             /// RegistryRights.
             /// </summary>
@@ -210,7 +210,7 @@ namespace Microsoft.PowerShell.Commands
 
             /// <summary>
             /// EventWaitHandleRights.
-            /// </summary>            
+            /// </summary>
             EventWaitHandleRights
         }
     }

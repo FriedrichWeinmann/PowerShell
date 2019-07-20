@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation
@@ -64,7 +65,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Get the Enumerator
+        /// Get the Enumerator.
         /// </summary>
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
@@ -87,7 +88,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Return the current DscResource
+        /// Return the current DscResource.
         /// </summary>
         DscResourceInfo IEnumerator<DscResourceInfo>.Current
         {
@@ -98,7 +99,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Return the current DscResource as object
+        /// Return the current DscResource as object.
         /// </summary>
         object IEnumerator.Current
         {

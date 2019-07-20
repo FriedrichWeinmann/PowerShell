@@ -2,20 +2,20 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Xml;
-using System.Net;
-using System.Management.Automation;
-using System.Reflection;
-using System.Globalization;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Eventing.Reader;
-using System.Security.Principal;
-using System.Resources;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
+using System.Management.Automation;
+using System.Net;
+using System.Reflection;
+using System.Resources;
+using System.Security.Principal;
 using System.Text;
+using System.Xml;
 
 [assembly: CLSCompliant(false)]
 
@@ -28,7 +28,7 @@ namespace Microsoft.PowerShell.Commands
     public sealed class GetWinEventCommand : PSCmdlet
     {
         /// <summary>
-        /// ListLog parameter
+        /// ListLog parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -54,7 +54,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _listLog = { "*" };
 
         /// <summary>
-        /// GetLog parameter
+        /// GetLog parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -77,7 +77,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _logName = { "*" };
 
         /// <summary>
-        /// ListProvider parameter
+        /// ListProvider parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -104,7 +104,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _listProvider = { "*" };
 
         /// <summary>
-        /// ProviderName parameter
+        /// ProviderName parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -129,7 +129,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _providerName;
 
         /// <summary>
-        /// Path parameter
+        /// Path parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -154,7 +154,7 @@ namespace Microsoft.PowerShell.Commands
         private string[] _path;
 
         /// <summary>
-        /// MaxEvents parameter
+        /// MaxEvents parameter.
         /// </summary>
         [Parameter(
                 ParameterSetName = "FileSet",
@@ -197,7 +197,7 @@ namespace Microsoft.PowerShell.Commands
         private Int64 _maxEvents = -1;
 
         /// <summary>
-        /// ComputerName parameter
+        /// ComputerName parameter.
         /// </summary>
         [Parameter(
                 ParameterSetName = "ListProviderSet",
@@ -236,7 +236,7 @@ namespace Microsoft.PowerShell.Commands
         private string _computerName = string.Empty;
 
         /// <summary>
-        /// Credential parameter
+        /// Credential parameter.
         /// </summary>
         [Parameter(ParameterSetName = "ListProviderSet")]
         [Parameter(ParameterSetName = "GetProviderSet")]
@@ -256,7 +256,7 @@ namespace Microsoft.PowerShell.Commands
         private PSCredential _credential = PSCredential.Empty;
 
         /// <summary>
-        /// FilterXPath parameter
+        /// FilterXPath parameter.
         /// </summary>
         [Parameter(
                 ParameterSetName = "FileSet",
@@ -284,7 +284,7 @@ namespace Microsoft.PowerShell.Commands
         private string _filter = "*";
 
         /// <summary>
-        /// FilterXml parameter
+        /// FilterXml parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -309,7 +309,7 @@ namespace Microsoft.PowerShell.Commands
         private XmlDocument _xmlQuery = null;
 
         /// <summary>
-        /// FilterHashtable parameter
+        /// FilterHashtable parameter.
         /// </summary>
         [Parameter(
                 Position = 0,
@@ -334,7 +334,7 @@ namespace Microsoft.PowerShell.Commands
         private Hashtable[] _selector;
 
         /// <summary>
-        /// Force switch
+        /// Force switch.
         /// </summary>
         [Parameter(ParameterSetName = "ListLogSet")]
         [Parameter(ParameterSetName = "GetProviderSet")]
@@ -351,7 +351,7 @@ namespace Microsoft.PowerShell.Commands
         private SwitchParameter _force;
 
         /// <summary>
-        /// Oldest switch
+        /// Oldest switch.
         /// </summary>
         [Parameter(ParameterSetName = "FileSet")]
         [Parameter(ParameterSetName = "GetProviderSet")]
@@ -423,7 +423,7 @@ namespace Microsoft.PowerShell.Commands
         private const string hashkey_supress_lc = "suppresshashfilter";
 
         /// <summary>
-        /// BeginProcessing() is invoked once per pipeline: we will load System.Core.dll here
+        /// BeginProcessing() is invoked once per pipeline: we will load System.Core.dll here.
         /// </summary>
         protected override void BeginProcessing()
         {
@@ -431,7 +431,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// EndProcessing() is invoked once per pipeline
+        /// EndProcessing() is invoked once per pipeline.
         /// </summary>
         protected override void EndProcessing()
         {
@@ -608,11 +608,10 @@ namespace Microsoft.PowerShell.Commands
                 foreach (string logPattern in _listLog)
                 {
                     bool bMatchFound = false;
+                    WildcardPattern wildLogPattern = new WildcardPattern(logPattern, WildcardOptions.IgnoreCase);
 
                     foreach (string logName in eventLogSession.GetLogNames())
                     {
-                        WildcardPattern wildLogPattern = new WildcardPattern(logPattern, WildcardOptions.IgnoreCase);
-
                         if (((!WildcardPattern.ContainsWildcardCharacters(logPattern))
                             && string.Equals(logPattern, logName, StringComparison.CurrentCultureIgnoreCase))
                             ||
@@ -679,11 +678,10 @@ namespace Microsoft.PowerShell.Commands
                 foreach (string provPattern in _listProvider)
                 {
                     bool bMatchFound = false;
+                    WildcardPattern wildProvPattern = new WildcardPattern(provPattern, WildcardOptions.IgnoreCase);
 
                     foreach (string provName in eventLogSession.GetProviderNames())
                     {
-                        WildcardPattern wildProvPattern = new WildcardPattern(provPattern, WildcardOptions.IgnoreCase);
-
                         if (((!WildcardPattern.ContainsWildcardCharacters(provPattern))
                             && string.Equals(provPattern, provName, StringComparison.CurrentCultureIgnoreCase))
                             ||
@@ -813,7 +811,6 @@ namespace Microsoft.PowerShell.Commands
 
             using (EventLogSession eventLogSession = CreateSession())
             {
-
                 string query = BuildStructuredQuery(eventLogSession);
                 if (query.Length == 0)
                 {
@@ -1076,7 +1073,6 @@ namespace Microsoft.PowerShell.Commands
                             //
                             // Fix Issue #2327
                             added = HandleNamedDataHashValue(key, hash[key]);
-
                         }
 
                         break;
@@ -1091,7 +1087,6 @@ namespace Microsoft.PowerShell.Commands
 
                     xpathString.Append(added);
                 }
-
             }
 
             return xpathString.ToString();
@@ -1297,7 +1292,7 @@ namespace Microsoft.PowerShell.Commands
                     string query = queriedLogsQueryMap[keyLogName];
                     result.Append(query);
 
-                    if (query.EndsWith("*", StringComparison.OrdinalIgnoreCase))
+                    if (query.EndsWith('*'))
                     {
                         //
                         // No provider predicate: just add the XPath string
@@ -1333,7 +1328,7 @@ namespace Microsoft.PowerShell.Commands
 
                     result.Append(queryCloser);
                 }
-            } //end foreach hashtable
+            }
 
             result.Append(queryListClose);
 
@@ -2062,10 +2057,10 @@ namespace Microsoft.PowerShell.Commands
             foreach (string logPattern in logPatterns)
             {
                 bool bMatched = false;
+                WildcardPattern wildLogPattern = new WildcardPattern(logPattern, WildcardOptions.IgnoreCase);
+
                 foreach (string actualLogName in eventLogSession.GetLogNames())
                 {
-                    WildcardPattern wildLogPattern = new WildcardPattern(logPattern, WildcardOptions.IgnoreCase);
-
                     if (((!WildcardPattern.ContainsWildcardCharacters(logPattern))
                         && (logPattern.Equals(actualLogName, StringComparison.CurrentCultureIgnoreCase)))
                         ||
@@ -2131,10 +2126,10 @@ namespace Microsoft.PowerShell.Commands
             foreach (string provPattern in providerPatterns)
             {
                 bool bMatched = false;
+                WildcardPattern wildProvPattern = new WildcardPattern(provPattern, WildcardOptions.IgnoreCase);
+
                 foreach (string provName in eventLogSession.GetProviderNames())
                 {
-                    WildcardPattern wildProvPattern = new WildcardPattern(provPattern, WildcardOptions.IgnoreCase);
-
                     if (((!WildcardPattern.ContainsWildcardCharacters(provPattern))
                       && (provPattern.Equals(provName, StringComparison.CurrentCultureIgnoreCase)))
                       ||

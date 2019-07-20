@@ -4,6 +4,7 @@
 using System.Management.Automation.Runspaces;
 using System.Text;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation.Remoting.Internal
@@ -63,7 +64,7 @@ namespace System.Management.Automation.Remoting.Internal
     }
 
     /// <summary>
-    /// struct which describes whether an object written
+    /// Struct which describes whether an object written
     /// to an ObjectStream is of type - output, error,
     /// verbose, debug.
     /// PSStreamObject is for internal (PowerShell) consumption
@@ -95,9 +96,9 @@ namespace System.Management.Automation.Remoting.Internal
 
         /// <summary>
         /// Handle the object obtained from an ObjectStream's reader
-        /// based on its type
+        /// based on its type.
         /// </summary>
-        /// <param name="cmdlet">cmdlet to use for outputting the object</param>
+        /// <param name="cmdlet">Cmdlet to use for outputting the object.</param>
         /// <param name="overrideInquire">Used by Receive-Job to suppress inquire preference.</param>
         public void WriteStreamObject(Cmdlet cmdlet, bool overrideInquire = false)
         {
@@ -256,9 +257,9 @@ namespace System.Management.Automation.Remoting.Internal
 
         /// <summary>
         /// Handle the object obtained from an ObjectStream's reader
-        /// based on its type
+        /// based on its type.
         /// </summary>
-        /// <param name="cmdlet">cmdlet to use for outputting the object</param>
+        /// <param name="cmdlet">Cmdlet to use for outputting the object.</param>
         /// <param name="instanceId"></param>
         /// <param name="overrideInquire">Suppresses prompt on messages with Inquire preference.
         /// Needed for Receive-Job</param>
@@ -392,7 +393,7 @@ namespace System.Management.Automation.Remoting.Internal
                         {
                             // if we get a base InformationRecord object, check if the computerName is
                             // populated in the Source field
-                            if (!String.IsNullOrEmpty(informationRecord.Source))
+                            if (!string.IsNullOrEmpty(informationRecord.Source))
                             {
                                 string computerName;
                                 Guid jobInstanceId;
@@ -430,9 +431,9 @@ namespace System.Management.Automation.Remoting.Internal
 
         /// <summary>
         /// Handle the object obtained from an ObjectStream's reader
-        /// based on its type
+        /// based on its type.
         /// </summary>
-        /// <param name="cmdlet">cmdlet to use for outputting the object</param>
+        /// <param name="cmdlet">Cmdlet to use for outputting the object.</param>
         /// <param name="writeSourceIdentifier"></param>
         /// <param name="overrideInquire">Overrides the inquire preference, used in Receive-Job to suppress prompts.</param>
         internal void WriteStreamObject(Cmdlet cmdlet, bool writeSourceIdentifier, bool overrideInquire)
@@ -496,7 +497,7 @@ namespace System.Management.Automation.Remoting.Internal
         internal static ErrorRecord AddSourceTagToError(ErrorRecord errorRecord, Guid sourceId)
         {
             if (errorRecord == null) return null;
-            if (errorRecord.ErrorDetails == null) errorRecord.ErrorDetails = new ErrorDetails(String.Empty);
+            if (errorRecord.ErrorDetails == null) errorRecord.ErrorDetails = new ErrorDetails(string.Empty);
             errorRecord.ErrorDetails.RecommendedAction = CreateInformationalMessage(sourceId, errorRecord.ErrorDetails.RecommendedAction);
             return errorRecord;
         }

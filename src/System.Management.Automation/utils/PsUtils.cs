@@ -2,23 +2,25 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management.Automation.Language;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Xml;
+
 using Microsoft.Win32;
-using System.Collections.Generic;
-using System.Management.Automation.Language;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Defines generic utilities and helper methods for PowerShell
+    /// Defines generic utilities and helper methods for PowerShell.
     /// </summary>
     internal static class PsUtils
     {
@@ -169,7 +171,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Return true/false to indicate whether the processor architecture is ARM
+        /// Return true/false to indicate whether the processor architecture is ARM.
         /// </summary>
         /// <returns></returns>
         internal static bool IsRunningOnProcessorArchitectureARM()
@@ -179,15 +181,15 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Get a temporary directory to use, needs to be unique to avoid collision
+        /// Get a temporary directory to use, needs to be unique to avoid collision.
         /// </summary>
         internal static string GetTemporaryDirectory()
         {
-            string tempDir = String.Empty;
+            string tempDir = string.Empty;
             string tempPath = Path.GetTempPath();
             do
             {
-                tempDir = Path.Combine(tempPath,System.Guid.NewGuid().ToString());
+                tempDir = Path.Combine(tempPath, System.Guid.NewGuid().ToString());
             }
             while (Directory.Exists(tempDir));
 
@@ -197,7 +199,7 @@ namespace System.Management.Automation
             }
             catch (UnauthorizedAccessException)
             {
-                tempDir = String.Empty; // will become current working directory
+                tempDir = string.Empty; // will become current working directory
             }
 
             return tempDir;
@@ -205,26 +207,16 @@ namespace System.Management.Automation
 
         internal static string GetHostName()
         {
-            // Note: non-windows CoreCLR does not support System.Net yet
-            if (Platform.IsWindows)
-            {
-                return WinGetHostName();
-            }
-            else
-            {
-                return Platform.NonWindowsGetHostName();
-            }
-        }
-
-        internal static string WinGetHostName()
-        {
-            System.Net.NetworkInformation.IPGlobalProperties ipProperties =
-                System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
 
             string hostname = ipProperties.HostName;
-            if (!String.IsNullOrEmpty(ipProperties.DomainName))
+            string domainName = ipProperties.DomainName;
+
+            // CoreFX on Unix calls GLibc getdomainname()
+            // which returns "(none)" if a domain name is not set by setdomainname()
+            if (!string.IsNullOrEmpty(domainName) && !domainName.Equals("(none)", StringComparison.Ordinal))
             {
-                hostname = hostname + "." + ipProperties.DomainName;
+                hostname = hostname + "." + domainName;
             }
 
             return hostname;
@@ -282,7 +274,7 @@ namespace System.Management.Automation
         /// to the remote end that contains the key of each UsingExpressionAst and its value. This method
         /// is used to generate the key.
         /// </summary>
-        /// <param name="usingAst">A using expression</param>
+        /// <param name="usingAst">A using expression.</param>
         /// <returns>Base64 encoded string as the key of the UsingExpressionAst.</returns>
         internal static string GetUsingExpressionKey(Language.UsingExpressionAst usingAst)
         {
@@ -313,7 +305,7 @@ namespace System.Management.Automation
         #region EvaluatePowerShellDataFile
 
         /// <summary>
-        /// Evaluate a powershell data file as if it's a module manifest
+        /// Evaluate a powershell data file as if it's a module manifest.
         /// </summary>
         /// <param name="parameterName"></param>
         /// <param name="psDataFilePath"></param>
@@ -545,14 +537,14 @@ namespace System.Management.Automation
 
     /// <summary>
     /// This class provides helper methods for converting to/fro from
-    /// string to base64string
+    /// string to base64string.
     /// </summary>
     internal static class StringToBase64Converter
     {
         /// <summary>
-        /// Converts string to base64 encoded string
+        /// Converts string to base64 encoded string.
         /// </summary>
-        /// <param name="input">string to encode</param>
+        /// <param name="input">String to encode.</param>
         /// <returns>Base64 encoded string.</returns>
         internal static string StringToBase64String(string input)
         {
@@ -571,9 +563,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Decodes base64 encoded string
+        /// Decodes base64 encoded string.
         /// </summary>
-        /// <param name="base64">base64 string to decode</param>
+        /// <param name="base64">Base64 string to decode.</param>
         /// <returns>Decoded string.</returns>
         internal static string Base64ToString(string base64)
         {
@@ -587,7 +579,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Decodes base64 encoded string in to args array
+        /// Decodes base64 encoded string in to args array.
         /// </summary>
         /// <param name="base64"></param>
         /// <returns></returns>
@@ -600,31 +592,31 @@ namespace System.Management.Automation
 
             string decoded = new string(Encoding.Unicode.GetChars(Convert.FromBase64String(base64)));
 
-            //Deserialize string
+            // Deserialize string
             XmlReader reader = XmlReader.Create(new StringReader(decoded), InternalDeserializer.XmlReaderSettingsForCliXml);
             object dso;
             Deserializer deserializer = new Deserializer(reader);
             dso = deserializer.Deserialize();
             if (deserializer.Done() == false)
             {
-                //This helper function should move to host and it should provide appropriate
-                //error message there.
+                // This helper function should move to host and it should provide appropriate
+                // error message there.
                 throw PSTraceSource.NewArgumentException(MinishellParameterBinderController.ArgsParameter);
             }
 
             PSObject mo = dso as PSObject;
             if (mo == null)
             {
-                //This helper function should move the host. Provide appropriate error message.
-                //Format of args parameter is not correct.
+                // This helper function should move the host. Provide appropriate error message.
+                // Format of args parameter is not correct.
                 throw PSTraceSource.NewArgumentException(MinishellParameterBinderController.ArgsParameter);
             }
 
             var argsList = mo.BaseObject as ArrayList;
             if (argsList == null)
             {
-                //This helper function should move the host. Provide appropriate error message.
-                //Format of args parameter is not correct.
+                // This helper function should move the host. Provide appropriate error message.
+                // Format of args parameter is not correct.
                 throw PSTraceSource.NewArgumentException(MinishellParameterBinderController.ArgsParameter);
             }
 
@@ -694,7 +686,7 @@ namespace System.Management.Automation
     #region ReferenceEqualityComparer
 
     /// <summary>
-    /// Equality comparer based on Object Identity
+    /// Equality comparer based on Object Identity.
     /// </summary>
     internal class ReferenceEqualityComparer : IEqualityComparer
     {

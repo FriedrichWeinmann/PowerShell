@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Management.Automation.Runspaces;
+
 using Dbg = System.Management.Automation;
 
 namespace System.Management.Automation
@@ -83,7 +84,7 @@ namespace System.Management.Automation
         #region Public methods
 
         /// <summary>
-        /// Gets the APIs to access drives
+        /// Gets the APIs to access drives.
         /// </summary>
         public DriveManagementIntrinsics Drive
         {
@@ -91,7 +92,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the APIs to access providers
+        /// Gets the APIs to access providers.
         /// </summary>
         public CmdletProviderManagementIntrinsics Provider
         {
@@ -99,7 +100,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the APIs to access paths and location
+        /// Gets the APIs to access paths and location.
         /// </summary>
         public PathIntrinsics Path
         {
@@ -115,7 +116,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Get/set constraints for this execution environment
+        /// Get/set constraints for this execution environment.
         /// </summary>
         public PSLanguageMode LanguageMode
         {
@@ -125,7 +126,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// If true the PowerShell debugger will use FullLanguage mode, otherwise it will use the current language mode
+        /// If true the PowerShell debugger will use FullLanguage mode, otherwise it will use the current language mode.
         /// </summary>
         public bool UseFullLanguageModeInDebugger
         {
@@ -180,7 +181,7 @@ namespace System.Management.Automation
         /// then the check will be made. If the check fails, then an exception will be thrown...
         /// </summary>
         /// <param name="origin">The command origin value to check against...</param>
-        /// <param name="valueToCheck">The object to check</param>
+        /// <param name="valueToCheck">The object to check.</param>
         public static void ThrowIfNotVisible(CommandOrigin origin, object valueToCheck)
         {
             SessionStateException exception;
@@ -245,8 +246,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Checks the visibility of an object based on the command origin argument.
         /// </summary>
-        /// <param name="origin">The origin to check against</param>
-        /// <param name="valueToCheck">The object to check</param>
+        /// <param name="origin">The origin to check against.</param>
+        /// <param name="valueToCheck">The object to check.</param>
         /// <returns>Returns true if the object is visible, false otherwise.</returns>
         public static bool IsVisible(CommandOrigin origin, object valueToCheck)
         {
@@ -263,8 +264,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Checks the visibility of an object based on the command origin argument.
         /// </summary>
-        /// <param name="origin">The origin to check against</param>
-        /// <param name="variable">The variable to check</param>
+        /// <param name="origin">The origin to check against.</param>
+        /// <param name="variable">The variable to check.</param>
         /// <returns>Returns true if the object is visible, false otherwise.</returns>
         public static bool IsVisible(CommandOrigin origin, PSVariable variable)
         {
@@ -280,8 +281,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Checks the visibility of an object based on the command origin argument.
         /// </summary>
-        /// <param name="origin">The origin to check against</param>
-        /// <param name="commandInfo">The command to check</param>
+        /// <param name="origin">The origin to check against.</param>
+        /// <param name="commandInfo">The command to check.</param>
         /// <returns>Returns true if the object is visible, false otherwise.</returns>
         public static bool IsVisible(CommandOrigin origin, CommandInfo commandInfo)
         {
@@ -300,7 +301,7 @@ namespace System.Management.Automation
         #region Internal methods
 
         /// <summary>
-        /// Gets a reference to the "real" session state object instead of the facade
+        /// Gets a reference to the "real" session state object instead of the facade.
         /// </summary>
         internal SessionStateInternal Internal
         {
@@ -325,12 +326,12 @@ namespace System.Management.Automation
     public enum SessionStateEntryVisibility
     {
         /// <summary>
-        /// Entries are visible to requests from outside the runspace
+        /// Entries are visible to requests from outside the runspace.
         /// </summary>
         Public = 0,
 
         /// <summary>
-        /// Entries are not visible to requests from outside the runspace
+        /// Entries are not visible to requests from outside the runspace.
         /// </summary>
         Private = 1
     }
@@ -347,12 +348,12 @@ namespace System.Management.Automation
     public enum PSLanguageMode
     {
         /// <summary>
-        /// All PowerShell language elements are available
+        /// All PowerShell language elements are available.
         /// </summary>
         FullLanguage = 0,
 
         /// <summary>
-        /// A subset of language elements are available to external requests
+        /// A subset of language elements are available to external requests.
         /// </summary>
         RestrictedLanguage = 1,
 

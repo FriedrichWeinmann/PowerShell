@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Management.Automation;
-using System.Management.Automation.Internal;
-using System.Management.Automation.Host;
-using System.Reflection;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Management.Automation;
+using System.Management.Automation.Host;
+using System.Management.Automation.Internal;
+using System.Reflection;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -21,7 +20,7 @@ namespace Microsoft.PowerShell.Commands
         HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113280", RemotingCapability = RemotingCapability.None)]
     public class AddMemberCommand : PSCmdlet
     {
-        private static object s_notSpecified = new object();
+        private static readonly object s_notSpecified = new object();
         private static bool HasBeenSpecified(object obj)
         {
             return !System.Object.ReferenceEquals(obj, s_notSpecified);
@@ -178,7 +177,6 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter(Mandatory = true, Position = 0, ParameterSetName = NotePropertyMultiMemberSet)]
         [ValidateNotNullOrEmpty]
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public IDictionary NotePropertyMembers
         {
             get { return _property; }

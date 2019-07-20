@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Linq;
-using System.Management.Automation;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -29,7 +30,7 @@ namespace Microsoft.PowerShell.Commands
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         [ValidateNotNullOrEmpty]
         [Parameter(Position = 0)]
-        public String[] TypeName
+        public string[] TypeName
         {
             get
             {
@@ -42,7 +43,7 @@ namespace Microsoft.PowerShell.Commands
 
                 if (_typename == null)
                 {
-                    _filter = Utils.EmptyArray<WildcardPattern>();
+                    _filter = Array.Empty<WildcardPattern>();
                 }
                 else
                 {
@@ -169,7 +170,7 @@ namespace Microsoft.PowerShell.Commands
                 }
 
                 viewList.Add(formatdef);
-            }// foreach(ViewDefinition...
+            }
 
             // write out all the available type definitions
             foreach (var pair in typedefs)

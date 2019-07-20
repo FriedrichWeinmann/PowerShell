@@ -5,11 +5,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -23,7 +21,6 @@ using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Cmdletization
 {
-    [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     internal sealed class ScriptWriter
     {
         #region Static code reused for reading cmdletization xml
@@ -47,7 +44,7 @@ namespace Microsoft.PowerShell.Cmdletization
             ScriptWriter.s_xmlReaderSettings.MaxCharactersInDocument = 128 * 1024 * 1024; // generous guess for the upper bound
 
 #if CORECLR // The XML Schema file 'cmdlets-over-objects.xsd' is missing in Github, and it's likely the resource string
-            //'CmdletizationCoreResources.Xml_cmdletsOverObjectsXsd' needs to be reworked to work in .NET Core.
+            // 'CmdletizationCoreResources.Xml_cmdletsOverObjectsXsd' needs to be reworked to work in .NET Core.
             ScriptWriter.s_xmlReaderSettings.DtdProcessing = DtdProcessing.Ignore;
 #else
             ScriptWriter.s_xmlReaderSettings.DtdProcessing = DtdProcessing.Parse; // Allowing DTD parsing with limits of MaxCharactersFromEntities/MaxCharactersInDocument
@@ -237,9 +234,6 @@ function __cmdletization_BindCommonParameters
             return verb + "-" + noun;
         }
 
-        private readonly List<string> _aliasesToExport = new List<string>();
-        private readonly List<string> _functionsToExport = new List<string>();
-
         private string GetCmdletAttributes(CommonCmdletMetadata cmdletMetadata)
         {
             // Generate the script for the Alias and Obsolete Attribute if any is declared in CDXML
@@ -247,7 +241,6 @@ function __cmdletization_BindCommonParameters
             if (cmdletMetadata.Aliases != null)
             {
                 attributes.Append("[Alias('" + string.Join("','", cmdletMetadata.Aliases.Select(alias => CodeGeneration.EscapeSingleQuotedStringContent(alias))) + "')]");
-                _aliasesToExport.AddRange(cmdletMetadata.Aliases);
             }
 
             if (cmdletMetadata.Obsolete != null)
@@ -929,12 +922,12 @@ function __cmdletization_BindCommonParameters
             }
         }
 
-        private const string StaticCommonParameterSetTemplate = "{1}"; //"{0}::{1}";
-        private const string StaticMethodParameterSetTemplate = "{0}"; //"{1}::{0}";
+        private const string StaticCommonParameterSetTemplate = "{1}"; // "{0}::{1}";
+        private const string StaticMethodParameterSetTemplate = "{0}"; // "{1}::{0}";
 
-        private const string InstanceCommonParameterSetTemplate = "{1}"; //"{0}::{1}::{2}";
-        private const string InstanceQueryParameterSetTemplate = "{0}"; //"{1}::{0}::{2}";
-        private const string InstanceMethodParameterSetTemplate = "{2}"; //"{1}::{2}::{0}";
+        private const string InstanceCommonParameterSetTemplate = "{1}"; // "{0}::{1}::{2}";
+        private const string InstanceQueryParameterSetTemplate = "{0}"; // "{1}::{0}::{2}";
+        private const string InstanceMethodParameterSetTemplate = "{2}"; // "{1}::{2}::{0}";
 
         private const string InputObjectQueryParameterSetName = "InputObject (cdxml)";
         private const string SingleQueryParameterSetName = "Query (cdxml)";
@@ -1924,8 +1917,6 @@ Microsoft.PowerShell.Core\Export-ModuleMember -Function '{1}' -Alias '*'
                 CmdletEndBlockTemplate,
                 /* 0 */ this.GetHelpDirectiveForExternalHelp(),
                 /* 1 */ CodeGeneration.EscapeSingleQuotedStringContent(commandMetadata.Name));
-
-            _functionsToExport.Add(commandMetadata.Name);
         }
 
         private static void AddPassThruParameter(IDictionary<string, ParameterMetadata> commonParameters, InstanceCmdletMetadata instanceCmdletMetadata)
@@ -2022,8 +2013,6 @@ Microsoft.PowerShell.Core\Export-ModuleMember -Function '{1}' -Alias '*'
                 CmdletEndBlockTemplate,
                 /* 0 */ this.GetHelpDirectiveForExternalHelp(),
                 /* 1 */ CodeGeneration.EscapeSingleQuotedStringContent(commandMetadata.Name));
-
-            _functionsToExport.Add(commandMetadata.Name);
         }
 
         private string GetOutputAttributeForGetCmdlet()
@@ -2109,8 +2098,6 @@ Microsoft.PowerShell.Core\Export-ModuleMember -Function '{1}' -Alias '*'
                 CmdletEndBlockTemplate,
                 /* 0 */ this.GetHelpDirectiveForExternalHelp(),
                 /* 1 */ CodeGeneration.EscapeSingleQuotedStringContent(commandMetadata.Name));
-
-            _functionsToExport.Add(commandMetadata.Name);
         }
 
         private static object s_enumCompilationLock = new object();

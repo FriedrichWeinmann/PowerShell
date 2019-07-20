@@ -110,7 +110,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Sets the parameter set
+        /// Sets the parameter set.
         /// </summary>
         /// <param name="parameterSetName">
         /// The name of the valid parameter set.
@@ -230,8 +230,8 @@ namespace System.Management.Automation
         /// baseName and resourceId from the current assembly.
         /// You should override this if you require a different behavior.
         /// </summary>
-        /// <param name="baseName">the base resource name</param>
-        /// <param name="resourceId">the resource id</param>
+        /// <param name="baseName">The base resource name.</param>
+        /// <param name="resourceId">The resource id.</param>
         /// <returns>The resource string corresponding to baseName and resourceId.</returns>
         /// <exception cref="System.ArgumentException">
         /// Invalid <paramref name="baseName"/> or <paramref name="resourceId"/>, or
@@ -251,10 +251,10 @@ namespace System.Management.Automation
         {
             using (PSTransactionManager.GetEngineProtectionScope())
             {
-                if (String.IsNullOrEmpty(baseName))
+                if (string.IsNullOrEmpty(baseName))
                     throw PSTraceSource.NewArgumentNullException("baseName");
 
-                if (String.IsNullOrEmpty(resourceId))
+                if (string.IsNullOrEmpty(resourceId))
                     throw PSTraceSource.NewArgumentNullException("resourceId");
 
                 ResourceManager manager = ResourceManagerCache.GetResourceManager(this.GetType().Assembly, baseName);
@@ -316,7 +316,7 @@ namespace System.Management.Automation
         /// a <see cref="System.Management.Automation.ParentContainsErrorRecordException"/>
         /// rather than the real exception.
         /// </remarks>
-        /// <param name="errorRecord">error</param>
+        /// <param name="errorRecord">Error.</param>
         /// <exception cref="System.InvalidOperationException">
         /// Not permitted at this time or from this thread
         /// </exception>
@@ -417,9 +417,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Display verbose information
+        /// Display verbose information.
         /// </summary>
-        /// <param name="text">verbose output</param>
+        /// <param name="text">Verbose output.</param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated
         /// during the execution of this method.
@@ -454,9 +454,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Display warning information
+        /// Display warning information.
         /// </summary>
-        /// <param name="text">warning output</param>
+        /// <param name="text">Warning output.</param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated
         /// during the execution of this method.
@@ -493,7 +493,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Write text into pipeline execution log.
         /// </summary>
-        /// <param name="text">text to be written to log</param>
+        /// <param name="text">Text to be written to log.</param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated
         /// during the execution of this method.
@@ -528,9 +528,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Display progress information
+        /// Display progress information.
         /// </summary>
-        /// <param name="progressRecord">progress information</param>
+        /// <param name="progressRecord">Progress information.</param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated
         /// during the execution of this method.
@@ -567,7 +567,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Displays progress output if enabled
+        /// Displays progress output if enabled.
         /// </summary>
         /// <param name="sourceId">
         /// Identifies which command is reporting progress
@@ -599,9 +599,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Display debug information
+        /// Display debug information.
         /// </summary>
-        /// <param name="text">debug output</param>
+        /// <param name="text">Debug output.</param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated
         /// during the execution of this method.
@@ -682,7 +682,7 @@ namespace System.Management.Automation
                 if (commandRuntime2 != null)
                 {
                     string source = this.MyInvocation.PSCommandPath;
-                    if (String.IsNullOrEmpty(source))
+                    if (string.IsNullOrEmpty(source))
                     {
                         source = this.MyInvocation.MyCommand.Name;
                     }
@@ -1018,8 +1018,8 @@ namespace System.Management.Automation
         ///                 public override void ProcessRecord()
         ///                 {
         ///                     if (ShouldProcess(
-        ///                         String.Format("Deleting file {0}",filename),
-        ///                         String.Format("Are you sure you want to delete file {0}?", filename),
+        ///                         string.Format("Deleting file {0}",filename),
+        ///                         string.Format("Are you sure you want to delete file {0}?", filename),
         ///                         "Delete file"))
         ///                     {
         ///                         // delete the object
@@ -1135,8 +1135,8 @@ namespace System.Management.Automation
         ///                 {
         ///                     ShouldProcessReason shouldProcessReason;
         ///                     if (ShouldProcess(
-        ///                         String.Format("Deleting file {0}",filename),
-        ///                         String.Format("Are you sure you want to delete file {0}?", filename),
+        ///                         string.Format("Deleting file {0}",filename),
+        ///                         string.Format("Are you sure you want to delete file {0}?", filename),
         ///                         "Delete file",
         ///                         out shouldProcessReason))
         ///                     {
@@ -1258,14 +1258,14 @@ namespace System.Management.Automation
         ///                 public override void ProcessRecord()
         ///                 {
         ///                     if (ShouldProcess(
-        ///                         String.Format("Deleting file {0}",filename),
-        ///                         String.Format("Are you sure you want to delete file {0}", filename),
+        ///                         string.Format("Deleting file {0}",filename),
+        ///                         string.Format("Are you sure you want to delete file {0}", filename),
         ///                         "Delete file"))
         ///                     {
         ///                         if (IsReadOnly(filename))
         ///                         {
         ///                             if (!Force &amp;&amp; !ShouldContinue(
-        ///                                     String.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
+        ///                                     string.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
         ///                                     "Delete file"))
         ///                                     )
         ///                             {
@@ -1390,14 +1390,14 @@ namespace System.Management.Automation
         ///                 public override void ProcessRecord()
         ///                 {
         ///                     if (ShouldProcess(
-        ///                         String.Format("Deleting file {0}",filename),
-        ///                         String.Format("Are you sure you want to delete file {0}", filename),
+        ///                         string.Format("Deleting file {0}",filename),
+        ///                         string.Format("Are you sure you want to delete file {0}", filename),
         ///                         "Delete file"))
         ///                     {
         ///                         if (IsReadOnly(filename))
         ///                         {
         ///                             if (!Force &amp;&amp; !ShouldContinue(
-        ///                                     String.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
+        ///                                     string.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
         ///                                     "Delete file"),
         ///                                     ref yesToAll,
         ///                                     ref noToAll
@@ -1530,14 +1530,14 @@ namespace System.Management.Automation
         ///                 public override void ProcessRecord()
         ///                 {
         ///                     if (ShouldProcess(
-        ///                         String.Format("Deleting file {0}",filename),
-        ///                         String.Format("Are you sure you want to delete file {0}", filename),
+        ///                         string.Format("Deleting file {0}",filename),
+        ///                         string.Format("Are you sure you want to delete file {0}", filename),
         ///                         "Delete file"))
         ///                     {
         ///                         if (IsReadOnly(filename))
         ///                         {
         ///                             if (!Force &amp;&amp; !ShouldContinue(
-        ///                                     String.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
+        ///                                     string.Format("File {0} is read-only.  Are you sure you want to delete read-only file {0}?", filename),
         ///                                     "Delete file"),
         ///                                     ref yesToAll,
         ///                                     ref noToAll
@@ -1627,7 +1627,7 @@ namespace System.Management.Automation
         /// </summary>
         /// <typeparam name="T">The type returned by the enumerator</typeparam>
         /// <returns>An instance of the appropriate enumerator.</returns>
-        /// <exception cref="InvalidCastException">Thrown when the object returned by the cmdlet cannot be converted to the target type</exception>
+        /// <exception cref="InvalidCastException">Thrown when the object returned by the cmdlet cannot be converted to the target type.</exception>
         public IEnumerable<T> Invoke<T>()
         {
             using (PSTransactionManager.GetEngineProtectionScope())
@@ -1659,7 +1659,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Gets an object that surfaces the current PowerShell transaction.
-        /// When this object is disposed, PowerShell resets the active transaction
+        /// When this object is disposed, PowerShell resets the active transaction.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public PSTransactionContext CurrentPSTransaction
@@ -1678,7 +1678,7 @@ namespace System.Management.Automation
 
         #region ThrowTerminatingError
         /// <summary>
-        /// Terminate the command and report an error
+        /// Terminate the command and report an error.
         /// </summary>
         /// <param name="errorRecord">
         /// The error which caused the command to be terminated

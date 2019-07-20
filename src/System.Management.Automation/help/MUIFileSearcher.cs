@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace System.Management.Automation
@@ -89,15 +89,15 @@ namespace System.Management.Automation
         private Hashtable _uniqueMatches = new Hashtable(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// search for files using the target, searchPaths member of this class.
+        /// Search for files using the target, searchPaths member of this class.
         /// </summary>
         private void SearchForFiles()
         {
-            if (String.IsNullOrEmpty(this.Target))
+            if (string.IsNullOrEmpty(this.Target))
                 return;
 
             string pattern = Path.GetFileName(this.Target);
-            if (String.IsNullOrEmpty(pattern))
+            if (string.IsNullOrEmpty(pattern))
                 return;
 
             Collection<string> normalizedSearchPaths = NormalizeSearchPaths(this.Target, this.SearchPaths);
@@ -143,7 +143,7 @@ namespace System.Management.Automation
                 }
             }
 
-            return (String[])result.ToArray(typeof(string));
+            return (string[])result.ToArray(typeof(string));
 #else
             return Directory.GetFiles(path, pattern);
 #endif
@@ -208,7 +208,7 @@ namespace System.Management.Automation
             List<string> cultureNameList = new List<string>();
             CultureInfo culture = CultureInfo.CurrentUICulture;
 
-            while (culture != null && !String.IsNullOrEmpty(culture.Name))
+            while (culture != null && !string.IsNullOrEmpty(culture.Name))
             {
                 cultureNameList.Add(culture.Name);
                 culture = culture.Parent;
@@ -260,7 +260,7 @@ namespace System.Management.Automation
 
             // step 1: if target has path attached, directly locate
             //         file from there.
-            if (!String.IsNullOrEmpty(target) && !String.IsNullOrEmpty(Path.GetDirectoryName(target)))
+            if (!string.IsNullOrEmpty(target) && !string.IsNullOrEmpty(Path.GetDirectoryName(target)))
             {
                 string directory = Path.GetDirectoryName(target);
 
@@ -269,8 +269,8 @@ namespace System.Management.Automation
                     result.Add(Path.GetFullPath(directory));
                 }
 
-                //user specifically wanted to search in a particular directory
-                //so return..
+                // user specifically wanted to search in a particular directory
+                // so return..
                 return result;
             }
 
@@ -326,7 +326,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Locate a file in default search paths
+        /// Locate a file in default search paths.
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
@@ -341,8 +341,8 @@ namespace System.Management.Automation
         /// The file name to search is the filename part of path parameter. (Normally path
         /// parameter should contain only the filename part).
         /// </summary>
-        /// <param name="file">This is the path to the file. If it has a path, we need to search under that path first</param>
-        /// <param name="searchPaths">Additional search paths</param>
+        /// <param name="file">This is the path to the file. If it has a path, we need to search under that path first.</param>
+        /// <param name="searchPaths">Additional search paths.</param>
         /// <returns></returns>
         internal static string LocateFile(string file, Collection<string> searchPaths)
         {
@@ -358,7 +358,7 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// This enum defines different search mode for the MUIFileSearcher
+    /// This enum defines different search mode for the MUIFileSearcher.
     /// </summary>
     internal enum SearchMode
     {

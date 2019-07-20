@@ -15,7 +15,7 @@ namespace System.Management.Automation.Internal
         #region ctor
 
         /// <summary>
-        /// Constructs an instance with the specified command instance
+        /// Constructs an instance with the specified command instance.
         /// </summary>
         /// <param name="commandRuntime">
         /// The instance of the command that the parameters should set the
@@ -237,7 +237,7 @@ namespace System.Management.Automation.Internal
                 string varName = arguments as string;
                 if (varName != null)
                 {
-                    if (varName.StartsWith("+", StringComparison.Ordinal))
+                    if (varName.StartsWith('+'))
                     {
                         varName = varName.Substring(1);
                     }

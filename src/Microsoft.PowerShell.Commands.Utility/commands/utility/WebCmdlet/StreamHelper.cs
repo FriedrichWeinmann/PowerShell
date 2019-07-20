@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.IO.Compression;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -33,7 +33,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="initialCapacity"></param>
-        /// <param name="cmdlet">Owner cmdlet if any</param>
+        /// <param name="cmdlet">Owner cmdlet if any.</param>
         internal WebResponseContentMemoryStream(Stream stream, int initialCapacity, Cmdlet cmdlet)
             : base(initialCapacity)
         {
@@ -417,7 +417,10 @@ namespace Microsoft.PowerShell.Commands
             return result;
         }
 
-        private static readonly Regex s_metaexp = new Regex(@"<meta\s[.\n]*[^><]*charset\s*=\s*[""'\n]?(?<charset>[A-Za-z].[^\s""'\n<>]*)[\s""'\n>]");
+        private static readonly Regex s_metaexp = new Regex(
+                @"<meta\s.*[^.><]*charset\s*=\s*[""'\n]?(?<charset>[A-Za-z].[^\s""'\n<>]*)[\s""'\n>]",
+                RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+            );
 
         internal static string DecodeStream(Stream stream, ref Encoding encoding)
         {

@@ -5,25 +5,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Management.Automation;
-using System.Management.Automation.Language;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Language;
 using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Security.Cryptography.X509Certificates;
 
 using Dbg = System.Management.Automation.Diagnostics;
 
-// FxCop suppressions for resource strings:
-[module: SuppressMessage("Microsoft.Naming", "CA1703:ResourceStringsShouldBeSpelledCorrectly", Scope = "resource", Target = "ImplicitRemotingStrings.resources", MessageId = "runspace")]
-[module: SuppressMessage("Microsoft.Naming", "CA1703:ResourceStringsShouldBeSpelledCorrectly", Scope = "resource", Target = "ImplicitRemotingStrings.resources", MessageId = "Runspace")]
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -347,7 +343,6 @@ namespace Microsoft.PowerShell.Commands
         /// Gets or sets the path(s) or name(s) of the commands to retrieve.
         /// </summary>
         [Parameter(Position = 2)]
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         [Alias("Name")]
         public string[] CommandName
         {
@@ -383,7 +378,6 @@ namespace Microsoft.PowerShell.Commands
         [AllowNull]
         [AllowEmptyCollection]
         [Alias("Args")]
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public object[] ArgumentList
         {
             get
@@ -425,8 +419,6 @@ namespace Microsoft.PowerShell.Commands
         /// Gets or sets the PSSnapin parameter to the cmdlet.
         /// </summary>
         [Parameter]
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Snapin")]
         [Alias("PSSnapin")]
         [ValidateNotNull]
         public string[] Module
@@ -440,7 +432,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 if (value == null)
                 {
-                    value = new string[0];
+                    value = Array.Empty<string>();
                 }
 
                 _PSSnapins = value;
@@ -449,13 +441,12 @@ namespace Microsoft.PowerShell.Commands
             }
         }
 
-        private string[] _PSSnapins = new string[0];
+        private string[] _PSSnapins = Array.Empty<string>();
         internal bool IsModuleSpecified = false;
         /// <summary>
         /// Gets or sets the FullyQualifiedModule parameter to the cmdlet.
         /// </summary>
         [Parameter]
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         [ValidateNotNull]
         public ModuleSpecification[] FullyQualifiedModule
         {
@@ -488,7 +479,6 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Gets or sets the types for which we should get formatting and output data.
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         [Parameter(Position = 3)]
         public string[] FormatTypeName
         {
@@ -534,7 +524,6 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
         [ValidateNotNull]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Runspace")]
         public PSSession Session { get; set; }
 
         #endregion Parameters
@@ -1102,7 +1091,7 @@ namespace Microsoft.PowerShell.Commands
         /// Validates that a name or identifier is safe to use in generated code
         /// (i.e. it can't be used for code injection attacks).
         /// </summary>
-        /// <param name="name">name to validate</param>
+        /// <param name="name">Name to validate.</param>
         /// <returns><c>true</c> if the name is safe; <c>false</c> otherwise.</returns>
         private static bool IsSafeNameOrIdentifier(string name)
         {
@@ -1120,7 +1109,7 @@ namespace Microsoft.PowerShell.Commands
         /// Validates that a parameter name is safe to use in generated code
         /// (i.e. it can't be used for code injection attacks).
         /// </summary>
-        /// <param name="parameterName">parameter name to validate</param>
+        /// <param name="parameterName">Parameter name to validate.</param>
         /// <returns><c>true</c> if the name is safe; <c>false</c> otherwise.</returns>
         private static bool IsSafeParameterName(string parameterName)
         {
@@ -1131,7 +1120,7 @@ namespace Microsoft.PowerShell.Commands
         /// Validates that a type can be safely used as a type constraint
         /// (i.e. it doesn't introduce any side effects on the client).
         /// </summary>
-        /// <param name="type">type to validate</param>
+        /// <param name="type">Type to validate.</param>
         /// <returns><c>true</c> if the type is safe; <c>false</c> otherwise.</returns>
         private static bool IsSafeTypeConstraint(Type type)
         {
@@ -1174,7 +1163,7 @@ namespace Microsoft.PowerShell.Commands
         /// Validates that command metadata returned from the (potentially malicious) server is safe.
         /// Writes error messages if necessary.  Modifies command metadata to make it safe if necessary.
         /// </summary>
-        /// <param name="commandMetadata">command metadata to verify</param>
+        /// <param name="commandMetadata">Command metadata to verify.</param>
         /// <returns><c>true</c> if the command metadata is safe; <c>false</c> otherwise.</returns>
         private bool IsSafeCommandMetadata(CommandMetadata commandMetadata)
         {
@@ -1372,7 +1361,6 @@ namespace Microsoft.PowerShell.Commands
                 case CommandTypes.Filter:
                 case CommandTypes.Function:
                 case CommandTypes.Script:
-                case CommandTypes.Workflow:
                     return 20;
 
                 case CommandTypes.Cmdlet:
@@ -1392,9 +1380,9 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Converts remote (deserialized) CommandInfo objects into CommandMetadata equivalents.
         /// </summary>
-        /// <param name="name2commandMetadata">Dictionary where rehydrated CommandMetadata are going to be stored</param>
-        /// <param name="alias2resolvedCommandName">Dictionary mapping alias names to resolved command names</param>
-        /// <param name="remoteCommandInfo">Remote (deserialized) CommandInfo object</param>
+        /// <param name="name2commandMetadata">Dictionary where rehydrated CommandMetadata are going to be stored.</param>
+        /// <param name="alias2resolvedCommandName">Dictionary mapping alias names to resolved command names.</param>
+        /// <param name="remoteCommandInfo">Remote (deserialized) CommandInfo object.</param>
         /// <returns>CommandMetadata equivalents.</returns>
         private void AddRemoteCommandMetadata(
             Dictionary<string, CommandMetadata> name2commandMetadata,
@@ -1859,17 +1847,17 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Generates a proxy module in the given directory.
         /// </summary>
-        /// <param name="moduleRootDirectory">base directory for the module</param>
-        /// <param name="moduleNamePrefix">fileName prefix for module files</param>
-        /// <param name="encoding">encoding of generated files</param>
-        /// <param name="force">whether to overwrite files</param>
-        /// <param name="listOfCommandMetadata">remote commands to generate proxies for</param>
-        /// <param name="alias2resolvedCommandName">dictionary mapping alias names to resolved command names</param>
-        /// <param name="listOfFormatData">remote format data to generate format.ps1xml for</param>
+        /// <param name="moduleRootDirectory">Base directory for the module.</param>
+        /// <param name="moduleNamePrefix">FileName prefix for module files.</param>
+        /// <param name="encoding">Encoding of generated files.</param>
+        /// <param name="force">Whether to overwrite files.</param>
+        /// <param name="listOfCommandMetadata">Remote commands to generate proxies for.</param>
+        /// <param name="alias2resolvedCommandName">Dictionary mapping alias names to resolved command names.</param>
+        /// <param name="listOfFormatData">Remote format data to generate format.ps1xml for.</param>
         /// <returns>Paths to generated files.</returns>
         internal List<string> GenerateProxyModule(
             DirectoryInfo moduleRootDirectory,
-            String moduleNamePrefix,
+            string moduleNamePrefix,
             Encoding encoding,
             bool force,
             List<CommandMetadata> listOfCommandMetadata,
@@ -2037,7 +2025,7 @@ namespace Microsoft.PowerShell.Commands
                 CodeGeneration.EscapeSingleQuotedStringContent(StringUtil.Format(ImplicitRemotingStrings.ProxyModuleDescription, this.GetConnectionString())),
                 CodeGeneration.EscapeSingleQuotedStringContent(Path.GetFileName(psm1fileName)),
                 CodeGeneration.EscapeSingleQuotedStringContent(Path.GetFileName(formatPs1xmlFileName)),
-                this._remoteRunspaceInfo.InstanceId);
+                _remoteRunspaceInfo.InstanceId);
         }
 
         #endregion
@@ -2523,7 +2511,7 @@ function Get-PSImplicitRemotingSession
                     NewVMRunspaceTemplate,
                     /* 0 */ this.GenerateConnectionStringForNewRunspace(),
                     /* 1 */ this.GenerateCredentialParameter(),
-                    /* 2 */ String.IsNullOrEmpty(vmConfigurationName) ? String.Empty : String.Concat("-ConfigurationName ", vmConfigurationName));
+                    /* 2 */ string.IsNullOrEmpty(vmConfigurationName) ? string.Empty : string.Concat("-ConfigurationName ", vmConfigurationName));
             }
             else
             {
@@ -2536,7 +2524,7 @@ function Get-PSImplicitRemotingSession
                         NewContainerRunspaceTemplate,
                         /* 0 */ this.GenerateConnectionStringForNewRunspace(),
                         /* 1 */ containerConnectionInfo.ContainerProc.RunAsAdmin ? "-RunAsAdministrator" : string.Empty,
-                        /* 2 */ String.IsNullOrEmpty(containerConfigurationName) ? String.Empty : String.Concat("-ConfigurationName ", containerConfigurationName));
+                        /* 2 */ string.IsNullOrEmpty(containerConfigurationName) ? string.Empty : string.Concat("-ConfigurationName ", containerConfigurationName));
                 }
                 else
                 {
@@ -3012,18 +3000,18 @@ function Get-PSImplicitRemotingClientSideParameters
         /// <summary>
         /// Generates a proxy module in the given directory.
         /// </summary>
-        /// <param name="moduleRootDirectory">base directory for the module</param>
-        /// <param name="fileNamePrefix">filename prefix for module files</param>
-        /// <param name="encoding">encoding of generated files</param>
-        /// <param name="force">whether to overwrite files</param>
-        /// <param name="listOfCommandMetadata">remote commands to generate proxies for</param>
-        /// <param name="alias2resolvedCommandName">dictionary mapping alias names to resolved command names</param>
-        /// <param name="listOfFormatData">remote format data to generate format.ps1xml for</param>
-        /// <param name="certificate">certificate with which to sign the format files</param>
+        /// <param name="moduleRootDirectory">Base directory for the module.</param>
+        /// <param name="fileNamePrefix">Filename prefix for module files.</param>
+        /// <param name="encoding">Encoding of generated files.</param>
+        /// <param name="force">Whether to overwrite files.</param>
+        /// <param name="listOfCommandMetadata">Remote commands to generate proxies for.</param>
+        /// <param name="alias2resolvedCommandName">Dictionary mapping alias names to resolved command names.</param>
+        /// <param name="listOfFormatData">Remote format data to generate format.ps1xml for.</param>
+        /// <param name="certificate">Certificate with which to sign the format files.</param>
         /// <returns>Path to the created files.</returns>
         internal List<string> GenerateProxyModule(
             DirectoryInfo moduleRootDirectory,
-            String fileNamePrefix,
+            string fileNamePrefix,
             Encoding encoding,
             bool force,
             List<CommandMetadata> listOfCommandMetadata,
@@ -3091,7 +3079,7 @@ function Get-PSImplicitRemotingClientSideParameters
                 }
                 else
                 {
-                    String currentFile = baseName + ".psm1";
+                    string currentFile = baseName + ".psm1";
                     try
                     {
                         SignatureHelper.SignFile(SigningOption.Default, currentFile, certificate, string.Empty, null);

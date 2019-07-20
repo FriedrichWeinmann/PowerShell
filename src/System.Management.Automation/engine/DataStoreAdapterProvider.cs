@@ -1,18 +1,19 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Management.Automation.Provider;
 using System.Reflection;
-using System.Linq;
 using System.Threading;
+
 using Dbg = System.Management.Automation;
-using System.Collections.Generic;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Information about a loaded Cmdlet Provider
+    /// Information about a loaded Cmdlet Provider.
     /// </summary>
     /// <remarks>
     /// A cmdlet provider may want to derive from this class to provide their
@@ -35,41 +36,48 @@ namespace System.Management.Automation
         /// </summary>
         private SessionState _sessionState;
 
+        private string _fullName;
+
         /// <summary>
         /// Gets the name of the provider.
         /// </summary>
         public string Name { get; }
 
         /// <summary>
-        /// Gets the full name of the provider including the pssnapin name if available
+        /// Gets the full name of the provider including the pssnapin name if available.
         /// </summary>
         internal string FullName
         {
             get
             {
-                string result = this.Name;
-                if (!String.IsNullOrEmpty(this.PSSnapInName))
+                string GetFullName(string name, string psSnapInName, string moduleName)
                 {
-                    result =
-                        String.Format(
-                            System.Globalization.CultureInfo.InvariantCulture,
-                            "{0}\\{1}",
-                            this.PSSnapInName,
-                            this.Name);
+                    string result = name;
+                    if (!string.IsNullOrEmpty(psSnapInName))
+                    {
+                        result =
+                            string.Format(
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                "{0}\\{1}",
+                                psSnapInName,
+                                name);
+                    }
+
+                    // After converting core snapins to load as modules, the providers will have Module property populated
+                    else if (!string.IsNullOrEmpty(moduleName))
+                    {
+                        result =
+                            string.Format(
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                "{0}\\{1}",
+                                moduleName,
+                                name);
+                    }
+
+                    return result;
                 }
 
-                // After converting core snapins to load as modules, the providers will have Module property populated
-                else if (!string.IsNullOrEmpty(this.ModuleName))
-                {
-                    result =
-                        String.Format(
-                            System.Globalization.CultureInfo.InvariantCulture,
-                            "{0}\\{1}",
-                            this.ModuleName,
-                            this.Name);
-                }
-
-                return result;
+                return _fullName ?? (_fullName = GetFullName(Name, PSSnapInName, ModuleName));
             }
         }
 
@@ -124,7 +132,7 @@ namespace System.Management.Automation
                     return PSSnapIn.Name;
                 if (Module != null)
                     return Module.Name;
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -136,10 +144,11 @@ namespace System.Management.Automation
         internal void SetModule(PSModuleInfo module)
         {
             Module = module;
+            _fullName = null;
         }
 
         /// <summary>
-        /// Gets or sets the description for the provider
+        /// Gets or sets the description for the provider.
         /// </summary>
         public string Description { get; set; }
 
@@ -247,9 +256,19 @@ namespace System.Management.Automation
         ///  are separated by a colon or not.
         ///
         /// This is true for all PSDrives on all platforms, except for filesystems on
-        /// non-windows platforms
+        /// non-windows platforms.
         /// </summary>
         public bool VolumeSeparatedByColon { get; internal set; } = true;
+
+        /// <summary>
+        /// Gets the default item separator character for this provider.
+        /// </summary>
+        public char ItemSeparator { get; private set; }
+
+        /// <summary>
+        /// Gets the alternate item separator character for this provider.
+        /// </summary>
+        public char AltItemSeparator { get; private set; }
 
         /// <summary>
         /// Constructs an instance of the class using an existing reference
@@ -284,6 +303,8 @@ namespace System.Management.Automation
             PSSnapIn = providerInfo.PSSnapIn;
             _sessionState = providerInfo._sessionState;
             VolumeSeparatedByColon = providerInfo.VolumeSeparatedByColon;
+            ItemSeparator = providerInfo.ItemSeparator;
+            AltItemSeparator = providerInfo.AltItemSeparator;
         }
 
         /// <summary>
@@ -319,7 +340,7 @@ namespace System.Management.Automation
             string name,
             string helpFile,
             PSSnapInInfo psSnapIn)
-            : this(sessionState, implementingType, name, String.Empty, String.Empty, helpFile, psSnapIn)
+            : this(sessionState, implementingType, name, string.Empty, string.Empty, helpFile, psSnapIn)
         {
         }
 
@@ -374,7 +395,7 @@ namespace System.Management.Automation
                 throw PSTraceSource.NewArgumentNullException("implementingType");
             }
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -429,23 +450,23 @@ namespace System.Management.Automation
                 // If the pssnapin name and provider name are specified, then both must match
                 do // false loop
                 {
-                    if (!String.IsNullOrEmpty(qualifiedProviderName.PSSnapInName))
+                    if (!string.IsNullOrEmpty(qualifiedProviderName.PSSnapInName))
                     {
                         // After converting core snapins to load as modules, the providers will have Module property populated
-                        if (!String.Equals(qualifiedProviderName.PSSnapInName, this.PSSnapInName, StringComparison.OrdinalIgnoreCase) &&
-                            !String.Equals(qualifiedProviderName.PSSnapInName, this.ModuleName, StringComparison.OrdinalIgnoreCase))
+                        if (!string.Equals(qualifiedProviderName.PSSnapInName, this.PSSnapInName, StringComparison.OrdinalIgnoreCase) &&
+                            !string.Equals(qualifiedProviderName.PSSnapInName, this.ModuleName, StringComparison.OrdinalIgnoreCase))
                         {
                             break;
                         }
                     }
 
-                    result = String.Equals(qualifiedProviderName.ShortName, this.Name, StringComparison.OrdinalIgnoreCase);
+                    result = string.Equals(qualifiedProviderName.ShortName, this.Name, StringComparison.OrdinalIgnoreCase);
                 } while (false);
             }
             else
             {
                 // If only the provider name is specified, then only the name must match
-                result = String.Equals(providerName, Name, StringComparison.OrdinalIgnoreCase);
+                result = string.Equals(providerName, Name, StringComparison.OrdinalIgnoreCase);
             }
 
             return result;
@@ -477,7 +498,7 @@ namespace System.Management.Automation
             {
                 if (namePattern == null)
                 {
-                    if (String.Equals(Name, psSnapinQualifiedName.ShortName, StringComparison.OrdinalIgnoreCase) &&
+                    if (string.Equals(Name, psSnapinQualifiedName.ShortName, StringComparison.OrdinalIgnoreCase) &&
                         IsPSSnapinNameMatch(psSnapinQualifiedName))
                     {
                         result = true;
@@ -496,8 +517,8 @@ namespace System.Management.Automation
         {
             bool result = false;
 
-            if (String.IsNullOrEmpty(psSnapinQualifiedName.PSSnapInName) ||
-                String.Equals(psSnapinQualifiedName.PSSnapInName, PSSnapInName, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(psSnapinQualifiedName.PSSnapInName) ||
+                string.Equals(psSnapinQualifiedName.PSSnapInName, PSSnapInName, StringComparison.OrdinalIgnoreCase))
             {
                 result = true;
             }
@@ -506,7 +527,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Creates an instance of the provider
+        /// Creates an instance of the provider.
         /// </summary>
         /// <returns>
         /// An instance of the provider or null if one could not be created.
@@ -598,6 +619,8 @@ namespace System.Management.Automation
             }
 
             Provider.CmdletProvider result = providerInstance as Provider.CmdletProvider;
+            ItemSeparator = result.ItemSeparator;
+            AltItemSeparator = result.AltItemSeparator;
 
             Dbg.Diagnostics.Assert(
                 result != null,

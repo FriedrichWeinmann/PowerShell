@@ -11,6 +11,7 @@ using System.Management.Automation.Remoting;
 using System.Management.Automation.Remoting.Client;
 using System.Management.Automation.Runspaces;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
@@ -59,11 +60,12 @@ namespace Microsoft.PowerShell.Commands
     /// > Receive-PSSession $session.Name
     ///
     /// Receive a running command from a computer.
-    /// > $job = Receive-PSSession -ComputerName ServerOne -Name SessionName -OutTarget Job
+    /// > $job = Receive-PSSession -ComputerName ServerOne -Name SessionName -OutTarget Job.
     /// </summary>
     [SuppressMessage("Microsoft.PowerShell", "PS1012:CallShouldProcessOnlyIfDeclaringSupport")]
-    [Cmdlet(VerbsCommunications.Receive, "PSSession", SupportsShouldProcess = true, DefaultParameterSetName = ReceivePSSessionCommand.SessionParameterSet,
-         HelpUri = "https://go.microsoft.com/fwlink/?LinkID=217037", RemotingCapability = RemotingCapability.OwnedByCommand)]
+    [Cmdlet(VerbsCommunications.Receive, "PSSession", SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low,
+        DefaultParameterSetName = ReceivePSSessionCommand.SessionParameterSet, HelpUri = "https://go.microsoft.com/fwlink/?LinkID=217037",
+        RemotingCapability = RemotingCapability.OwnedByCommand)]
     public class ReceivePSSessionCommand : PSRemotingCmdlet
     {
         #region Parameters
@@ -115,7 +117,7 @@ namespace Microsoft.PowerShell.Commands
         /// This parameters specifies the appname which identifies the connection
         /// end point on the remote machine. If this parameter is not specified
         /// then the value specified in DEFAULTREMOTEAPPNAME will be used. If thats
-        /// not specified as well, then "WSMAN" will be used
+        /// not specified as well, then "WSMAN" will be used.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true,
                    ParameterSetName = ReceivePSSessionCommand.ComputerSessionNameParameterSet)]
@@ -1024,8 +1026,8 @@ namespace Microsoft.PowerShell.Commands
         /// Helper method to append computer name and session GUID
         /// note properties to the PSObject before it is written.
         /// </summary>
-        /// <param name="psObject">PSObject</param>
-        /// <param name="session">PSSession</param>
+        /// <param name="psObject">PSObject.</param>
+        /// <param name="session">PSSession.</param>
         private void WriteRemoteObject(
             PSObject psObject,
             PSSession session)
@@ -1152,8 +1154,8 @@ namespace Microsoft.PowerShell.Commands
         /// Helper method to attempt to retrieve a disconnected runspace object
         /// from the server, based on the provided session object.
         /// </summary>
-        /// <param name="session">PSSession</param>
-        /// <returns>PSSession.</returns>
+        /// <param name="session">PSSession session object.</param>
+        /// <returns>PSSession disconnected runspace object.</returns>
         private PSSession TryGetSessionFromServer(PSSession session)
         {
             RemoteRunspace remoteRunspace = session.Runspace as RemoteRunspace;
@@ -1314,7 +1316,7 @@ namespace Microsoft.PowerShell.Commands
     public enum OutTarget
     {
         /// <summary>
-        /// Default mode.  If
+        /// Default mode.  If.
         /// </summary>
         Default = 0,
 

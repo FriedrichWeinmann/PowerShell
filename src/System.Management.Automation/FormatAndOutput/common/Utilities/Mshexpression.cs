@@ -2,22 +2,21 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
-using System.Management.Automation.Internal;
-using System.Management.Automation.Language;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Management.Automation;
+using System.Management.Automation.Internal;
+using System.Management.Automation.Language;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// class that represents the results from evaluating a PSPropertyExpression against an object.
+    /// Class that represents the results from evaluating a PSPropertyExpression against an object.
     /// </summary>
     public class PSPropertyExpressionResult
     {
-
         /// <summary>
         /// Create a property expression result containing the original object, matching property expression
         /// and any exception generated during the match process.
@@ -53,9 +52,9 @@ namespace Microsoft.PowerShell.Commands
     public class PSPropertyExpression
     {
         /// <summary>
-        /// constructor
+        /// Constructor.
         /// </summary>
-        /// <param name="s">expression</param>
+        /// <param name="s">Expression.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public PSPropertyExpression(string s)
             : this(s, false)
@@ -66,7 +65,7 @@ namespace Microsoft.PowerShell.Commands
         /// Create a property expression with a wildcard pattern.
         /// </summary>
         /// <param name="s">Property name pattern to match.</param>
-        /// <param name="isResolved"><c>true</c> if no further attempts should be made to resolve wildcards</param>
+        /// <param name="isResolved"><c>true</c> if no further attempts should be made to resolve wildcards.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public PSPropertyExpression(string s, bool isResolved)
         {
@@ -80,7 +79,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Create a property expression with a ScriptBlock
+        /// Create a property expression with a ScriptBlock.
         /// </summary>
         /// <param name="scriptBlock">ScriptBlock to evaluate when retrieving the property value from an object.</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -313,7 +312,7 @@ namespace Microsoft.PowerShell.Commands
                         dollarUnder: target,
                         input: AutomationNull.Value,
                         scriptThis: AutomationNull.Value,
-                        args: Utils.EmptyArray<object>());
+                        args: Array.Empty<object>());
                 }
                 else
                 {
@@ -323,7 +322,7 @@ namespace Microsoft.PowerShell.Commands
                             CallSite<Func<CallSite, object, object>>.Create(
                                     PSGetMemberBinder.Get(
                                         _stringValue,
-                                        classScope: (Type) null,
+                                        classScope: (Type)null,
                                         @static: false));
                     }
 
@@ -344,7 +343,7 @@ namespace Microsoft.PowerShell.Commands
                 }
             }
         }
-        
+
         private PSObject IfHashtableWrapAsPSCustomObject(PSObject target)
         {
             // If the object passed in is a hashtable, then turn it into a PSCustomObject so

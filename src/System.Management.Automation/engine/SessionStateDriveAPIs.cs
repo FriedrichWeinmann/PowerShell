@@ -4,10 +4,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Management.Automation.Provider;
+
 using Dbg = System.Management.Automation;
-using System.Globalization;
 
 #pragma warning disable 1634, 1691 // Stops compiler from warning about unknown warnings
 #pragma warning disable 56500
@@ -15,7 +16,7 @@ using System.Globalization;
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the state of a Monad Shell session
+    /// Holds the state of a Monad Shell session.
     /// </summary>
     internal sealed partial class SessionStateInternal
     {
@@ -88,7 +89,7 @@ namespace System.Management.Automation
 
                 // set the return value to the first drive (should only be one).
 
-                if (!successObjects[0].immediateBaseObjectIsEmpty)
+                if (!successObjects[0].ImmediateBaseObjectIsEmpty)
                 {
                     result = (PSDriveInfo)successObjects[0].BaseObject;
                 }
@@ -169,7 +170,7 @@ namespace System.Management.Automation
                 return;
             }
 
-            if (String.Compare(result.Name, drive.Name, StringComparison.CurrentCultureIgnoreCase) == 0)
+            if (string.Compare(result.Name, drive.Name, StringComparison.CurrentCultureIgnoreCase) == 0)
             {
                 // Set the drive in the current scope.
 
@@ -177,7 +178,7 @@ namespace System.Management.Automation
                 {
                     SessionStateScope scope = _currentScope;
 
-                    if (!String.IsNullOrEmpty(scopeID))
+                    if (!string.IsNullOrEmpty(scopeID))
                     {
                         scope = GetScopeByID(scopeID);
                     }
@@ -234,7 +235,7 @@ namespace System.Management.Automation
 
             do
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     result = false;
                     break;
@@ -408,7 +409,7 @@ namespace System.Management.Automation
         #region GetDrive
 
         /// <summary>
-        /// Searches through the session state scopes to find a drive
+        /// Searches through the session state scopes to find a drive.
         /// </summary>
         /// <param name="name">
         /// The name of a drive to find.
@@ -536,7 +537,7 @@ namespace System.Management.Automation
             // so do a search through the scopes looking for the
             // drive.
 
-            if (String.IsNullOrEmpty(scopeID))
+            if (string.IsNullOrEmpty(scopeID))
             {
                 SessionStateScopeEnumerator scopeEnumerator =
                     new SessionStateScopeEnumerator(CurrentScope);
@@ -660,7 +661,7 @@ namespace System.Management.Automation
                 {
                     // Create a new drive
                     string systemDriveName = systemDriveInfo.Name.Substring(0, 1);
-                    string volumeLabel = String.Empty;
+                    string volumeLabel = string.Empty;
                     string displayRoot = null;
 
                     try
@@ -743,7 +744,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Auto-mounts a built-in drive.
         /// </summary>
-        /// <param name="name">The name of the drive to load</param>
+        /// <param name="name">The name of the drive to load.</param>
         /// <returns></returns>
         internal PSDriveInfo AutomountBuiltInDrive(string name)
         {
@@ -754,7 +755,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Automatically mount the specified drive
+        /// Automatically mount the specified drive.
         /// </summary>
         /// <remarks>
         /// Neither 'WSMan' nor 'Certificate' provider works in UNIX PS today.
@@ -776,18 +777,18 @@ namespace System.Management.Automation
             // mount the default drive, since the provider names can be used for provider-qualified paths.
             // The WSMAN drive is the same as the provider name.
             if (
-                String.Equals("Cert", name, StringComparison.OrdinalIgnoreCase) ||
-                String.Equals("Certificate", name, StringComparison.OrdinalIgnoreCase)
+                string.Equals("Cert", name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals("Certificate", name, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 moduleName = "Microsoft.PowerShell.Security";
             }
-            else if (String.Equals("WSMan", name, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("WSMan", name, StringComparison.OrdinalIgnoreCase))
             {
                 moduleName = "Microsoft.WSMan.Management";
             }
 
-            if (!String.IsNullOrEmpty(moduleName))
+            if (!string.IsNullOrEmpty(moduleName))
             {
                 s_tracer.WriteLine("Auto-mounting built-in drive: {0}", name);
                 CommandInfo commandInfo = new CmdletInfo("Import-Module", typeof(Microsoft.PowerShell.Commands.ImportModuleCommand), null, null, context);
@@ -916,7 +917,7 @@ namespace System.Management.Automation
                 {
                     char driveChar = Convert.ToChar(drive.Name, CultureInfo.InvariantCulture);
 
-                    if (Char.ToUpperInvariant(driveChar) >= 'A' && Char.ToUpperInvariant(driveChar) <= 'Z')
+                    if (char.ToUpperInvariant(driveChar) >= 'A' && char.ToUpperInvariant(driveChar) <= 'Z')
                     {
                         DriveInfo systemDriveInfo = new DriveInfo(drive.Name);
 
@@ -939,7 +940,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets all the drives for a specific provider
+        /// Gets all the drives for a specific provider.
         /// </summary>
         /// <param name="providerId">
         /// The identifier for the provider to retrieve the drives for.
@@ -949,7 +950,7 @@ namespace System.Management.Automation
         /// </returns>
         internal Collection<PSDriveInfo> GetDrivesForProvider(string providerId)
         {
-            if (String.IsNullOrEmpty(providerId))
+            if (string.IsNullOrEmpty(providerId))
             {
                 return Drives(null);
             }
@@ -1157,7 +1158,7 @@ namespace System.Management.Automation
                 // so do a search through the scopes looking for the
                 // drive.
 
-                if (String.IsNullOrEmpty(scopeID))
+                if (string.IsNullOrEmpty(scopeID))
                 {
                     SessionStateScopeEnumerator scopeEnumerator =
                         new SessionStateScopeEnumerator(CurrentScope);
@@ -1294,7 +1295,7 @@ namespace System.Management.Automation
                 // Make sure the provider didn't try to pull a fast one on us
                 // and substitute a different drive.
 
-                if (String.Compare(result.Name, drive.Name, StringComparison.CurrentCultureIgnoreCase) == 0)
+                if (string.Compare(result.Name, drive.Name, StringComparison.CurrentCultureIgnoreCase) == 0)
                 {
                     driveRemovable = true;
                 }
@@ -1329,7 +1330,7 @@ namespace System.Management.Automation
 
             SessionStateScope startingScope = _currentScope;
 
-            if (!String.IsNullOrEmpty(scope))
+            if (!string.IsNullOrEmpty(scope))
             {
                 startingScope = GetScopeByID(scope);
             }
@@ -1427,7 +1428,7 @@ namespace System.Management.Automation
         #endregion Drives
 
         /// <summary>
-        /// Gets or sets the current working drive
+        /// Gets or sets the current working drive.
         /// </summary>
         internal PSDriveInfo CurrentDrive
         {

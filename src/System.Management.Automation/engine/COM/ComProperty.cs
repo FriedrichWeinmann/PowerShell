@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Text;
 using System.Globalization;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
 using COM = System.Runtime.InteropServices.ComTypes;
 
 namespace System.Management.Automation
@@ -26,8 +27,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Initializes a new instance of ComProperty.
         /// </summary>
-        /// <param name="typeinfo">reference to the ITypeInfo of the COM object</param>
-        /// <param name="name">name of the property being created.</param>
+        /// <param name="typeinfo">Reference to the ITypeInfo of the COM object.</param>
+        /// <param name="name">Name of the property being created.</param>
         internal ComProperty(COM.ITypeInfo typeinfo, string name)
         {
             _typeInfo = typeinfo;
@@ -35,14 +36,14 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        ///  Defines the name of the property.
+        /// Defines the name of the property.
         /// </summary>
         internal string Name { get; }
 
         private Type _cachedType;
 
         /// <summary>
-        ///  Defines the type of the property.
+        /// Defines the type of the property.
         /// </summary>
         internal Type Type
         {
@@ -106,7 +107,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        ///  Defines whether the property has parameters or not.
+        /// Defines whether the property has parameters or not.
         /// </summary>
         internal bool IsParameterized { get; private set; } = false;
 
@@ -123,7 +124,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        ///  Defines whether this property is settable.
+        /// Defines whether this property is settable.
         /// </summary>
         internal bool IsSettable
         {
@@ -134,14 +135,14 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        ///  Defines whether this property is gettable.
+        /// Defines whether this property is gettable.
         /// </summary>
         internal bool IsGettable { get; private set; } = false;
 
         /// <summary>
-        /// Get value of this property
+        /// Get value of this property.
         /// </summary>
-        /// <param name="target">instance of the object from which to get the property value</param>
+        /// <param name="target">Instance of the object from which to get the property value.</param>
         /// <returns>Value of the property.</returns>
         internal object GetValue(Object target)
         {
@@ -169,10 +170,10 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Get value of this property
+        /// Get value of this property.
         /// </summary>
-        /// <param name="target">instance of the object from which to get the property value</param>
-        /// <param name="arguments">parameters to get the property value</param>
+        /// <param name="target">Instance of the object from which to get the property value.</param>
+        /// <param name="arguments">Parameters to get the property value.</param>
         /// <returns>Value of the property</returns>
         internal object GetValue(Object target, object[] arguments)
         {
@@ -215,8 +216,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Sets value of this property.
         /// </summary>
-        /// <param name="target">instance of the object to which to set the property value</param>
-        /// <param name="setValue">value to set this property</param>
+        /// <param name="target">Instance of the object to which to set the property value.</param>
+        /// <param name="setValue">Value to set this property.</param>
         internal void SetValue(Object target, object setValue)
         {
             object[] propValue = new object[1];
@@ -247,9 +248,9 @@ namespace System.Management.Automation
         /// <summary>
         /// Sets the value of the property.
         /// </summary>
-        /// <param name="target">instance of the object to which to set the property value</param>
-        /// <param name="setValue">value to set this property</param>
-        /// <param name="arguments">parameters to set this property.</param>
+        /// <param name="target">Instance of the object to which to set the property value.</param>
+        /// <param name="setValue">Value to set this property.</param>
+        /// <param name="arguments">Parameters to set this property.</param>
         internal void SetValue(Object target, Object setValue, object[] arguments)
         {
             object[] newarguments;
@@ -296,8 +297,8 @@ namespace System.Management.Automation
         /// <summary>
         /// Updates the COM property with setter and getter information.
         /// </summary>
-        /// <param name="desc">functional descriptor for property getter or setter</param>
-        /// <param name="index">index of function descriptor in type information</param>
+        /// <param name="desc">Functional descriptor for property getter or setter.</param>
+        /// <param name="index">Index of function descriptor in type information.</param>
         internal void UpdateFuncDesc(COM.FUNCDESC desc, int index)
         {
             _dispId = desc.memid;
@@ -358,7 +359,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Returns the property signature string
+        /// Returns the property signature string.
         /// </summary>
         /// <returns>Property signature.</returns>
         public override string ToString()

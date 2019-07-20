@@ -69,10 +69,10 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="enabled">Enable debugger option</param>
-        /// <param name="breakAll">BreakAll option</param>
-        /// <param name="runspaceName">Runspace name</param>
-        /// <param name="runspaceId">Runspace local Id</param>
+        /// <param name="enabled">Enable debugger option.</param>
+        /// <param name="breakAll">BreakAll option.</param>
+        /// <param name="runspaceName">Runspace name.</param>
+        /// <param name="runspaceId">Runspace local Id.</param>
         public PSRunspaceDebug(bool enabled, bool breakAll, string runspaceName, int runspaceId)
         {
             if (string.IsNullOrEmpty(runspaceName)) { throw new PSArgumentNullException("runspaceName"); }
@@ -250,7 +250,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Returns Runspace Debugger.
         /// </summary>
-        /// <param name="runspace">Runspace</param>
+        /// <param name="runspace">Runspace.</param>
         /// <returns>Debugger.</returns>
         protected System.Management.Automation.Debugger GetDebuggerFromRunspace(Runspace runspace)
         {
@@ -278,8 +278,8 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// SetDebugPreferenceHelper is a helper method used to enable/disable debug preference.
         /// </summary>
-        /// <param name="processName">Process Name</param>
-        /// <param name="appDomainName">App Domain Name</param>
+        /// <param name="processName">Process Name.</param>
+        /// <param name="appDomainName">App Domain Name.</param>
         /// <param name="enable">Indicates if debug preference has to be enabled or disabled.</param>
         /// <param name="fullyQualifiedErrorId">FullyQualifiedErrorId to be used on error.</param>
         protected void SetDebugPreferenceHelper(string processName, string[] appDomainName, bool enable, string fullyQualifiedErrorId)
@@ -350,6 +350,22 @@ namespace Microsoft.PowerShell.Commands
             set;
         }
 
+        /// <summary>
+        /// The optional breakpoint objects to use for debugging.
+        /// </summary>
+        [Experimental("Microsoft.PowerShell.Utility.PSDebugRunspaceWithBreakpoints", ExperimentAction.Show)]
+        [Parameter(Position = 1,
+                   ParameterSetName = CommonRunspaceCommandBase.RunspaceParameterSet)]
+        [Parameter(Position = 1,
+                   ParameterSetName = CommonRunspaceCommandBase.RunspaceNameParameterSet)]
+        [Parameter(Position = 1,
+                   ParameterSetName = CommonRunspaceCommandBase.RunspaceIdParameterSet)]
+        public Breakpoint[] Breakpoint
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Overrides
@@ -362,58 +378,61 @@ namespace Microsoft.PowerShell.Commands
             if (this.ParameterSetName.Equals(CommonRunspaceCommandBase.ProcessNameParameterSet))
             {
                 SetDebugPreferenceHelper(ProcessName, AppDomainName, true, "EnableRunspaceDebugCommandPersistDebugPreferenceFailure");
+                return;
             }
-            else
+
+            IReadOnlyList<Runspace> results = GetRunspaces();
+
+            foreach (var runspace in results)
             {
-                IReadOnlyList<Runspace> results = GetRunspaces();
-
-                foreach (var runspace in results)
+                if (runspace.RunspaceStateInfo.State != RunspaceState.Opened)
                 {
-                    if (runspace.RunspaceStateInfo.State != RunspaceState.Opened)
+                    WriteError(
+                        new ErrorRecord(new PSInvalidOperationException(string.Format(CultureInfo.InvariantCulture, Debugger.RunspaceOptionInvalidRunspaceState, runspace.Name)),
+                        "SetRunspaceDebugOptionCommandInvalidRunspaceState",
+                        ErrorCategory.InvalidOperation,
+                        this));
+
+                    continue;
+                }
+
+                System.Management.Automation.Debugger debugger = GetDebuggerFromRunspace(runspace);
+                if (debugger == null)
+                {
+                    continue;
+                }
+
+                // Enable debugging by preserving debug stop events.
+                debugger.UnhandledBreakpointMode = UnhandledBreakpointProcessingMode.Wait;
+
+                if (this.MyInvocation.BoundParameters.ContainsKey(nameof(BreakAll)))
+                {
+                    if (BreakAll)
                     {
-                        WriteError(
-                            new ErrorRecord(new PSInvalidOperationException(string.Format(CultureInfo.InvariantCulture, Debugger.RunspaceOptionInvalidRunspaceState, runspace.Name)),
-                            "SetRunspaceDebugOptionCommandInvalidRunspaceState",
-                            ErrorCategory.InvalidOperation,
-                            this)
-                            );
-
-                        continue;
-                    }
-
-                    System.Management.Automation.Debugger debugger = GetDebuggerFromRunspace(runspace);
-                    if (debugger == null)
-                    {
-                        continue;
-                    }
-
-                    // Enable debugging by preserving debug stop events.
-                    debugger.UnhandledBreakpointMode = UnhandledBreakpointProcessingMode.Wait;
-
-                    if (this.MyInvocation.BoundParameters.ContainsKey(nameof(BreakAll)))
-                    {
-                        if (BreakAll)
+                        try
                         {
-                            try
-                            {
-                                debugger.SetDebuggerStepMode(true);
-                            }
-                            catch (PSInvalidOperationException e)
-                            {
-                                WriteError(
-                                    new ErrorRecord(
-                                    e,
-                                    "SetRunspaceDebugOptionCommandCannotEnableDebuggerStepping",
-                                    ErrorCategory.InvalidOperation,
-                                    this)
-                                    );
-                            }
+                            debugger.SetDebuggerStepMode(true);
                         }
-                        else
+                        catch (PSInvalidOperationException e)
                         {
-                            debugger.SetDebuggerStepMode(false);
+                            WriteError(
+                                new ErrorRecord(
+                                e,
+                                "SetRunspaceDebugOptionCommandCannotEnableDebuggerStepping",
+                                ErrorCategory.InvalidOperation,
+                                this));
                         }
                     }
+                    else
+                    {
+                        debugger.SetDebuggerStepMode(false);
+                    }
+                }
+
+                // If any breakpoints were provided, set those in the debugger.
+                if (Breakpoint?.Length > 0)
+                {
+                    debugger.SetBreakpoints(Breakpoint);
                 }
             }
         }

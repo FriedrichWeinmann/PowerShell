@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using Microsoft.PowerShell;
-using Dbg = System.Diagnostics.Debug;
 using System.Management.Automation.Language;
+using System.Reflection;
+
+using Microsoft.PowerShell;
+
+using Dbg = System.Diagnostics.Debug;
 
 namespace System.Management.Automation
 {
@@ -44,7 +46,7 @@ namespace System.Management.Automation
         /// <summary>
         /// A copy constructor that creates a deep copy of the <paramref name="other"/> ParameterSetMetadata object.
         /// </summary>
-        /// <param name="other">object to copy</param>
+        /// <param name="other">Object to copy.</param>
         internal ParameterSetMetadata(ParameterSetMetadata other)
         {
             if (other == null)
@@ -136,7 +138,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Specifies if this parameter takes all the remaining unbound
-        /// arguments that were specified
+        /// arguments that were specified.
         /// </summary>
         /// <value></value>
         public bool ValueFromRemainingArguments
@@ -284,7 +286,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Constructor used by rehydration
+        /// Constructor used by rehydration.
         /// </summary>
         internal ParameterSetMetadata(
             int position,
@@ -424,7 +426,7 @@ namespace System.Management.Automation
         /// A copy constructor that creates a deep copy of the <paramref name="other"/> ParameterMetadata object.
         /// Instances of Attribute and Type classes are copied by reference.
         /// </summary>
-        /// <param name="other">object to copy</param>
+        /// <param name="other">Object to copy.</param>
         public ParameterMetadata(ParameterMetadata other)
         {
             if (other == null)
@@ -476,7 +478,7 @@ namespace System.Management.Automation
         /// <summary>
         /// An internal constructor which constructs a ParameterMetadata object
         /// from compiled command parameter metadata. ParameterMetadata
-        /// is a proxy written on top of CompiledCommandParameter
+        /// is a proxy written on top of CompiledCommandParameter.
         /// </summary>
         /// <param name="cmdParameterMD">
         /// Internal CompiledCommandParameter metadata
@@ -490,7 +492,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Constructor used by implicit remoting
+        /// Constructor used by implicit remoting.
         /// </summary>
         internal ParameterMetadata(
             Collection<string> aliases,
@@ -512,7 +514,7 @@ namespace System.Management.Automation
         #region Public Methods/Properties
 
         /// <summary>
-        /// Gets the name of the parameter
+        /// Gets the name of the parameter.
         /// </summary>
         public string Name
         {
@@ -560,7 +562,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Specifies if the parameter is Dynamic
+        /// Specifies if the parameter is Dynamic.
         /// </summary>
         public bool IsDynamic
         {
@@ -569,7 +571,7 @@ namespace System.Management.Automation
             set { _isDynamic = value; }
         }
         /// <summary>
-        /// Specifies the alias names for this parameter
+        /// Specifies the alias names for this parameter.
         /// </summary>
         public Collection<string> Aliases
         {
@@ -591,7 +593,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Specifies if the parameter is a SwitchParameter
+        /// Specifies if the parameter is a SwitchParameter.
         /// </summary>
         public bool SwitchParameter
         {
@@ -758,6 +760,7 @@ namespace System.Management.Automation
         private const string ParameterSetNameFormat = "ParameterSetName='{0}'";
         private const string AliasesFormat = @"{0}[Alias({1})]";
         private const string ValidateLengthFormat = @"{0}[ValidateLength({1}, {2})]";
+        private const string ValidateRangeRangeKindFormat = @"{0}[ValidateRange([System.Management.Automation.ValidateRangeKind]::{1})]";
         private const string ValidateRangeFloatFormat = @"{0}[ValidateRange({1:R}, {2:R})]";
         private const string ValidateRangeFormat = @"{0}[ValidateRange({1}, {2})]";
         private const string ValidatePatternFormat = "{0}[ValidatePattern('{1}')]";
@@ -899,31 +902,48 @@ namespace System.Management.Automation
             ValidateLengthAttribute validLengthAttrib = attrib as ValidateLengthAttribute;
             if (validLengthAttrib != null)
             {
-                result = string.Format(CultureInfo.InvariantCulture,
+                result = string.Format(
+                    CultureInfo.InvariantCulture,
                     ValidateLengthFormat, prefix,
-                    validLengthAttrib.MinLength, validLengthAttrib.MaxLength);
+                    validLengthAttrib.MinLength,
+                    validLengthAttrib.MaxLength);
                 return result;
             }
 
             ValidateRangeAttribute validRangeAttrib = attrib as ValidateRangeAttribute;
             if (validRangeAttrib != null)
             {
-                Type rangeType = validRangeAttrib.MinRange.GetType();
-                string format;
-
-                if (rangeType == typeof(float) || rangeType == typeof(double))
+                if (validRangeAttrib.RangeKind.HasValue)
                 {
-                    format = ValidateRangeFloatFormat;
+                    result = string.Format(
+                        CultureInfo.InvariantCulture,
+                        ValidateRangeRangeKindFormat,
+                        prefix,
+                        validRangeAttrib.RangeKind.ToString());
+                    return result;
                 }
                 else
                 {
-                    format = ValidateRangeFormat;
-                }
+                    Type rangeType = validRangeAttrib.MinRange.GetType();
+                    string format;
 
-                result = string.Format(CultureInfo.InvariantCulture,
-                    format, prefix,
-                    validRangeAttrib.MinRange, validRangeAttrib.MaxRange);
-                return result;
+                    if (rangeType == typeof(float) || rangeType == typeof(double))
+                    {
+                        format = ValidateRangeFloatFormat;
+                    }
+                    else
+                    {
+                        format = ValidateRangeFormat;
+                    }
+
+                    result = string.Format(
+                        CultureInfo.InvariantCulture,
+                        format,
+                        prefix,
+                        validRangeAttrib.MinRange,
+                        validRangeAttrib.MaxRange);
+                    return result;
+                }
             }
 
             AllowNullAttribute allowNullAttrib = attrib as AllowNullAttribute;
@@ -1077,7 +1097,7 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// The metadata associated with a bindable type
+    /// The metadata associated with a bindable type.
     /// </summary>
     internal class InternalParameterMetadata
     {
@@ -1228,9 +1248,9 @@ namespace System.Management.Automation
         #endregion ctor
 
         /// <summary>
-        /// Gets the type name of the bindable type
+        /// Gets the type name of the bindable type.
         /// </summary>
-        internal string TypeName { get; } = String.Empty;
+        internal string TypeName { get; } = string.Empty;
 
         /// <summary>
         /// Gets a dictionary of the compiled parameter metadata for this Type.
@@ -1257,14 +1277,14 @@ namespace System.Management.Automation
         private Type _type;
 
         /// <summary>
-        /// The flags used when reflecting against the object to create the metadata
+        /// The flags used when reflecting against the object to create the metadata.
         /// </summary>
         internal static readonly BindingFlags metaDataBindingFlags = (BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
 
         #region helper methods
 
         /// <summary>
-        /// Fills in the data for an instance of this class using the specified runtime-defined parameters
+        /// Fills in the data for an instance of this class using the specified runtime-defined parameters.
         /// </summary>
         /// <param name="runtimeDefinedParameters">
         /// A description of the parameters and their metadata.
@@ -1465,7 +1485,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Determines if the specified member represents a parameter based on its attributes
+        /// Determines if the specified member represents a parameter based on its attributes.
         /// </summary>
         /// <param name="member">
         /// The member to check to see if it is a parameter.

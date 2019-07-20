@@ -102,7 +102,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
         /// Base on parametersetName to set ciminstances
         /// </para>
         /// </summary>
-        /// <param name="cmdlet"><see cref="SetCimInstanceCommand"/> object</param>
+        /// <param name="cmdlet"><see cref="SetCimInstanceCommand"/> object.</param>
         public void SetCimInstance(SetCimInstanceCommand cmdlet)
         {
             IEnumerable<string> computerNames = ConstValue.GetComputerNames(
@@ -231,7 +231,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
                         if ((property.Flags & CimFlags.ReadOnly) == CimFlags.ReadOnly)
                         {
                             // can not modify ReadOnly property
-                            exception = new CimException(String.Format(CultureInfo.CurrentUICulture,
+                            exception = new CimException(string.Format(CultureInfo.CurrentUICulture,
                                 Strings.CouldNotModifyReadonlyProperty, key, cimInstance));
                             return false;
                         }
@@ -280,7 +280,7 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
                         {
                             if (e.NativeErrorCode == NativeErrorCode.Failed)
                             {
-                                string errorMessage = String.Format(CultureInfo.CurrentUICulture,
+                                string errorMessage = string.Format(CultureInfo.CurrentUICulture,
                                     Strings.UnableToAddPropertyToInstance,
                                     newProperty.Name,
                                     cimInstance);
@@ -312,9 +312,9 @@ namespace Microsoft.Management.Infrastructure.CimCmdlets
 
         #region const strings
         /// <summary>
-        /// action
+        /// Action.
         /// </summary>
         private const string action = @"Set-CimInstance";
         #endregion
-    }//End Class
-}//End namespace
+    }
+}

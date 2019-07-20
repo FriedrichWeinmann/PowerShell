@@ -8,13 +8,15 @@ using System.Globalization;
 using System.Management.Automation;
 using System.Runtime.CompilerServices;
 using System.Threading;
+
 using Microsoft.Management.Infrastructure;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Cmdletization.Cim
 {
     /// <summary>
-    /// CIM-specific ObjectModelWrapper
+    /// CIM-specific ObjectModelWrapper.
     /// </summary>
     public sealed class CimCmdletAdapter :
         SessionBasedCmdletAdapter<CimInstance, CimSession>,
@@ -31,7 +33,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         #region Changing Session parameter to CimSession
 
         /// <summary>
-        /// CimSession to operate on
+        /// CimSession to operate on.
         /// </summary>
         [Parameter]
         [ValidateNotNullOrEmpty]
@@ -80,7 +82,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         #region ObjectModelWrapper overrides
 
         /// <summary>
-        /// Creates a query builder for CIM OM
+        /// Creates a query builder for CIM OM.
         /// </summary>
         /// <returns>Query builder for CIM OM.</returns>
         public override QueryBuilder GetQueryBuilder()
@@ -165,8 +167,8 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         /// <summary>
         /// Creates a <see cref="System.Management.Automation.Job"/> object that performs a query against the wrapped object model.
         /// </summary>
-        /// <param name="session">Remote session to query</param>
-        /// <param name="baseQuery">Query parameters</param>
+        /// <param name="session">Remote session to query.</param>
+        /// <param name="baseQuery">Query parameters.</param>
         /// <returns><see cref="System.Management.Automation.Job"/> object that performs a query against the wrapped object model.</returns>
         internal override StartableJob CreateQueryJob(CimSession session, QueryBuilder baseQuery)
         {
@@ -196,10 +198,10 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         /// <summary>
         /// Creates a <see cref="System.Management.Automation.Job"/> object that invokes an instance method in the wrapped object model.
         /// </summary>
-        /// <param name="session">Remote session to invoke the method in</param>
-        /// <param name="objectInstance">The object on which to invoke the method</param>
-        /// <param name="methodInvocationInfo">Method invocation details</param>
-        /// <param name="passThru"><c>true</c> if successful method invocations should emit downstream the <paramref name="objectInstance"/> being operated on</param>
+        /// <param name="session">Remote session to invoke the method in.</param>
+        /// <param name="objectInstance">The object on which to invoke the method.</param>
+        /// <param name="methodInvocationInfo">Method invocation details.</param>
+        /// <param name="passThru"><c>true</c> if successful method invocations should emit downstream the <paramref name="objectInstance"/> being operated on.</param>
         /// <returns></returns>
         internal override StartableJob CreateInstanceMethodInvocationJob(CimSession session, CimInstance objectInstance, MethodInvocationInfo methodInvocationInfo, bool passThru)
         {
@@ -300,8 +302,8 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
         /// (of the class named by <see cref="Microsoft.PowerShell.Cmdletization.CmdletAdapter&lt;TObjectInstance&gt;.ClassName"/>)
         /// in the wrapped object model.
         /// </summary>
-        /// <param name="session">Remote session to invoke the method in</param>
-        /// <param name="methodInvocationInfo">Method invocation details</param>
+        /// <param name="session">Remote session to invoke the method in.</param>
+        /// <param name="methodInvocationInfo">Method invocation details.</param>
         internal override StartableJob CreateStaticMethodInvocationJob(CimSession session, MethodInvocationInfo methodInvocationInfo)
         {
             TerminatingErrorTracker tracker = TerminatingErrorTracker.GetTracker(this.CmdletInvocationInfo, isStaticCmdlet: true);

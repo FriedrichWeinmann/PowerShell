@@ -9,13 +9,15 @@ using System.Management.Automation;
 using System.Management.Automation.Remoting;
 using System.Runtime.CompilerServices;
 using System.Threading;
+
 using Microsoft.Management.Infrastructure;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Cmdletization.Cim
 {
     /// <summary>
-    /// Tracks (per-session) terminating errors in a given cmdlet invocation
+    /// Tracks (per-session) terminating errors in a given cmdlet invocation.
     /// </summary>
     internal class TerminatingErrorTracker
     {

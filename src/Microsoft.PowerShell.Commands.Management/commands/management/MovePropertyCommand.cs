@@ -3,12 +3,13 @@
 
 using System;
 using System.Management.Automation;
+
 using Dbg = System.Management.Automation;
 
 namespace Microsoft.PowerShell.Commands
 {
     /// <summary>
-    /// A command to move a property on an item to another item
+    /// A command to move a property on an item to another item.
     /// </summary>
     [Cmdlet(VerbsCommon.Move, "ItemProperty", SupportsShouldProcess = true, DefaultParameterSetName = "Path", SupportsTransactions = true,
         HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113351")]
@@ -17,7 +18,7 @@ namespace Microsoft.PowerShell.Commands
         #region Parameters
 
         /// <summary>
-        /// Gets or sets the path parameter to the command
+        /// Gets or sets the path parameter to the command.
         /// </summary>
         [Parameter(Position = 0, ParameterSetName = "Path",
                    Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true)]
@@ -29,7 +30,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Gets or sets the literal path parameter to the command
+        /// Gets or sets the literal path parameter to the command.
         /// </summary>
         [Parameter(ParameterSetName = "LiteralPath",
                    Mandatory = true, ValueFromPipeline = false, ValueFromPipelineByPropertyName = true)]
@@ -46,7 +47,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// The name of the property to create on the item
+        /// The name of the property to create on the item.
         /// </summary>
         [Parameter(Position = 2, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [Alias("PSProperty")]
@@ -58,7 +59,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 if (value == null)
                 {
-                    value = Utils.EmptyArray<string>();
+                    value = Array.Empty<string>();
                 }
 
                 _property = value;
@@ -85,7 +86,7 @@ namespace Microsoft.PowerShell.Commands
         /// </returns>
         internal override object GetDynamicParameters(CmdletProviderContext context)
         {
-            string propertyName = String.Empty;
+            string propertyName = string.Empty;
             if (Name != null && Name.Length > 0)
             {
                 propertyName = Name[0];
@@ -111,14 +112,14 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// The property to be created.
         /// </summary>
-        private string[] _property = new string[0];
+        private string[] _property = Array.Empty<string>();
 
         #endregion parameter data
 
         #region Command code
 
         /// <summary>
-        /// Creates the property on the item
+        /// Creates the property on the item.
         /// </summary>
         protected override void ProcessRecord()
         {

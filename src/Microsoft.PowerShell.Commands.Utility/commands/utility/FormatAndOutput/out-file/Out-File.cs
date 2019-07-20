@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
-using System.Management.Automation;
-using System.Management.Automation.Internal;
-using System.Management.Automation.Host;
 using System.IO;
+using System.Management.Automation;
+using System.Management.Automation.Host;
+using System.Management.Automation.Internal;
+using System.Text;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -303,7 +304,7 @@ namespace Microsoft.PowerShell.Commands
         private StreamWriter _sw = null;
 
         /// <summary>
-        /// indicate whether the ProcessRecord method was executed.
+        /// Indicate whether the ProcessRecord method was executed.
         /// When the Out-File is used in a redirection pipelineProcessor,
         /// its ProcessRecord method may not be called when nothing is written to the
         /// output pipe, for example:

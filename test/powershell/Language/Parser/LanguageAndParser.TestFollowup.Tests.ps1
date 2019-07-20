@@ -303,3 +303,17 @@ Describe "Hash expression with if statement as value" -Tags "CI" {
         $hash['h'] | Should -BeExactly 'h'
     }
 }
+
+Describe "Hashtable is case insensitive" -Tag CI {
+    It "When current culture is en-US-POSIX" -Skip:($IsWindows) {
+        try {
+            $oldCulture = [System.Globalization.CultureInfo]::CurrentCulture
+            [System.Globalization.CultureInfo]::CurrentCulture = [System.Globalization.CultureInfo]::new('en-US-POSIX')
+
+            @{h=1}.H | Should -Be 1 -Because 'hashtables should be case insensitive in en-US-POSIX culture'
+        }
+        finally {
+            [System.Globalization.CultureInfo]::CurrentCulture = $oldCulture
+        }
+    }
+}

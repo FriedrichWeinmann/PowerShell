@@ -16,6 +16,7 @@ using System.Management.Automation.Runspaces;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+
 using Microsoft.PowerShell.Commands;
 using Microsoft.PowerShell.Commands.Internal.Format;
 
@@ -456,7 +457,7 @@ namespace System.Management.Automation
                     {
                         pipelineProcessor.Commands.RemoveAt(commandsCount - 1);
                         commandProcessor = nextToLastCommand;
-                        nextToLastCommand.CommandRuntime.OutputPipe = new Pipe {NullPipe = true};
+                        nextToLastCommand.CommandRuntime.OutputPipe = new Pipe { NullPipe = true };
                     }
                 }
 
@@ -524,14 +525,14 @@ namespace System.Management.Automation
                 // Prefix variables in the scriptblock with $using:
                 foreach (var v in variables)
                 {
-                    var vName = ((VariableExpressionAst) v).VariablePath.UserPath;
+                    var vName = ((VariableExpressionAst)v).VariablePath.UserPath;
                     // Skip variables that don't exist
                     if (funcContext._executionContext.EngineSessionState.GetVariable(vName) == null)
                         continue;
                     // Skip PowerShell magic variables
                     if (Regex.Match(vName,
                             "^(global:){0,1}(PID|PSVersionTable|PSEdition|PSHOME|HOST|TRUE|FALSE|NULL)$",
-                                RegexOptions.IgnoreCase|RegexOptions.CultureInvariant).Success == false
+                                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Success == false
                     )
                     {
                         updatedScriptblock.Append(scriptblockBodyString.Substring(position, v.Extent.StartOffset - pipelineOffset - position));
@@ -659,7 +660,7 @@ namespace System.Management.Automation
                 // GetSteppablePipeline() is called on an arbitrary script block with the intention
                 // of invoking it. So the trustworthiness is defined by the trustworthiness of the
                 // script block's language mode.
-                bool isTrusted = (scriptBlock.LanguageMode == PSLanguageMode.FullLanguage);
+                bool isTrusted = scriptBlock.LanguageMode == PSLanguageMode.FullLanguage;
 
                 foreach (var commandAst in pipelineAst.PipelineElements.Cast<CommandAst>())
                 {
@@ -825,7 +826,7 @@ namespace System.Management.Automation
         internal static void Nop() { }
     }
 
-#region Redirections
+    #region Redirections
 
     internal abstract class CommandRedirection
     {
@@ -892,7 +893,7 @@ namespace System.Management.Automation
                                                ParserStrings.RedirectionStreamCanOnlyMergeToOutputStream);
             }
 
-            //this.ToStream = to;
+            // this.ToStream = to;
         }
 
         public override string ToString()
@@ -902,7 +903,7 @@ namespace System.Management.Automation
                        : string.Format(CultureInfo.InvariantCulture, "{0}>&1", (int)FromStream);
         }
 
-        //private RedirectionStream ToStream { get; set; }
+        // private RedirectionStream ToStream { get; set; }
 
         // Handle merging redirections for commands, like:
         //   dir 2>&1
@@ -1135,7 +1136,7 @@ namespace System.Management.Automation
 
         internal Pipe GetRedirectionPipe(ExecutionContext context, PipelineProcessor parentPipelineProcessor)
         {
-            if (String.IsNullOrWhiteSpace(File))
+            if (string.IsNullOrWhiteSpace(File))
             {
                 return new Pipe { NullPipe = true };
             }
@@ -1234,7 +1235,7 @@ namespace System.Management.Automation
         }
     }
 
-#endregion Redirections
+    #endregion Redirections
 
     internal static class FunctionOps
     {
@@ -1354,7 +1355,7 @@ namespace System.Management.Automation
         internal class CatchAll { }
 
         /// <summary>
-        /// Represent a handler search result
+        /// Represent a handler search result.
         /// </summary>
         private class HandlerSearchResult
         {
@@ -1448,7 +1449,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Find the matching handler for the caught exception
+        /// Find the matching handler for the caught exception.
         /// </summary>
         internal static int FindMatchingHandler(MutableTuple tuple, RuntimeException rte, Type[] types, ExecutionContext context)
         {
@@ -1456,7 +1457,8 @@ namespace System.Management.Automation
             int[] ranks = RankExceptionTypes(types);
             var current = new HandlerSearchResult();
 
-            do {
+            do
+            {
                 // Always assume no need to repeat the search for another interation
                 continueToSearch = false;
                 // The 'ErrorRecord' of the current RuntimeException would be passed to $_
@@ -1519,7 +1521,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Find the matching handler by the exception type
+        /// Find the matching handler by the exception type.
         /// </summary>
         private static int FindMatchingHandlerByType(Type exceptionType, Type[] types)
         {
@@ -1753,9 +1755,9 @@ namespace System.Management.Automation
         /// <summary>
         /// Determine if we should continue or not after and error or exception....
         /// </summary>
-        /// <param name="rte">The RuntimeException which was reported</param>
-        /// <param name="message">The message to display</param>
-        /// <param name="context">The execution context</param>
+        /// <param name="rte">The RuntimeException which was reported.</param>
+        /// <param name="message">The message to display.</param>
+        /// <param name="context">The execution context.</param>
         /// <returns>The preference the user selected.</returns>
         /// <remarks>
         /// Error action is decided by error action preference. If preference is inquire, we will
@@ -1779,7 +1781,7 @@ namespace System.Management.Automation
         /// This is a helper function for prompting for user preference.
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="context">The execution context</param>
+        /// <param name="context">The execution context.</param>
         /// <returns></returns>
         /// <remarks>
         /// This method will allow user to enter suspend mode.
@@ -1822,12 +1824,12 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Set error variables like $error and $stacktrace
+        /// Set error variables like $error and $stacktrace.
         /// </summary>
         /// <param name="extent"></param>
         /// <param name="rte"></param>
-        /// <param name="context">The execution context</param>
-        /// <param name="outputPipe">the output pipe of the statement</param>
+        /// <param name="context">The execution context.</param>
+        /// <param name="outputPipe">The output pipe of the statement.</param>
         internal static void SetErrorVariables(IScriptExtent extent, RuntimeException rte, ExecutionContext context, Pipe outputPipe)
         {
             string stack = null;
@@ -1836,7 +1838,7 @@ namespace System.Management.Automation
             int i = 0;
             while (e != null && i++ < 10)
             {
-                if (!String.IsNullOrEmpty(e.StackTrace))
+                if (!string.IsNullOrEmpty(e.StackTrace))
                 {
                     stack = e.StackTrace;
                 }
@@ -1874,8 +1876,8 @@ namespace System.Management.Automation
         /// Report error into error pipe.
         /// </summary>
         /// <param name="extent"></param>
-        /// <param name="rte">The runtime error to report</param>
-        /// <param name="context">The execution context</param>
+        /// <param name="rte">The runtime error to report.</param>
+        /// <param name="context">The execution context.</param>
         /// <returns>True if it was able to report the error.</returns>
         internal static bool ReportErrorRecord(IScriptExtent extent, RuntimeException rte, ExecutionContext context)
         {
@@ -1888,8 +1890,7 @@ namespace System.Management.Automation
                 rte.ErrorRecord.SetInvocationInfo(new InvocationInfo(null, extent, context));
             PSObject errorWrap = PSObject.AsPSObject(new ErrorRecord(rte.ErrorRecord, rte));
 
-            PSNoteProperty note = new PSNoteProperty("writeErrorStream", true);
-            errorWrap.Properties.Add(note);
+            errorWrap.WriteStream = WriteStreamType.Error;
 
             // If this is an error pipe for a hosting application (i.e.: no downstream cmdlet),
             // and we are logging, then create a temporary PowerShell to log the error.
@@ -2367,7 +2368,7 @@ namespace System.Management.Automation
                 FileInfo file = obj as FileInfo;
                 string filePath = file != null ? file.FullName : PSObject.ToStringParser(context, obj);
 
-                if (String.IsNullOrEmpty(filePath))
+                if (string.IsNullOrEmpty(filePath))
                 {
                     throw InterpreterError.NewInterpreterException(filePath,
                         typeof(RuntimeException), errorExtent, "InvalidFilenameOption", ParserStrings.InvalidFilenameOption);
@@ -2421,7 +2422,7 @@ namespace System.Management.Automation
     public enum WhereOperatorSelectionMode
     {
         /// <summary>
-        /// Return all matches
+        /// Return all matches.
         /// </summary>
         Default = 0,
         /// <summary>
@@ -2429,15 +2430,15 @@ namespace System.Management.Automation
         /// </summary>
         First = 1,
         /// <summary>
-        /// Return the last matching element
+        /// Return the last matching element.
         /// </summary>
         Last = 2,       // return last match
         /// <summary>
-        /// Skip until the condition is true, then return the rest
+        /// Skip until the condition is true, then return the rest.
         /// </summary>
         SkipUntil = 3,
         /// <summary>
-        /// Return elements until the condition is true then skip the rest
+        /// Return elements until the condition is true then skip the rest.
         /// </summary>
         Until = 4,
         /// <summary>
@@ -2449,9 +2450,9 @@ namespace System.Management.Automation
     internal static class EnumerableOps
     {
         /// <summary>
-        /// Implements the Where(expression) operation on collections
+        /// Implements the Where(expression) operation on collections.
         /// </summary>
-        /// <param name="enumerator">The enumerator over the collection to search</param>
+        /// <param name="enumerator">The enumerator over the collection to search.</param>
         /// <param name="expressionSB">
         /// A ScriptBlock where its result is treated as a boolean, or null to
         /// return all collection objects with WhereOperatorSelectionMode.
@@ -2460,7 +2461,7 @@ namespace System.Management.Automation
         /// Sets the WhereOperatorSelectionMode for operator, defaults to All.
         /// This is of type object to allow either enum values or strings to be passed.
         /// </param>
-        /// <param name="numberToReturn">The number of elements to return</param>
+        /// <param name="numberToReturn">The number of elements to return.</param>
         /// <returns></returns>
         internal static object Where(IEnumerator enumerator, ScriptBlock expressionSB, WhereOperatorSelectionMode selectionMode, int numberToReturn)
         {
@@ -2690,7 +2691,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Implements the ForEach() operator.
         /// </summary>
-        /// <param name="enumerator">The collection to operate over</param>
+        /// <param name="enumerator">The collection to operate over.</param>
         /// <param name="expression"></param>
         /// <param name="arguments">
         /// </param>
@@ -3266,11 +3267,11 @@ namespace System.Management.Automation
 
         /// <summary>
         /// A routine used to advance an enumerator and catch errors that might occur
-        /// performing the operation
+        /// performing the operation.
         /// </summary>
-        /// <param name="context">The execution context used to see if the pipeline is stopping</param>
+        /// <param name="context">The execution context used to see if the pipeline is stopping.</param>
         /// <param name="enumerator">THe enumerator to advance.</param>
-        /// <exception cref="RuntimeException">An error occurred moving to the next element in the enumeration</exception>
+        /// <exception cref="RuntimeException">An error occurred moving to the next element in the enumeration.</exception>
         /// <returns>True if the move succeeded.</returns>
         internal static bool MoveNext(ExecutionContext context, IEnumerator enumerator)
         {
@@ -3304,7 +3305,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Wrapper caller for enumerator.Current - handles and republishes errors...
         /// </summary>
-        /// <param name="enumerator">The enumerator to read from</param>
+        /// <param name="enumerator">The enumerator to read from.</param>
         /// <returns></returns>
         internal static object Current(IEnumerator enumerator)
         {

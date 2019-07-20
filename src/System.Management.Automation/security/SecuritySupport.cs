@@ -68,7 +68,7 @@ namespace Microsoft.PowerShell
     /// Defines the available configuration scopes for an execution
     /// policy. They are in the following priority, with successive
     /// elements overriding the items that precede them:
-    /// LocalMachine -> CurrentUser -> Runspace
+    /// LocalMachine -> CurrentUser -> Runspace.
     /// </summary>
     public enum ExecutionPolicyScope
     {
@@ -97,7 +97,7 @@ namespace Microsoft.PowerShell
 namespace System.Management.Automation.Internal
 {
     /// <summary>
-    /// The SAFER policy associated with this file
+    /// The SAFER policy associated with this file.
     /// </summary>
     internal enum SaferPolicy
     {
@@ -112,7 +112,7 @@ namespace System.Management.Automation.Internal
     }
 
     /// <summary>
-    /// Security Support APIs
+    /// Security Support APIs.
     /// </summary>
     public static class SecuritySupport
     {
@@ -157,16 +157,15 @@ namespace System.Management.Automation.Internal
             switch (scope)
             {
                 case ExecutionPolicyScope.Process:
-                {
+
                     if (policy == ExecutionPolicy.Undefined)
                         executionPolicy = null;
 
                     Environment.SetEnvironmentVariable("PSExecutionPolicyPreference", executionPolicy);
                     break;
-                }
 
                 case ExecutionPolicyScope.CurrentUser:
-                {
+
                     // They want to remove it
                     if (policy == ExecutionPolicy.Undefined)
                     {
@@ -178,10 +177,9 @@ namespace System.Management.Automation.Internal
                     }
 
                     break;
-                }
 
                 case ExecutionPolicyScope.LocalMachine:
-                {
+
                     // They want to remove it
                     if (policy == ExecutionPolicy.Undefined)
                     {
@@ -193,7 +191,6 @@ namespace System.Management.Automation.Internal
                     }
 
                     break;
-                }
             }
 #endif
         }
@@ -214,7 +211,7 @@ namespace System.Management.Automation.Internal
 
         /// <summary>
         /// A value indicating that the current process was launched by GPScript.exe
-        /// Used to determine execution policy when group policies are in effect
+        /// Used to determine execution policy when group policies are in effect.
         /// </summary>
         /// <remarks>
         /// This is somewhat expensive to determine and does not change within the lifetime of the current process
@@ -244,7 +241,7 @@ namespace System.Management.Automation.Internal
             {
                 while (currentProcess != null)
                 {
-                    if (String.Equals(gpScriptPath,
+                    if (string.Equals(gpScriptPath,
                             PsUtils.GetMainModule(currentProcess).FileName, StringComparison.OrdinalIgnoreCase))
                     {
                         foundGpScriptParent = true;
@@ -285,7 +282,7 @@ namespace System.Management.Automation.Internal
                     {
                         string policy = Environment.GetEnvironmentVariable("PSExecutionPolicyPreference");
 
-                        if (!String.IsNullOrEmpty(policy))
+                        if (!string.IsNullOrEmpty(policy))
                             return ParseExecutionPolicy(policy);
                         else
                             return ExecutionPolicy.Undefined;
@@ -296,7 +293,7 @@ namespace System.Management.Automation.Internal
                     {
                         string policy = GetLocalPreferenceValue(shellId, scope);
 
-                        if (!String.IsNullOrEmpty(policy))
+                        if (!string.IsNullOrEmpty(policy))
                             return ParseExecutionPolicy(policy);
                         else
                             return ExecutionPolicy.Undefined;
@@ -312,7 +309,7 @@ namespace System.Management.Automation.Internal
                         // Be sure we aren't being called by Group Policy
                         // itself. A group policy should never block a logon /
                         // logoff script.
-                        if (String.IsNullOrEmpty(groupPolicyPreference) || HasGpScriptParent)
+                        if (string.IsNullOrEmpty(groupPolicyPreference) || HasGpScriptParent)
                         {
                             return ExecutionPolicy.Undefined;
                         }
@@ -327,27 +324,27 @@ namespace System.Management.Automation.Internal
 
         internal static ExecutionPolicy ParseExecutionPolicy(string policy)
         {
-            if (String.Equals(policy, "Bypass",
+            if (string.Equals(policy, "Bypass",
                                    StringComparison.OrdinalIgnoreCase))
             {
                 return ExecutionPolicy.Bypass;
             }
-            else if (String.Equals(policy, "Unrestricted",
+            else if (string.Equals(policy, "Unrestricted",
                                    StringComparison.OrdinalIgnoreCase))
             {
                 return ExecutionPolicy.Unrestricted;
             }
-            else if (String.Equals(policy, "RemoteSigned",
+            else if (string.Equals(policy, "RemoteSigned",
                                    StringComparison.OrdinalIgnoreCase))
             {
                 return ExecutionPolicy.RemoteSigned;
             }
-            else if (String.Equals(policy, "AllSigned",
+            else if (string.Equals(policy, "AllSigned",
                               StringComparison.OrdinalIgnoreCase))
             {
                 return ExecutionPolicy.AllSigned;
             }
-            else if (String.Equals(policy, "Restricted",
+            else if (string.Equals(policy, "Restricted",
                          StringComparison.OrdinalIgnoreCase))
             {
                 return ExecutionPolicy.Restricted;
@@ -372,13 +369,13 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// Returns true if file has product binary signature
+        /// Returns true if file has product binary signature.
         /// </summary>
-        /// <param name="file">Name of file to check</param>
+        /// <param name="file">Name of file to check.</param>
         /// <returns>True when file has product binary signature.</returns>
         public static bool IsProductBinary(string file)
         {
-            if (String.IsNullOrEmpty(file) || (!IO.File.Exists(file)))
+            if (string.IsNullOrEmpty(file) || (!IO.File.Exists(file)))
             {
                 return false;
             }
@@ -477,14 +474,14 @@ namespace System.Management.Automation.Internal
             return null;
         }
 
-#endregion execution policy
+        #endregion execution policy
 
         private static bool _saferIdentifyLevelApiSupported = true;
 
         /// <summary>
-        /// Get the pass / fail result of calling the SAFER API
+        /// Get the pass / fail result of calling the SAFER API.
         /// </summary>
-        /// <param name="path">The path to the file in question</param>
+        /// <param name="path">The path to the file in question.</param>
         /// <param name="handle">A file handle to the file in question, if available.</param>
         [ArchitectureSensitive]
         [SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods")]
@@ -578,9 +575,9 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// throw if file does not exist
+        /// Throw if file does not exist.
         /// </summary>
-        /// <param name="filePath"> path to file </param>
+        /// <param name="filePath">Path to file.</param>
         /// <returns>Does not return a value.</returns>
         internal static void CheckIfFileExists(string filePath)
         {
@@ -591,10 +588,10 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// check to see if the specified cert is suitable to be
-        /// used as a code signing cert
+        /// Check to see if the specified cert is suitable to be
+        /// used as a code signing cert.
         /// </summary>
-        /// <param name="c"> certificate object </param>
+        /// <param name="c">Certificate object.</param>
         /// <returns>True on success, false otherwise.</returns>
         internal static bool CertIsGoodForSigning(X509Certificate2 c)
         {
@@ -607,11 +604,11 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// check to see if the specified cert is suitable to be
+        /// Check to see if the specified cert is suitable to be
         /// used as an encryption cert for PKI encryption. Note
         /// that this cert doesn't require the private key.
         /// </summary>
-        /// <param name="c"> certificate object </param>
+        /// <param name="c">Certificate object.</param>
         /// <returns>True on success, false otherwise.</returns>
         internal static bool CertIsGoodForEncryption(X509Certificate2 c)
         {
@@ -656,9 +653,9 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// check if the specified cert has a private key in it
+        /// Check if the specified cert has a private key in it.
         /// </summary>
-        /// <param name="cert"> certificate object </param>
+        /// <param name="cert">Certificate object.</param>
         /// <returns>True on success, false otherwise.</returns>
         internal static bool CertHasPrivatekey(X509Certificate2 cert)
         {
@@ -666,9 +663,9 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// Get the EKUs of a cert
+        /// Get the EKUs of a cert.
         /// </summary>
-        /// <param name="cert"> certificate object </param>
+        /// <param name="cert">Certificate object.</param>
         /// <returns>A collection of cert eku strings.</returns>
         [ArchitectureSensitive]
         internal static Collection<string> GetCertEKU(X509Certificate2 cert)
@@ -724,9 +721,9 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// convert an int to a DWORD
+        /// Convert an int to a DWORD.
         /// </summary>
-        /// <param name="n"> signed int number  </param>
+        /// <param name="n">Signed int number.</param>
         /// <returns>DWORD.</returns>
         internal static DWORD GetDWORDFromInt(int n)
         {
@@ -735,9 +732,9 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// convert a DWORD to int
+        /// Convert a DWORD to int.
         /// </summary>
-        /// <param name="n"> number </param>
+        /// <param name="n">Number.</param>
         /// <returns>Int.</returns>
         internal static int GetIntFromDWORD(DWORD n)
         {
@@ -747,7 +744,7 @@ namespace System.Management.Automation.Internal
     }
 
     /// <summary>
-    /// information used for filtering a set of certs
+    /// Information used for filtering a set of certs.
     /// </summary>
     internal sealed class CertificateFilterInfo
     {
@@ -756,7 +753,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// purpose of a certificate
+        /// Purpose of a certificate.
         /// </summary>
         internal CertificatePurpose Purpose
         {
@@ -766,7 +763,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// SSL Server Authentication
+        /// SSL Server Authentication.
         /// </summary>
         internal bool SSLServerAuthentication
         {
@@ -776,7 +773,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// DNS name of a certificate
+        /// DNS name of a certificate.
         /// </summary>
         internal string DnsName
         {
@@ -784,7 +781,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// EKU OID list of a certificate
+        /// EKU OID list of a certificate.
         /// </summary>
         internal string[] Eku
         {
@@ -792,7 +789,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// remaining validity period in days for a certificate
+        /// Remaining validity period in days for a certificate.
         /// </summary>
         internal int ExpiringInDays
         {
@@ -800,7 +797,7 @@ namespace System.Management.Automation.Internal
         }
 
         /// <summary>
-        /// combine properties into a filter string
+        /// Combine properties into a filter string.
         /// </summary>
         internal string FilterString
         {
@@ -970,7 +967,7 @@ namespace System.Management.Automation
     using System.Security.Cryptography.Pkcs;
 
     /// <summary>
-    /// Utility class for CMS (Cryptographic Message Syntax) related operations
+    /// Utility class for CMS (Cryptographic Message Syntax) related operations.
     /// </summary>
     internal static class CmsUtils
     {
@@ -980,7 +977,7 @@ namespace System.Management.Automation
 
             if ((contentBytes == null) || (contentBytes.Length == 0))
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             // After review with the crypto board, NIST_AES256_CBC is more appropriate
@@ -1027,9 +1024,9 @@ namespace System.Management.Automation
         internal static string END_CERTIFICATE_SIGIL = "-----END CERTIFICATE-----";
 
         /// <summary>
-        /// Adds Ascii armour to a byte stream in Base64 format
+        /// Adds Ascii armour to a byte stream in Base64 format.
         /// </summary>
-        /// <param name="bytes">The bytes to encode</param>
+        /// <param name="bytes">The bytes to encode.</param>
         internal static string GetAsciiArmor(byte[] bytes)
         {
             StringBuilder output = new StringBuilder();
@@ -1043,13 +1040,13 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Removes Ascii armour from a byte stream
+        /// Removes Ascii armour from a byte stream.
         /// </summary>
-        /// <param name="actualContent">The Ascii armored content</param>
-        /// <param name="beginMarker">The marker of the start of the Base64 content</param>
-        /// <param name="endMarker">The marker of the end of the Base64 content</param>
-        /// <param name="startIndex">The beginning of where the Ascii armor was detected</param>
-        /// <param name="endIndex">The end of where the Ascii armor was detected</param>
+        /// <param name="actualContent">The Ascii armored content.</param>
+        /// <param name="beginMarker">The marker of the start of the Base64 content.</param>
+        /// <param name="endMarker">The marker of the end of the Base64 content.</param>
+        /// <param name="startIndex">The beginning of where the Ascii armor was detected.</param>
+        /// <param name="endIndex">The end of where the Ascii armor was detected.</param>
         internal static byte[] RemoveAsciiArmor(string actualContent, string beginMarker, string endMarker, out int startIndex, out int endIndex)
         {
             byte[] messageBytes = null;
@@ -1085,12 +1082,12 @@ namespace System.Management.Automation
     public class CmsMessageRecipient
     {
         /// <summary>
-        /// Creates an instance of the CmsMessageRecipient class
+        /// Creates an instance of the CmsMessageRecipient class.
         /// </summary>
         internal CmsMessageRecipient() { }
 
         /// <summary>
-        /// Creates an instance of the CmsMessageRecipient class
+        /// Creates an instance of the CmsMessageRecipient class.
         /// </summary>
         /// <param name="identifier">
         ///     The identifier of the CmsMessageRecipient.
@@ -1109,7 +1106,7 @@ namespace System.Management.Automation
         private string _identifier = null;
 
         /// <summary>
-        /// Creates an instance of the CmsMessageRecipient class
+        /// Creates an instance of the CmsMessageRecipient class.
         /// </summary>
         /// <param name="certificate">The certificate to use.</param>
         public CmsMessageRecipient(X509Certificate2 certificate)
@@ -1121,7 +1118,7 @@ namespace System.Management.Automation
         private X509Certificate2 _pendingCertificate = null;
 
         /// <summary>
-        /// Gets the certificate associated with this recipient
+        /// Gets the certificate associated with this recipient.
         /// </summary>
         public X509Certificate2Collection Certificates
         {
@@ -1190,7 +1187,7 @@ namespace System.Management.Automation
             {
                 error = new ErrorRecord(
                     new ArgumentException(
-                        String.Format(CultureInfo.InvariantCulture,
+                        string.Format(CultureInfo.InvariantCulture,
                             SecuritySupportStrings.NoCertificateFound, _identifier)),
                     "NoCertificateFound", ErrorCategory.ObjectNotFound, _identifier);
             }
@@ -1256,11 +1253,11 @@ namespace System.Management.Automation
             if ((resolvedPaths != null) && (resolvedPaths.Count != 0))
             {
                 // Ensure the path is from the file system provider
-                if (!String.Equals(pathProvider.Name, "FileSystem", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(pathProvider.Name, "FileSystem", StringComparison.OrdinalIgnoreCase))
                 {
                     error = new ErrorRecord(
                         new ArgumentException(
-                            String.Format(CultureInfo.InvariantCulture,
+                            string.Format(CultureInfo.InvariantCulture,
                                 SecuritySupportStrings.CertificatePathMustBeFileSystemPath, _identifier)),
                         "CertificatePathMustBeFileSystemPath", ErrorCategory.ObjectNotFound, pathProvider);
                     return;
@@ -1422,7 +1419,7 @@ namespace System.Management.Automation
                     {
                         error = new ErrorRecord(
                             new ArgumentException(
-                                String.Format(CultureInfo.InvariantCulture,
+                                string.Format(CultureInfo.InvariantCulture,
                                     SecuritySupportStrings.CertificateCannotBeUsedForEncryption, certificate.Thumbprint, CertificateFilterInfo.DocumentEncryptionOid)),
                             "CertificateCannotBeUsedForEncryption", ErrorCategory.InvalidData, certificate);
                         return;
@@ -1459,7 +1456,7 @@ namespace System.Management.Automation
                     {
                         error = new ErrorRecord(
                             new ArgumentException(
-                                String.Format(CultureInfo.InvariantCulture,
+                                string.Format(CultureInfo.InvariantCulture,
                                     SecuritySupportStrings.IdentifierMustReferenceSingleCertificate, _identifier, "To")),
                             "IdentifierMustReferenceSingleCertificate", ErrorCategory.LimitsExceeded, certificatesToProcess);
                         Certificates.Clear();
@@ -1473,17 +1470,17 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// Defines the purpose for resolution of a CmsMessageRecipient
+    /// Defines the purpose for resolution of a CmsMessageRecipient.
     /// </summary>
     public enum ResolutionPurpose
     {
         /// <summary>
-        /// This message recipient is intended to be used for message encryption
+        /// This message recipient is intended to be used for message encryption.
         /// </summary>
         Encryption,
 
         /// <summary>
-        /// This message recipient is intended to be used for message decryption
+        /// This message recipient is intended to be used for message decryption.
         /// </summary>
         Decryption
     }
@@ -1538,8 +1535,8 @@ namespace System.Management.Automation
         /// Caller is responsible for calling AmsiCloseSession when a "session" (script)
         /// is complete, and for calling AmsiUninitialize when the runspace is being torn down.
         /// </summary>
-        /// <param name="content">The string to be scanned</param>
-        /// <param name="sourceMetadata">Information about the source (filename, etc.)</param>
+        /// <param name="content">The string to be scanned.</param>
+        /// <param name="sourceMetadata">Information about the source (filename, etc.).</param>
         /// <returns>AMSI_RESULT_DETECTED if malware was detected in the sample.</returns>
         internal static AmsiNativeMethods.AMSI_RESULT ScanContent(string content, string sourceMetadata)
         {
@@ -1552,9 +1549,9 @@ namespace System.Management.Automation
 
         internal static AmsiNativeMethods.AMSI_RESULT WinScanContent(string content, string sourceMetadata, bool warmUp)
         {
-            if (String.IsNullOrEmpty(sourceMetadata))
+            if (string.IsNullOrEmpty(sourceMetadata))
             {
-                sourceMetadata = String.Empty;
+                sourceMetadata = string.Empty;
             }
 
             const string EICAR_STRING = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
@@ -1653,9 +1650,10 @@ namespace System.Management.Automation
 
         internal static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-#if !UNIX
-            VerifyAmsiUninitializeCalled();
-#endif
+            if (AmsiInitialized && !AmsiUninitializeCalled)
+            {
+                Uninitialize();
+            }
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")]
@@ -1696,7 +1694,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Uninitialize the AMSI interface
+        /// Uninitialize the AMSI interface.
         /// </summary>
         internal static void Uninitialize()
         {
@@ -1728,11 +1726,6 @@ namespace System.Management.Automation
         public static bool AmsiUninitializeCalled = false;
         public static bool AmsiInitialized = false;
         public static bool AmsiCleanedUp = false;
-
-        private static void VerifyAmsiUninitializeCalled()
-        {
-            Debug.Assert((!AmsiInitialized) || AmsiUninitializeCalled, "AMSI should have been uninitialized.");
-        }
 
         internal class AmsiNativeMethods
         {

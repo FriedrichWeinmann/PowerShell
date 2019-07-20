@@ -9,6 +9,7 @@ using System.Management.Automation;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Runspaces;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
@@ -262,7 +263,7 @@ namespace Microsoft.PowerShell.Commands
                 dollarUnder: InputObject,
                 input: new object[] { InputObject },
                 scriptThis: AutomationNull.Value,
-                args: Utils.EmptyArray<object>());
+                args: Array.Empty<object>());
         }
 
         private object StepCommand()
@@ -428,7 +429,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Write a single object into the underlying stream.
         /// </summary>
-        /// <param name="obj">The object to add to the stream</param>
+        /// <param name="obj">The object to add to the stream.</param>
         /// <returns>
         /// One, if the write was successful, otherwise;
         /// zero if the stream was closed before the object could be written,
@@ -462,7 +463,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Write objects to the underlying stream.
         /// </summary>
-        /// <param name="obj">object or enumeration to read from</param>
+        /// <param name="obj">Object or enumeration to read from.</param>
         /// <param name="enumerateCollection">
         /// If enumerateCollection is true, and <paramref name="obj"/>
         /// is an enumeration according to LanguagePrimitives.GetEnumerable,

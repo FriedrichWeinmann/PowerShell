@@ -10,7 +10,7 @@
  *
  * Compilation Note:
  *    .NET Fx Version    - 4.5
- *    Special Dependency - System.Reflection.Metadata.dll, System.Collections.Immutable.dll (Available as nuget package: http://www.nuget.org/packages/System.Reflection.Metadata)
+ *    Special Dependency - System.Reflection.Metadata.dll, System.Collections.Immutable.dll (Available as nuget package: https://www.nuget.org/packages/System.Reflection.Metadata)
  * To compile the code, create a VS project and get the 'System.Reflection.Metadata' package from nuget. Then add this file to the VS
  * project and compile it.
 */
@@ -346,7 +346,7 @@ DUPLICATE key '{fullName}' from '{strongAssemblyName}' (IsObsolete? {isTypeObsol
         }
 
         /// <summary>
-        /// Resolve the target file path
+        /// Resolve the target file path.
         /// </summary>
         private static string ResolveTargetFilePath(string path)
         {
@@ -367,7 +367,7 @@ DUPLICATE key '{fullName}' from '{strongAssemblyName}' (IsObsolete? {isTypeObsol
         }
 
         /// <summary>
-        /// Resolve the reference assembly file paths
+        /// Resolve the reference assembly file paths.
         /// </summary>
         private static List<string> ResolveReferenceAssemblies(string path)
         {
@@ -458,7 +458,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Helper class to keep the metadata of a type
+        /// Helper class to keep the metadata of a type.
         /// </summary>
         private class TypeMetadata
         {

@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Management.Automation;
 using System.Diagnostics.CodeAnalysis;
+using System.Management.Automation;
 
 //
 // Now define the set of commands for manipulating modules.
@@ -78,7 +78,7 @@ namespace Microsoft.PowerShell.Commands
             get { return _functionImportList; }
         }
 
-        private string[] _functionImportList = Utils.EmptyArray<string>();
+        private string[] _functionImportList = Array.Empty<string>();
 
         /// <summary>
         /// This parameter specifies the patterns matching the cmdlets to import from the module...
@@ -106,7 +106,7 @@ namespace Microsoft.PowerShell.Commands
             get { return _cmdletImportList; }
         }
 
-        private string[] _cmdletImportList = Utils.EmptyArray<string>();
+        private string[] _cmdletImportList = Array.Empty<string>();
 
         /// <summary>
         /// This parameter causes the session state instance to be written...
@@ -135,7 +135,7 @@ namespace Microsoft.PowerShell.Commands
         private bool _asCustomObject;
 
         /// <summary>
-        /// The arguments to pass to the scriptblock used to create the module
+        /// The arguments to pass to the scriptblock used to create the module.
         /// </summary>
         [Parameter(ValueFromRemainingArguments = true)]
         [Alias("Args")]
@@ -157,8 +157,21 @@ namespace Microsoft.PowerShell.Commands
             // Create a module from a scriptblock...
             if (_scriptBlock != null)
             {
+                // Check ScriptBlock language mode.  If it is different than the context language mode
+                // then throw error since private trusted script functions may be exposed.
+                if (Context.LanguageMode == PSLanguageMode.ConstrainedLanguage &&
+                    _scriptBlock.LanguageMode == PSLanguageMode.FullLanguage)
+                {
+                    this.ThrowTerminatingError(
+                        new ErrorRecord(
+                            new PSSecurityException(Modules.CannotCreateModuleWithScriptBlock),
+                            "Modules_CannotCreateModuleWithFullLanguageScriptBlock",
+                            ErrorCategory.SecurityError,
+                            null));
+                }
+
                 string gs = System.Guid.NewGuid().ToString();
-                if (String.IsNullOrEmpty(_name))
+                if (string.IsNullOrEmpty(_name))
                 {
                     _name = PSModuleInfo.DynamicModulePrefixString + gs;
                 }

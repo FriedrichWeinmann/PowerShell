@@ -1,24 +1,24 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Management.Automation.Help;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
-using System.Xml;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Management.Automation.Help;
-using System.Reflection;
+using System.Xml;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Parses help comments and turns them into HelpInfo objects
+    /// Parses help comments and turns them into HelpInfo objects.
     /// </summary>
     internal class HelpCommentsParser
     {
@@ -119,7 +119,7 @@ namespace System.Management.Automation
         {
             XmlElement command_parameter = _doc.CreateElement("command:parameter", commandURI);
             command_parameter.SetAttribute("required", isMandatory ? "true" : "false");
-            //command_parameter.SetAttribute("variableLength", "unknown");
+            // command_parameter.SetAttribute("variableLength", "unknown");
             command_parameter.SetAttribute("globbing", supportsWildcards ? "true" : "false");
             string fromPipeline;
             if (valueFromPipeline && valueFromPipelineByPropertyName)
@@ -178,7 +178,7 @@ namespace System.Management.Automation
                 {
                     XmlElement parameterValue = _doc.CreateElement("command:parameterValue", commandURI);
                     parameterValue.SetAttribute("required", isSwitchParameter ? "false" : "true");
-                    //parameterValue.SetAttribute("variableLength", "unknown");
+                    // parameterValue.SetAttribute("variableLength", "unknown");
                     XmlText parameterValue_text = _doc.CreateTextNode(type.Name);
                     command_parameter.AppendChild(parameterValue).AppendChild(parameterValue_text);
                 }
@@ -542,7 +542,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Split the text in the comment token into multiple lines, appending commentLines.
         /// </summary>
-        /// <param name="comment">A single line or multiline comment token</param>
+        /// <param name="comment">A single line or multiline comment token.</param>
         /// <param name="commentLines"></param>
         private static void CollectCommentText(Token comment, List<string> commentLines)
         {
@@ -712,7 +712,7 @@ namespace System.Management.Automation
         /// Look for special comments indicating the comment block is meant
         /// to be used for help.
         /// </summary>
-        /// <param name="comments">The list of comments to process</param>
+        /// <param name="comments">The list of comments to process.</param>
         /// <returns>True if any special comments are found, false otherwise.</returns>
         internal bool AnalyzeCommentBlock(List<Token> comments)
         {

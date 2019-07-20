@@ -3,6 +3,7 @@
 
 using System;
 using System.Management.Automation;
+
 using Dbg = System.Management.Automation;
 
 namespace Microsoft.PowerShell.Commands
@@ -30,7 +31,7 @@ namespace Microsoft.PowerShell.Commands
         /// The description for the alias.
         /// </summary>
         [Parameter]
-        public string Description { get; set; } = String.Empty;
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// The Option parameter allows the alias to be set to

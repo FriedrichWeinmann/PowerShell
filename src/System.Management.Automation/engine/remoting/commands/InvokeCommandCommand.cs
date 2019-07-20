@@ -13,6 +13,7 @@ using System.Management.Automation.Remoting.Internal;
 using System.Management.Automation.Runspaces;
 using System.Management.Automation.Runspaces.Internal;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
@@ -130,7 +131,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// The PSSession object describing the remote runspace
-        /// using which the specified cmdlet operation will be performed
+        /// using which the specified cmdlet operation will be performed.
         /// </summary>
         [Parameter(Position = 0,
                    ParameterSetName = InvokeCommandCommand.SessionParameterSet)]
@@ -155,7 +156,7 @@ namespace Microsoft.PowerShell.Commands
         /// computer(s). The following formats are supported:
         ///      (a) Computer name
         ///      (b) IPv4 address : 132.3.4.5
-        ///      (c) IPv6 address: 3ffe:8311:ffff:f70f:0:5efe:172.30.162.18
+        ///      (c) IPv6 address: 3ffe:8311:ffff:f70f:0:5efe:172.30.162.18.
         /// </summary>
         [Parameter(Position = 0,
                    ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
@@ -308,7 +309,7 @@ namespace Microsoft.PowerShell.Commands
         /// This parameters specifies the appname which identifies the connection
         /// end point on the remote machine. If this parameter is not specified
         /// then the value specified in DEFAULTREMOTEAPPNAME will be used. If thats
-        /// not specified as well, then "WSMAN" will be used
+        /// not specified as well, then "WSMAN" will be used.
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true,
                    ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
@@ -330,7 +331,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Allows the user of the cmdlet to specify a throttling value
         /// for throttling the number of remote operations that can
-        /// be executed simultaneously
+        /// be executed simultaneously.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.SessionParameterSet)]
@@ -359,7 +360,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// A complete URI(s) specified for the remote computer and shell to
-        /// connect to and create runspace for
+        /// connect to and create runspace for.
         /// </summary>
         [Parameter(Position = 0,
                    ParameterSetName = InvokeCommandCommand.UriParameterSet)]
@@ -381,7 +382,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Specifies if the cmdlet needs to be run asynchronously
+        /// Specifies if the cmdlet needs to be run asynchronously.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.SessionParameterSet)]
@@ -475,7 +476,7 @@ namespace Microsoft.PowerShell.Commands
         private bool _hideComputerName;
 
         /// <summary>
-        /// Friendly name for the job object if AsJob is used
+        /// Friendly name for the job object if AsJob is used.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.SessionParameterSet)]
@@ -494,7 +495,7 @@ namespace Microsoft.PowerShell.Commands
 
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     _name = value;
                     _asjob = true;
@@ -502,12 +503,12 @@ namespace Microsoft.PowerShell.Commands
             }
         }
 
-        private string _name = String.Empty;
+        private string _name = string.Empty;
 
         /// <summary>
         /// The script block that the user has specified in the
         /// cmdlet. This will be converted to a powershell before
-        /// its actually sent to the remote end
+        /// its actually sent to the remote end.
         /// </summary>
         [Parameter(Position = 1,
                    Mandatory = true,
@@ -558,7 +559,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// The script block that the user has specified in the
         /// cmdlet. This will be converted to a powershell before
-        /// its actually sent to the remote end
+        /// its actually sent to the remote end.
         /// </summary>
         [Parameter(Position = 1,
                    Mandatory = true,
@@ -598,7 +599,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// The AllowRedirection parameter enables the implicit redirection functionality
+        /// The AllowRedirection parameter enables the implicit redirection functionality.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.UriParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.FilePathUriParameterSet)]
@@ -637,7 +638,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Authentication mechanism to authenticate the user
+        /// Authentication mechanism to authenticate the user.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.FilePathComputerNameParameterSet)]
@@ -691,7 +692,7 @@ namespace Microsoft.PowerShell.Commands
         #region SSH Parameters
 
         /// <summary>
-        /// Host name for an SSH remote connection
+        /// Host name for an SSH remote connection.
         /// </summary>
         [Parameter(Mandatory = true,
             ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
@@ -706,7 +707,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// User Name
+        /// User Name.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.FilePathSSHHostParameterSet)]
@@ -719,7 +720,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Key Path
+        /// Key Path.
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.FilePathSSHHostParameterSet)]
@@ -800,7 +801,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Creates the helper classes for the specified
-        /// parameter set
+        /// parameter set.
         /// </summary>
         protected override void BeginProcessing()
         {
@@ -920,7 +921,7 @@ namespace Microsoft.PowerShell.Commands
                 return;
             }
 
-            if (String.IsNullOrEmpty(ConfigurationName))
+            if (string.IsNullOrEmpty(ConfigurationName))
             {
                 if ((ParameterSetName == InvokeCommandCommand.ComputerNameParameterSet) ||
                     (ParameterSetName == InvokeCommandCommand.UriParameterSet) ||
@@ -932,8 +933,8 @@ namespace Microsoft.PowerShell.Commands
                 }
                 else
                 {
-                    // convert null to String.Empty for VM/Container session
-                    ConfigurationName = String.Empty;
+                    // convert null to string.Empty for VM/Container session
+                    ConfigurationName = string.Empty;
                 }
             }
 
@@ -1250,7 +1251,6 @@ namespace Microsoft.PowerShell.Commands
 
                             // finally dispose the job.
                             _job.Dispose();
-
                         }
                     }
                 }
@@ -1262,7 +1262,7 @@ namespace Microsoft.PowerShell.Commands
         /// cmdlet. The cmdlet will not exit until it has completed
         /// executing the command on all the runspaces. However, when a stop
         /// signal is sent, execution needs to be stopped on the pipelines
-        /// corresponding to these runspaces
+        /// corresponding to these runspaces.
         /// </summary>
         /// <remarks>This is called from a separate thread so need to worry
         /// about concurrency issues
@@ -1334,7 +1334,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Handle event from the throttle manager indicating that all
-        /// operations are complete
+        /// operations are complete.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
@@ -1346,7 +1346,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Clears the internal invoke command instance on all
-        /// remote runspaces
+        /// remote runspaces.
         /// </summary>
         private void ClearInvokeCommandOnRunspaces()
         {
@@ -1362,7 +1362,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Sets the throttle limit, creates the invoke expression
-        /// sync job and executes the same
+        /// sync job and executes the same.
         /// </summary>
         private void CreateAndRunSyncJob()
         {
@@ -1604,9 +1604,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Writes an input value to the pipeline
+        /// Writes an input value to the pipeline.
         /// </summary>
-        /// <param name="inputValue">input value to write</param>
+        /// <param name="inputValue">Input value to write.</param>
         private void WriteInput(object inputValue)
         {
             // when there are no input writers, there is no
@@ -1645,9 +1645,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Writes the results in the job object
+        /// Writes the results in the job object.
         /// </summary>
-        /// <param name="nonblocking">Write in a non-blocking manner</param>
+        /// <param name="nonblocking">Write in a non-blocking manner.</param>
         private void WriteJobResults(bool nonblocking)
         {
             if (_job == null)
@@ -1867,9 +1867,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Writes the stream objects in the specified collection
+        /// Writes the stream objects in the specified collection.
         /// </summary>
-        /// <param name="results">collection to read from</param>
+        /// <param name="results">Collection to read from.</param>
         private void WriteStreamObjectsFromCollection(IEnumerable<PSStreamObject> results)
         {
             foreach (var result in results)
@@ -1885,7 +1885,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Determine if we have to throw for a
         /// "throw" statement from scripts
-        ///  This means that the local pipeline will be terminated as well
+        ///  This means that the local pipeline will be terminated as well.
         /// </summary>
         /// <remarks>
         /// This is valid when only one pipeline is
@@ -1938,7 +1938,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Process the stream object before writing it in the specified collection.
         /// </summary>
-        /// <param name="streamObject">stream object to process</param>
+        /// <param name="streamObject">Stream object to process.</param>
         private void PreProcessStreamObject(PSStreamObject streamObject)
         {
             ErrorRecord errorRecord = streamObject.Value as ErrorRecord;
@@ -2004,7 +2004,7 @@ namespace Microsoft.PowerShell.Commands
         #region IDisposable Overrides
 
         /// <summary>
-        /// Dispose the cmdlet
+        /// Dispose the cmdlet.
         /// </summary>
         public void Dispose()
         {
@@ -2013,9 +2013,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// internal dispose method which does the actual disposing
+        /// Internal dispose method which does the actual disposing.
         /// </summary>
-        /// <param name="disposing">whether called from dispose or finalize</param>
+        /// <param name="disposing">Whether called from dispose or finalize.</param>
         private void Dispose(bool disposing)
         {
             if (disposing)
@@ -2086,7 +2086,7 @@ namespace System.Management.Automation.Internal
         private Timer _updateTimer;
 
         /// <summary>
-        ///  Constructor.
+        /// Constructor.
         /// </summary>
         public RobustConnectionProgress()
         {

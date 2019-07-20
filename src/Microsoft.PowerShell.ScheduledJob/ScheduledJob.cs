@@ -4,14 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Runtime.Serialization;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
-using System.IO;
 using System.ComponentModel;
-using System.Security.Permissions;
+using System.IO;
+using System.Management.Automation;
 using System.Management.Automation.Host;
+using System.Management.Automation.Runspaces;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using System.Text;
 
 namespace Microsoft.PowerShell.ScheduledJob
 {
@@ -127,9 +127,9 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="command">Job command string for display</param>
-        /// <param name="name">Name of job</param>
-        /// <param name="jobDefinition">ScheduledJobDefinition defining job to run</param>
+        /// <param name="command">Job command string for display.</param>
+        /// <param name="name">Name of job.</param>
+        /// <param name="jobDefinition">ScheduledJobDefinition defining job to run.</param>
         public ScheduledJob(
             string command,
             string name,
@@ -222,7 +222,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// </summary>
         public override void StartJobAsync()
         {
-            //StartJob();
+            // StartJob();
             throw new PSNotSupportedException();
         }
 
@@ -340,7 +340,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         }
 
         /// <summary>
-        /// StopJob
+        /// StopJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -350,7 +350,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         }
 
         /// <summary>
-        /// StopJobAsync
+        /// StopJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -359,7 +359,7 @@ namespace Microsoft.PowerShell.ScheduledJob
             throw new PSNotSupportedException();
         }
         /// <summary>
-        /// SuspendJob
+        /// SuspendJob.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -369,7 +369,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         }
 
         /// <summary>
-        /// SuspendJobAsync
+        /// SuspendJobAsync.
         /// </summary>
         /// <param name="force"></param>
         /// <param name="reason"></param>
@@ -385,8 +385,8 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// Deserialize constructor.
         /// </summary>
-        /// <param name="info">SerializationInfo</param>
-        /// <param name="context">StreamingContext</param>
+        /// <param name="info">SerializationInfo.</param>
+        /// <param name="context">StreamingContext.</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         private ScheduledJob(
             SerializationInfo info,
@@ -405,8 +405,8 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// Serialize method.
         /// </summary>
-        /// <param name="info">SerializationInfo</param>
-        /// <param name="context">StreamingContext</param>
+        /// <param name="info">SerializationInfo.</param>
+        /// <param name="context">StreamingContext.</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(
             SerializationInfo info,

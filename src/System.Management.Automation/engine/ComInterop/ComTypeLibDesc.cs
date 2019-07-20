@@ -38,13 +38,13 @@ namespace System.Management.Automation.ComInterop
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "<type library {0}>", Name);
+            return string.Format(CultureInfo.CurrentCulture, "<type library {0}>", Name);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public string Documentation
         {
-            get { return String.Empty; }
+            get { return string.Empty; }
         }
 
         #region IDynamicMetaObjectProvider Members
@@ -62,7 +62,7 @@ namespace System.Management.Automation.ComInterop
         /// and creates a IDynamicMetaObjectProvider that allows to instantiate coclasses
         /// and get actual values for the enums.
         /// </summary>
-        /// <param name="typeLibGuid">Type Library Guid</param>
+        /// <param name="typeLibGuid">Type Library Guid.</param>
         /// <returns>ComTypeLibDesc object.</returns>
         [System.Runtime.Versioning.ResourceExposure(System.Runtime.Versioning.ResourceScope.Machine)]
         [System.Runtime.Versioning.ResourceConsumption(System.Runtime.Versioning.ResourceScope.Machine, System.Runtime.Versioning.ResourceScope.Machine)]
@@ -81,7 +81,7 @@ namespace System.Management.Automation.ComInterop
         /// and creates a IDynamicMetaObjectProvider that allows to instantiate coclasses
         /// and get actual values for the enums.
         /// </summary>
-        /// <param name="rcw">OLE automation compatible RCW</param>
+        /// <param name="rcw">OLE automation compatible RCW.</param>
         /// <returns>ComTypeLibDesc object.</returns>
         public static ComTypeLibInfo CreateFromObject(object rcw)
         {

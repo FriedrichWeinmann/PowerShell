@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Management.Automation;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
 using System.IO;
+using System.Management.Automation;
+using System.Security.Cryptography;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -24,7 +24,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         /// <value></value>
         [Parameter(Mandatory = true, ParameterSetName = PathParameterSet, Position = 0, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true)]
-        public String[] Path
+        public string[] Path
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Microsoft.PowerShell.Commands
         /// <value></value>
         [Parameter(Mandatory = true, ParameterSetName = LiteralPathParameterSet, Position = 0, ValueFromPipelineByPropertyName = true)]
         [Alias("PSPath", "LP")]
-        public String[] LiteralPath
+        public string[] LiteralPath
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Microsoft.PowerShell.Commands
             }
         }
 
-        private String[] _paths;
+        private string[] _paths;
 
         /// <summary>
         /// InputStream parameter.
@@ -127,7 +127,7 @@ namespace Microsoft.PowerShell.Commands
             foreach (string path in pathsToProcess)
             {
                 byte[] bytehash = null;
-                String hash = null;
+                string hash = null;
                 Stream openfilestream = null;
 
                 try
@@ -162,7 +162,7 @@ namespace Microsoft.PowerShell.Commands
             if (ParameterSetName == StreamParameterSet)
             {
                 byte[] bytehash = null;
-                String hash = null;
+                string hash = null;
 
                 bytehash = hasher.ComputeHash(InputStream);
 
@@ -189,7 +189,6 @@ namespace Microsoft.PowerShell.Commands
         private const string PathParameterSet = "Path";
         private const string LiteralPathParameterSet = "LiteralPath";
         private const string StreamParameterSet = "StreamParameterSet";
-
     }
 
     /// <summary>
@@ -208,7 +207,7 @@ namespace Microsoft.PowerShell.Commands
                      HashAlgorithmNames.SHA384,
                      HashAlgorithmNames.SHA512,
                      HashAlgorithmNames.MD5)]
-        public String Algorithm
+        public string Algorithm
         {
             get
             {
@@ -223,7 +222,7 @@ namespace Microsoft.PowerShell.Commands
             }
         }
 
-        private String _Algorithm = HashAlgorithmNames.SHA256;
+        private string _Algorithm = HashAlgorithmNames.SHA256;
 
         /// <summary>
         /// Hash algorithm is used.

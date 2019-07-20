@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.Diagnostics;
-using Dbg = System.Management.Automation;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
+
+using Dbg = System.Management.Automation;
 
 namespace System.Management.Automation
 {
@@ -34,7 +35,7 @@ namespace System.Management.Automation
 
             _underType = Enum.GetUnderlyingType(typeof(T));
 
-            if (String.IsNullOrWhiteSpace(expression))
+            if (string.IsNullOrWhiteSpace(expression))
             {
                 throw InterpreterError.NewInterpreterException(expression, typeof(RuntimeException),
                     null, "EmptyInputString", EnumExpressionEvaluatorStrings.EmptyInputString);
@@ -74,7 +75,7 @@ namespace System.Management.Automation
 
             foreach (string inputClause in expression)
             {
-                if (String.IsNullOrWhiteSpace(inputClause))
+                if (string.IsNullOrWhiteSpace(inputClause))
                 {
                     throw InterpreterError.NewInterpreterException(expression, typeof(RuntimeException),
                         null, "EmptyInputString", EnumExpressionEvaluatorStrings.EmptyInputString);
@@ -440,8 +441,8 @@ namespace System.Management.Automation
         private Token GetNextToken(string input, ref int _offset)
         {
             StringBuilder sb = new StringBuilder();
-            //bool singleQuoted = false;
-            //bool doubleQuoted = false;
+            // bool singleQuoted = false;
+            // bool doubleQuoted = false;
             bool readingIdentifier = false;
             while (_offset < input.Length)
             {
@@ -479,7 +480,7 @@ namespace System.Management.Automation
             result = result.Trim();
 
             // possible empty token because white spaces are enclosed in quotation marks.
-            if (String.IsNullOrWhiteSpace(result))
+            if (string.IsNullOrWhiteSpace(result))
             {
                 throw InterpreterError.NewInterpreterException(input, typeof(RuntimeException),
                     null, "EmptyTokenString", EnumExpressionEvaluatorStrings.EmptyTokenString,

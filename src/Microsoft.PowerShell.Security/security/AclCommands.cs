@@ -108,7 +108,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Add brokered properties for easy access to important properties
-        /// of security descriptor
+        /// of security descriptor.
         /// </summary>
         internal static void AddBrokeredProperties(
             Collection<PSObject> results,
@@ -119,7 +119,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 if (audit)
                 {
-                    //Audit
+                    // Audit
                     result.Properties.Add
                     (
                         new PSCodeProperty
@@ -129,7 +129,7 @@ namespace Microsoft.PowerShell.Commands
                             )
                     );
                 }
-                //CentralAccessPolicyId retrieval does not require elevation, so we always add this property.
+                // CentralAccessPolicyId retrieval does not require elevation, so we always add this property.
                 result.Properties.Add
                 (
                     new PSCodeProperty
@@ -138,11 +138,11 @@ namespace Microsoft.PowerShell.Commands
                             typeof(SecurityDescriptorCommandsBase).GetMethod("GetCentralAccessPolicyId")
                         )
                 );
-#if !CORECLR    //GetAllCentralAccessPolicies and GetCentralAccessPolicyName are not supported in OneCore powershell
-                //because function 'LsaQueryCAPs' is not available in OneCoreUAP and NanoServer.
+#if !CORECLR    // GetAllCentralAccessPolicies and GetCentralAccessPolicyName are not supported in OneCore powershell
+                // because function 'LsaQueryCAPs' is not available in OneCoreUAP and NanoServer.
                 if (allCentralAccessPolicies)
                 {
-                    //AllCentralAccessPolicies
+                    // AllCentralAccessPolicies
                     result.Properties.Add
                     (
                         new PSCodeProperty
@@ -152,7 +152,7 @@ namespace Microsoft.PowerShell.Commands
                             )
                     );
                 }
-                //CentralAccessPolicyName retrieval does not require elevation, so we always add this property.
+                // CentralAccessPolicyName retrieval does not require elevation, so we always add this property.
                 result.Properties.Add
                 (
                     new PSCodeProperty
@@ -186,9 +186,9 @@ namespace Microsoft.PowerShell.Commands
                 // them for null causes a presharp warning
 #pragma warning disable 56506
 
-                //Get path
+                // Get path
                 return instance.Properties["PSPath"].Value.ToString();
-#pragma warning enable 56506
+#pragma warning restore 56506
             }
         }
 
@@ -214,7 +214,7 @@ namespace Microsoft.PowerShell.Commands
                 throw PSTraceSource.NewArgumentNullException("instance");
             }
 
-            //Get owner
+            // Get owner
             try
             {
                 IdentityReference ir = sd.GetOwner(typeof(NTAccount));
@@ -254,7 +254,7 @@ namespace Microsoft.PowerShell.Commands
                 throw PSTraceSource.NewArgumentNullException("instance");
             }
 
-            //Get Group
+            // Get Group
             try
             {
                 IdentityReference ir = sd.GetGroup(typeof(NTAccount));
@@ -293,7 +293,7 @@ namespace Microsoft.PowerShell.Commands
                 PSTraceSource.NewArgumentException("instance");
             }
 
-            //Get DACL
+            // Get DACL
             AuthorizationRuleCollection dacl;
             CommonObjectSecurity cos = sd as CommonObjectSecurity;
             if (cos != null)
@@ -608,12 +608,12 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// The glob string used to determine which items are included.
         /// </summary>
-        private string[] _include = new string[0];
+        private string[] _include = Array.Empty<string>();
 
         /// <summary>
         /// The glob string used to determine which items are excluded.
         /// </summary>
-        private string[] _exclude = new string[0];
+        private string[] _exclude = Array.Empty<string>();
     }
 
 #if !UNIX
@@ -630,7 +630,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         public GetAclCommand()
         {
-            //Default for path is the current location
+            // Default for path is the current location
             _path = new string[] { "." };
         }
         #region parameters
@@ -660,7 +660,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// InputObject Parameter
-        /// Gets or sets the inputObject for which to obtain the security descriptor
+        /// Gets or sets the inputObject for which to obtain the security descriptor.
         /// </summary>
         [Parameter(Mandatory = true, ParameterSetName = "ByInputObject")]
         public PSObject InputObject
@@ -928,7 +928,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// InputObject Parameter
-        /// Gets or sets the inputObject for which to set the security descriptor
+        /// Gets or sets the inputObject for which to set the security descriptor.
         /// </summary>
         [Parameter(Position = 0, Mandatory = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "ByInputObject")]
         public PSObject InputObject
@@ -1591,8 +1591,7 @@ namespace Microsoft.PowerShell.Commands
         }
     }
 #endif // !UNIX
-
-}// namespace Microsoft.PowerShell.Commands
+}
 
 #pragma warning restore 56506
 

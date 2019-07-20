@@ -2,20 +2,21 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Configuration;
-using System.Management.Automation.Runspaces;
-using System.Management.Automation.Internal;
-using System.Diagnostics;
-using Dbg = System.Management.Automation.Diagnostics;
 using System.Management.Automation.Host;
-using System.Collections.Generic;
+using System.Management.Automation.Internal;
+using System.Management.Automation.Language;
+using System.Management.Automation.Runspaces;
 using System.Security;
+using System.Text;
+
+using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell
 {
@@ -26,7 +27,7 @@ namespace Microsoft.PowerShell
     internal class NullHostUserInterface : PSHostUserInterface
     {
         /// <summary>
-        /// RawUI
+        /// RawUI.
         /// </summary>
         public override PSHostRawUserInterface RawUI
         {
@@ -34,7 +35,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// Prompt
+        /// Prompt.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="message"></param>
@@ -46,7 +47,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// PromptForChoice
+        /// PromptForChoice.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="message"></param>
@@ -59,7 +60,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// PromptForCredential
+        /// PromptForCredential.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="message"></param>
@@ -72,7 +73,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// PromptForCredential
+        /// PromptForCredential.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="message"></param>
@@ -87,7 +88,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// ReadLine
+        /// ReadLine.
         /// </summary>
         /// <returns></returns>
         public override string ReadLine()
@@ -96,7 +97,7 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// ReadLineAsSecureString
+        /// ReadLineAsSecureString.
         /// </summary>
         /// <returns></returns>
         public override SecureString ReadLineAsSecureString()
@@ -105,14 +106,14 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// Write
+        /// Write.
         /// </summary>
         /// <param name="value"></param>
         public override void Write(string value)
         { }
 
         /// <summary>
-        /// Write
+        /// Write.
         /// </summary>
         /// <param name="foregroundColor"></param>
         /// <param name="backgroundColor"></param>
@@ -121,14 +122,14 @@ namespace Microsoft.PowerShell
         { }
 
         /// <summary>
-        /// WriteDebugLine
+        /// WriteDebugLine.
         /// </summary>
         /// <param name="message"></param>
         public override void WriteDebugLine(string message)
         { }
 
         /// <summary>
-        /// WriteErrorLine
+        /// WriteErrorLine.
         /// </summary>
         /// <param name="value"></param>
         public override void WriteErrorLine(string value)
@@ -137,14 +138,14 @@ namespace Microsoft.PowerShell
         }
 
         /// <summary>
-        /// WriteLine
+        /// WriteLine.
         /// </summary>
         /// <param name="value"></param>
         public override void WriteLine(string value)
         { }
 
         /// <summary>
-        /// WriteProgress
+        /// WriteProgress.
         /// </summary>
         /// <param name="sourceId"></param>
         /// <param name="record"></param>
@@ -152,14 +153,14 @@ namespace Microsoft.PowerShell
         { }
 
         /// <summary>
-        /// WriteVerboseLine
+        /// WriteVerboseLine.
         /// </summary>
         /// <param name="message"></param>
         public override void WriteVerboseLine(string message)
         { }
 
         /// <summary>
-        /// WriteWarningLine
+        /// WriteWarningLine.
         /// </summary>
         /// <param name="message"></param>
         public override void WriteWarningLine(string message)
@@ -168,28 +169,33 @@ namespace Microsoft.PowerShell
 
     internal class CommandLineParameterParser
     {
+        private const int MaxPipePathLengthLinux = 108;
+        private const int MaxPipePathLengthMacOS = 104;
+
         internal static string[] validParameters = {
-            "version",
-            "nologo",
-            "noexit",
 #if STAMODE
             "sta",
             "mta",
 #endif
-            "noprofile",
-            "noninteractive",
-            "inputformat",
-            "outputformat",
-            "windowstyle",
-            "encodedcommand",
-            "configurationname",
-            "file",
-            "executionpolicy",
             "command",
-            "settingsfile",
+            "configurationname",
+            "custompipename",
+            "encodedcommand",
+            "executionpolicy",
+            "file",
             "help",
-            "workingdirectory",
-            "removeworkingdirectorytrailingcharacter"
+            "inputformat",
+            "loadprofile",
+            "noexit",
+            "nologo",
+            "noninteractive",
+            "noprofile",
+            "outputformat",
+            "removeworkingdirectorytrailingcharacter",
+            "settingsfile",
+            "version",
+            "windowstyle",
+            "workingdirectory"
         };
 
         internal CommandLineParameterParser(PSHostUserInterface hostUI, string bannerText, string helpText)
@@ -341,6 +347,14 @@ namespace Microsoft.PowerShell
             }
         }
 
+        internal string CustomPipeName
+        {
+            get
+            {
+                return _customPipeName;
+            }
+        }
+
         internal Serialization.DataFormat OutputFormat
         {
             get
@@ -410,7 +424,7 @@ namespace Microsoft.PowerShell
                 {
                     return _workingDirectory.Remove(_workingDirectory.Length - 1);
                 }
- #endif
+#endif
                 return _workingDirectory;
             }
         }
@@ -484,21 +498,6 @@ namespace Microsoft.PowerShell
             return true;
         }
 
-        /// <summary>
-        /// Processes the command line parameters to ConsoleHost which must be parsed before the Host is created.
-        /// Success to indicate that the program should continue running.
-        /// </summary>
-        /// <param name="args">
-        /// The command line parameters to be processed.
-        /// </param>
-        internal static void EarlyParse(string[] args)
-        {
-            // indicates that we've called this method on this instance, and that when it's done, the state variables
-            // will reflect the parse.
-
-            EarlyParseHelper(args);
-        }
-
         private static string GetConfigurationNameFromGroupPolicy()
         {
             // Current user policy takes precedence.
@@ -515,9 +514,9 @@ namespace Microsoft.PowerShell
         /// <param name="args">
         /// The command line parameters to be processed.
         /// </param>
-        private static void EarlyParseHelper(string[] args)
+        internal static void EarlyParse(string[] args)
         {
-            if(args == null)
+            if (args == null)
             {
                 Dbg.Assert(args != null, "Argument 'args' to EarlyParseHelper should never be null");
                 return;
@@ -574,7 +573,7 @@ namespace Microsoft.PowerShell
                 return (SwitchKey: null, ShouldBreak: false);
             }
 
-            if (!SpecialCharacters.IsDash(switchKey[0]) && switchKey[0] != '/')
+            if (!CharExtensions.IsDash(switchKey[0]) && switchKey[0] != '/')
             {
                 // then its a file
                 if (parser != null)
@@ -591,7 +590,7 @@ namespace Microsoft.PowerShell
             switchKey = switchKey.Substring(1);
 
             // chop off the second dash so we're agnostic wrt specifying - or --
-            if (!string.IsNullOrEmpty(switchKey) && SpecialCharacters.IsDash(switchKey[0]))
+            if (!string.IsNullOrEmpty(switchKey) && CharExtensions.IsDash(switchKey[0]))
             {
                 switchKey = switchKey.Substring(1);
             }
@@ -611,7 +610,7 @@ namespace Microsoft.PowerShell
         private static bool MatchSwitch(string switchKey, string match, string smallestUnambiguousMatch)
         {
             Dbg.Assert(switchKey != null, "need a value");
-            Dbg.Assert(!String.IsNullOrEmpty(match), "need a value");
+            Dbg.Assert(!string.IsNullOrEmpty(match), "need a value");
             Dbg.Assert(match.Trim().ToLowerInvariant() == match, "match should be normalized to lowercase w/ no outside whitespace");
             Dbg.Assert(smallestUnambiguousMatch.Trim().ToLowerInvariant() == smallestUnambiguousMatch, "match should be normalized to lowercase w/ no outside whitespace");
             Dbg.Assert(match.Contains(smallestUnambiguousMatch), "sUM should be a substring of match");
@@ -638,7 +637,7 @@ namespace Microsoft.PowerShell
         private void DisplayBanner()
         {
             // If banner text is not supplied do nothing.
-            if (!String.IsNullOrEmpty(_bannerText))
+            if (!string.IsNullOrEmpty(_bannerText))
             {
                 _hostUI.WriteLine(_bannerText);
                 _hostUI.WriteLine();
@@ -729,6 +728,10 @@ namespace Microsoft.PowerShell
                     _noExit = true;
                     noexitSeen = true;
                 }
+                else if (MatchSwitch(switchKey, "loadprofile", "l"))
+                {
+                    _skipUserInit = false;
+                }
                 else if (MatchSwitch(switchKey, "noprofile", "nop"))
                 {
                     _skipUserInit = true;
@@ -772,6 +775,33 @@ namespace Microsoft.PowerShell
                     }
 
                     _configurationName = args[i];
+                }
+                else if (MatchSwitch(switchKey, "custompipename", "cus"))
+                {
+                    ++i;
+                    if (i >= args.Length)
+                    {
+                        WriteCommandLineError(
+                            CommandLineParameterParserStrings.MissingCustomPipeNameArgument);
+                        break;
+                    }
+
+                    if (!Platform.IsWindows)
+                    {
+                        int maxNameLength = (Platform.IsLinux ? MaxPipePathLengthLinux : MaxPipePathLengthMacOS) - Path.GetTempPath().Length;
+                        if (args[i].Length > maxNameLength)
+                        {
+                            WriteCommandLineError(
+                                string.Format(
+                                    CommandLineParameterParserStrings.CustomPipeNameTooLong,
+                                    maxNameLength,
+                                    args[i],
+                                    args[i].Length));
+                            break;
+                        }
+                    }
+
+                    _customPipeName = args[i];
                 }
                 else if (MatchSwitch(switchKey, "command", "c"))
                 {
@@ -859,7 +889,7 @@ namespace Microsoft.PowerShell
                     {
                         string arg = args[i];
 
-                        if (!string.IsNullOrEmpty(arg) && SpecialCharacters.IsDash(arg[0]))
+                        if (!string.IsNullOrEmpty(arg) && CharExtensions.IsDash(arg[0]))
                         {
                             break;
                         }
@@ -1004,7 +1034,7 @@ namespace Microsoft.PowerShell
             foreach (string s in Enum.GetNames(typeof(Serialization.DataFormat)))
             {
                 sb.Append(s);
-                sb.Append(ConsoleHostUserInterface.Crlf);
+                sb.Append(Environment.NewLine);
             }
 
             ++i;
@@ -1130,7 +1160,7 @@ namespace Microsoft.PowerShell
 
                 if (!System.IO.File.Exists(_file))
                 {
-                    if (args[i].StartsWith("-") && args[i].Length > 1)
+                    if (args[i].StartsWith('-') && args[i].Length > 1)
                     {
                         string param = args[i].Substring(1, args[i].Length - 1).ToLower();
                         StringBuilder possibleParameters = new StringBuilder();
@@ -1175,7 +1205,7 @@ namespace Microsoft.PowerShell
                         _collectedArgs.Add(new CommandParameter(pendingParameter, arg));
                         pendingParameter = null;
                     }
-                    else if (!string.IsNullOrEmpty(arg) && SpecialCharacters.IsDash(arg[0]))
+                    else if (!string.IsNullOrEmpty(arg) && CharExtensions.IsDash(arg[0]) && arg.Length > 1)
                     {
                         int offset = arg.IndexOf(':');
                         if (offset >= 0)
@@ -1375,6 +1405,7 @@ namespace Microsoft.PowerShell
         private string _helpText;
         private bool _abortStartup;
         private bool _skipUserInit;
+        private string _customPipeName;
 #if STAMODE
         // Win8: 182409 PowerShell 3.0 should run in STA mode by default
         // -sta and -mta are mutually exclusive..so tracking them using nullable boolean

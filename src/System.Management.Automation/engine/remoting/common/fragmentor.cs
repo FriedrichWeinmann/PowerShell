@@ -4,10 +4,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Management.Automation.Tracing;
-using System.Xml;
-using System.Text;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Tracing;
+using System.Text;
+using System.Xml;
+
 using Dbg = System.Management.Automation.Diagnostics;
 using TypeTable = System.Management.Automation.Runspaces.TypeTable;
 
@@ -73,7 +74,7 @@ namespace System.Management.Automation.Remoting
         #region Constructors
 
         /// <summary>
-        /// Default Constructor
+        /// Default Constructor.
         /// </summary>
         internal FragmentedRemoteObject()
         {
@@ -116,7 +117,7 @@ namespace System.Management.Automation.Remoting
         #region Data Fields being sent
 
         /// <summary>
-        /// All fragments of the same PSObject have the same ObjectId
+        /// All fragments of the same PSObject have the same ObjectId.
         /// </summary>
         internal long ObjectId { get; set; }
 
@@ -638,7 +639,7 @@ namespace System.Management.Automation.Remoting
         }
 
         /// <summary>
-        /// Read the currently accumulated data in queued memory streams
+        /// Read the currently accumulated data in queued memory streams.
         /// </summary>
         /// <returns></returns>
         internal byte[] Read()

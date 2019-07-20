@@ -4,8 +4,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Management.Automation.Host;
+using System.Reflection;
+
 using Dbg = System.Management.Automation.Diagnostics;
 using InternalHostUserInterface = System.Management.Automation.Internal.Host.InternalHostUserInterface;
 
@@ -60,7 +61,7 @@ namespace System.Management.Automation.Remoting
         }
 
         /// <summary>
-        /// Computer name to be used in messages
+        /// Computer name to be used in messages.
         /// </summary>
         private string _computerName;
 
@@ -325,7 +326,7 @@ namespace System.Management.Automation.Remoting
         /// This message performs various security checks on the
         /// remote host call message. If there is a need to modify
         /// the message or discard it for security reasons then
-        /// such modifications will be made here
+        /// such modifications will be made here.
         /// </summary>
         /// <param name="computerName">computer name to use in
         /// warning messages</param>
@@ -334,14 +335,14 @@ namespace System.Management.Automation.Remoting
         /// executed.</returns>
         internal Collection<RemoteHostCall> PerformSecurityChecksOnHostMessage(string computerName)
         {
-            Dbg.Assert(!String.IsNullOrEmpty(computerName),
+            Dbg.Assert(!string.IsNullOrEmpty(computerName),
                 "Computer Name must be passed for use in warning messages");
             _computerName = computerName;
             Collection<RemoteHostCall> prerequisiteCalls = new Collection<RemoteHostCall>();
 
             // check if the incoming message is a PromptForCredential message
             // if so, do the following:
-            //       (a) prepend "Windows PowerShell Credential Request" in the title
+            //       (a) prepend "PowerShell Credential Request" in the title
             //       (b) prepend "Message from Server XXXXX" to the text message
             if (MethodId == RemoteHostMethodId.PromptForCredential1 ||
                 MethodId == RemoteHostMethodId.PromptForCredential2)
@@ -435,9 +436,9 @@ namespace System.Management.Automation.Remoting
         /// <summary>
         /// Provides the modified caption for the given caption
         /// Used in ensuring that remote prompt messages are
-        /// tagged with "Windows PowerShell Credential Request"
+        /// tagged with "PowerShell Credential Request"
         /// </summary>
-        /// <param name="caption">caption to modify</param>
+        /// <param name="caption">Caption to modify.</param>
         /// <returns>New modified caption.</returns>
         private string ModifyCaption(string caption)
         {
@@ -458,9 +459,9 @@ namespace System.Management.Automation.Remoting
         /// Provides the modified message for the given one
         /// Used in ensuring that remote prompt messages
         /// contain a warning that they originate from a
-        /// different computer
+        /// different computer.
         /// </summary>
-        /// <param name="message">original message to modify</param>
+        /// <param name="message">Original message to modify.</param>
         /// <param name="computerName">computername to include in the
         /// message</param>
         /// <returns>Message which contains a warning as well.</returns>
@@ -477,11 +478,11 @@ namespace System.Management.Automation.Remoting
         /// <summary>
         /// Creates a warning message which displays to the user a
         /// warning stating that the remote host computer is
-        /// actually attempting to read a line as a secure string
+        /// actually attempting to read a line as a secure string.
         /// </summary>
         /// <param name="computerName">computer name to include
         /// in warning</param>
-        /// <param name="resourceString">resource string to use</param>
+        /// <param name="resourceString">Resource string to use.</param>
         /// <returns>A constructed remote host call message
         /// which will display the warning.</returns>
         private RemoteHostCall ConstructWarningMessageForSecureString(string computerName,
@@ -499,7 +500,7 @@ namespace System.Management.Automation.Remoting
         /// Creates a warning message which displays to the user a
         /// warning stating that the remote host computer is
         /// attempting to read the host's buffer contents and that
-        /// it was suppressed
+        /// it was suppressed.
         /// </summary>
         /// <param name="computerName">computer name to include
         /// in warning</param>

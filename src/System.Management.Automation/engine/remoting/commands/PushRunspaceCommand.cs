@@ -2,18 +2,20 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using System.Management.Automation.Host;
-using System.Management.Automation.Remoting;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
-using Dbg = System.Management.Automation.Diagnostics;
-using System.Collections;
+using System.Threading;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
+
+using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -49,7 +51,7 @@ namespace Microsoft.PowerShell.Commands
         #region SSH Parameter Set
 
         /// <summary>
-        /// Host name for an SSH remote connection
+        /// Host name for an SSH remote connection.
         /// </summary>
         [Parameter(Position = 0, Mandatory = true, ValueFromPipeline = true,
             ParameterSetName = PSRemotingBaseCmdlet.SSHHostParameterSet)]
@@ -190,7 +192,7 @@ namespace Microsoft.PowerShell.Commands
         #region Suppress PSRemotingBaseCmdlet SSH hash parameter set
 
         /// <summary>
-        /// Suppress SSHConnection parameter set
+        /// Suppress SSHConnection parameter set.
         /// </summary>
         public override Hashtable[] SSHConnection
         {
@@ -204,13 +206,13 @@ namespace Microsoft.PowerShell.Commands
         #region Overrides
 
         /// <summary>
-        /// Resolves shellname and appname
+        /// Resolves shellname and appname.
         /// </summary>
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
 
-            if (String.IsNullOrEmpty(ConfigurationName))
+            if (string.IsNullOrEmpty(ConfigurationName))
             {
                 if ((ParameterSetName == EnterPSSessionCommand.ComputerNameParameterSet) ||
                     (ParameterSetName == EnterPSSessionCommand.UriParameterSet))
@@ -220,8 +222,8 @@ namespace Microsoft.PowerShell.Commands
                 }
                 else
                 {
-                    // convert null to String.Empty for VM/Container session
-                    ConfigurationName = String.Empty;
+                    // convert null to string.Empty for VM/Container session
+                    ConfigurationName = string.Empty;
                 }
             }
         }
@@ -508,7 +510,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// This method will until the runspace is opened and warnings if any
-        /// are reported
+        /// are reported.
         /// </summary>
         protected override void EndProcessing()
         {
@@ -1214,7 +1216,7 @@ namespace Microsoft.PowerShell.Commands
 
             try
             {
-                Dbg.Assert(!String.IsNullOrEmpty(ContainerId), "ContainerId has to be set.");
+                Dbg.Assert(!string.IsNullOrEmpty(ContainerId), "ContainerId has to be set.");
 
                 ContainerConnectionInfo connectionInfo = null;
 
@@ -1284,7 +1286,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Create remote runspace for SSH session
+        /// Create remote runspace for SSH session.
         /// </summary>
         private RemoteRunspace GetRunspaceForSSHSession()
         {

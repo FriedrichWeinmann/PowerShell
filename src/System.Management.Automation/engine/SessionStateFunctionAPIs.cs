@@ -5,12 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the state of a Monad Shell session
+    /// Holds the state of a Monad Shell session.
     /// </summary>
     internal sealed partial class SessionStateInternal
     {
@@ -19,7 +20,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Add an new SessionState function entry to this session state object...
         /// </summary>
-        /// <param name="entry">The entry to add</param>
+        /// <param name="entry">The entry to add.</param>
         internal void AddSessionStateEntry(SessionStateFunctionEntry entry)
         {
             ScriptBlock sb = entry.ScriptBlock.Clone();
@@ -61,7 +62,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets an IEnumerable for the function table for a given scope
+        /// Gets an IEnumerable for the function table for a given scope.
         /// </summary>
         /// <param name="scopeID">
         /// A scope identifier that is either one of the "special" scopes like
@@ -106,12 +107,12 @@ namespace System.Management.Automation
         internal bool UseExportList { get; set; } = false;
 
         /// <summary>
-        /// Set to true when module functions are being explicitly exported using Export-ModuleMember
+        /// Set to true when module functions are being explicitly exported using Export-ModuleMember.
         /// </summary>
         internal bool FunctionsExported { get; set; }
 
         /// <summary>
-        /// Set to true when any processed module functions are being explicitly exported using '*' wildcard
+        /// Set to true when any processed module functions are being explicitly exported using '*' wildcard.
         /// </summary>
         internal bool FunctionsExportedWithWildcard
         {
@@ -151,7 +152,7 @@ namespace System.Management.Automation
         /// </exception>
         internal FunctionInfo GetFunction(string name, CommandOrigin origin)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -266,7 +267,7 @@ namespace System.Management.Automation
             ScriptBlock function,
             CommandOrigin origin)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -281,7 +282,7 @@ namespace System.Management.Automation
             FunctionLookupPath path = new FunctionLookupPath(name);
             name = path.UnqualifiedPath;
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 SessionStateException exception =
                     new SessionStateException(
@@ -501,7 +502,7 @@ namespace System.Management.Automation
             string helpFile,
             bool isPreValidated)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -516,7 +517,7 @@ namespace System.Management.Automation
             FunctionLookupPath path = new FunctionLookupPath(name);
             name = path.UnqualifiedPath;
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 SessionStateException exception =
                     new SessionStateException(
@@ -580,7 +581,7 @@ namespace System.Management.Automation
             bool force,
             CommandOrigin origin)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -595,7 +596,7 @@ namespace System.Management.Automation
             FunctionLookupPath path = new FunctionLookupPath(name);
             name = path.UnqualifiedPath;
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 SessionStateException exception =
                     new SessionStateException(
@@ -708,7 +709,7 @@ namespace System.Management.Automation
         /// </exception>
         internal void RemoveFunction(string name, bool force, CommandOrigin origin)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }

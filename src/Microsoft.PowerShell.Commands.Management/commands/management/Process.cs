@@ -2,27 +2,28 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics; // Process class
 using System.ComponentModel; // Win32Exception
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Management.Automation;
+using System.Diagnostics; // Process class
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.IO;
+using System.Management.Automation;
+using System.Management.Automation.Internal;
+using System.Net;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Principal;
-using Microsoft.Win32.SafeHandles;
-using System.Management.Automation.Internal;
-using Microsoft.PowerShell.Commands.Internal;
+using System.Text;
+using System.Threading;
+
 using Microsoft.Management.Infrastructure;
+using Microsoft.PowerShell.Commands.Internal;
+using Microsoft.Win32.SafeHandles;
 
 using FileNakedHandle = System.IntPtr;
 using DWORD = System.UInt32;
@@ -42,15 +43,15 @@ namespace Microsoft.PowerShell.Commands
         internal enum MatchMode
         {
             /// <summary>
-            /// Select all processes
+            /// Select all processes.
             /// </summary>
             All,
             /// <summary>
-            /// Select processes matching the supplied names
+            /// Select processes matching the supplied names.
             /// </summary>
             ByName,
             /// <summary>
-            /// Select the processes matching the id
+            /// Select the processes matching the id.
             /// </summary>
             ById,
             /// <summary>
@@ -140,15 +141,15 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Sort function to sort by Name first, then Id.
         /// </summary>
-        /// <param name="x">first Process object</param>
-        /// <param name="y">second Process object</param>
+        /// <param name="x">First Process object.</param>
+        /// <param name="y">Second Process object.</param>
         /// <returns>
-        /// As String.Compare: returns less than zero if x less than y,
+        /// As string.Compare: returns less than zero if x less than y,
         /// greater than 0 if x greater than y, 0 if x == y.
         /// </returns>
         private static int ProcessComparison(Process x, Process y)
         {
-            int diff = String.Compare(
+            int diff = string.Compare(
                 SafeGetProcessName(x),
                 SafeGetProcessName(y),
                 StringComparison.OrdinalIgnoreCase);
@@ -189,14 +190,23 @@ namespace Microsoft.PowerShell.Commands
                 if (!found &&
                     !WildcardPattern.ContainsWildcardCharacters(pattern))
                 {
+                    string errorText = ProcessResources.NoProcessFoundForGivenName;
+                    string errorName = nameof(ProcessResources.NoProcessFoundForGivenName);
+
+                    if (int.TryParse(pattern, out int x) && x >= 0)
+                    {
+                        errorText = ProcessResources.RecommendIdTagForGivenName;
+                        errorName = nameof(ProcessResources.RecommendIdTagForGivenName);
+                    }
+
                     WriteNonTerminatingError(
-                        pattern,
-                        0,
-                        pattern,
-                        null,
-                        ProcessResources.NoProcessFoundForGivenName,
-                        "NoProcessFoundForGivenName",
-                        ErrorCategory.ObjectNotFound);
+                        processName: pattern,
+                        processId: 0,
+                        targetObject: pattern,
+                        innerException: null,
+                        resourceId: errorText,
+                        errorId: errorName,
+                        category: ErrorCategory.ObjectNotFound);
                 }
             }
         }
@@ -291,7 +301,7 @@ namespace Microsoft.PowerShell.Commands
         /// We use a Dictionary to optimize the check whether the object
         /// is already in the list.
         /// </summary>
-        /// <param name="process">process to add to list</param>
+        /// <param name="process">Process to add to list.</param>
         private void AddIdempotent(
             Process process)
         {
@@ -770,29 +780,22 @@ namespace Microsoft.PowerShell.Commands
 
                     var tokenUser = Marshal.PtrToStructure<Win32Native.TOKEN_USER>(tokenUserInfo);
 
-                    // Set the default length to be 256, so it will be sufficient for most cases.
-                    int userNameLength = 256, domainNameLength = 256;
-                    var userNameStr = new StringBuilder(userNameLength);
-                    var domainNameStr = new StringBuilder(domainNameLength);
+                    // Max username is defined as UNLEN = 256 in lmcons.h
+                    // Max domainname is defined as DNLEN = CNLEN = 15 in lmcons.h
+                    // The buffer length must be +1, last position is for a null string terminator.
+                    int userNameLength = 257;
+                    int domainNameLength = 16;
+                    Span<char> userNameStr = stackalloc char[userNameLength];
+                    Span<char> domainNameStr = stackalloc char[domainNameLength];
                     Win32Native.SID_NAME_USE accountType;
 
+                    // userNameLength and domainNameLength will be set to actual lengths.
                     if (!Win32Native.LookupAccountSid(null, tokenUser.User.Sid, userNameStr, ref userNameLength, domainNameStr, ref domainNameLength, out accountType))
                     {
-                        error = Marshal.GetLastWin32Error();
-                        if (error == Win32Native.ERROR_INSUFFICIENT_BUFFER)
-                        {
-                            userNameStr.EnsureCapacity(userNameLength);
-                            domainNameStr.EnsureCapacity(domainNameLength);
-
-                            if (!Win32Native.LookupAccountSid(null, tokenUser.User.Sid, userNameStr, ref userNameLength, domainNameStr, ref domainNameLength, out accountType)) { break; }
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        break;
                     }
 
-                    userName = domainNameStr + "\\" + userNameStr;
+                    userName = string.Concat(domainNameStr.Slice(0, domainNameLength), "\\", userNameStr.Slice(0, userNameLength));
                 } while (false);
             }
             catch (NotSupportedException)
@@ -963,7 +966,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            //adding the processes into the list
+            // adding the processes into the list
             foreach (Process process in MatchingProcesses())
             {
                 // Idle process has processid zero,so handle that because we cannot wait on it.
@@ -1387,7 +1390,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Stops the given process throws non terminating error if can't.
-        /// <param name="process" >process to be stopped</param>
+        /// <param name="process" >Process to be stopped.</param>
         /// <returns>True if process stopped successfully else false.</returns>
         /// </summary>
         private void StopProcess(Process process)
@@ -1873,14 +1876,7 @@ namespace Microsoft.PowerShell.Commands
 
             if (ArgumentList != null)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (string str in ArgumentList)
-                {
-                    sb.Append(str);
-                    sb.Append(' ');
-                }
-
-                startInfo.Arguments = sb.ToString(); ;
+                startInfo.Arguments = string.Join(' ', ArgumentList);
             }
 
             if (WorkingDirectory != null)
@@ -1930,7 +1926,7 @@ namespace Microsoft.PowerShell.Commands
                 {
                     NetworkCredential nwcredential = _credential.GetNetworkCredential();
                     startInfo.UserName = nwcredential.UserName;
-                    if (String.IsNullOrEmpty(nwcredential.Domain))
+                    if (string.IsNullOrEmpty(nwcredential.Domain))
                     {
                         startInfo.Domain = ".";
                     }
@@ -2175,7 +2171,7 @@ namespace Microsoft.PowerShell.Commands
 
         private void StdOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            if (!String.IsNullOrEmpty(outLine.Data))
+            if (!string.IsNullOrEmpty(outLine.Data))
             {
                 _outputWriter.WriteLine(outLine.Data);
                 _outputWriter.Flush();
@@ -2184,7 +2180,7 @@ namespace Microsoft.PowerShell.Commands
 
         private void StdErrorHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            if (!String.IsNullOrEmpty(outLine.Data))
+            if (!string.IsNullOrEmpty(outLine.Data))
             {
                 _errorWriter.WriteLine(outLine.Data);
                 _errorWriter.Flush();
@@ -2302,21 +2298,21 @@ namespace Microsoft.PowerShell.Commands
         {
             StringBuilder builder = new StringBuilder();
             string str = executableFileName.Trim();
-            bool flag = str.StartsWith("\"", StringComparison.Ordinal) && str.EndsWith("\"", StringComparison.Ordinal);
+            bool flag = str.StartsWith('"') && str.EndsWith('"');
             if (!flag)
             {
-                builder.Append("\"");
+                builder.Append('"');
             }
 
             builder.Append(str);
             if (!flag)
             {
-                builder.Append("\"");
+                builder.Append('"');
             }
 
             if (!string.IsNullOrEmpty(arguments))
             {
-                builder.Append(" ");
+                builder.Append(' ');
                 builder.Append(arguments);
             }
 
@@ -2361,7 +2357,7 @@ namespace Microsoft.PowerShell.Commands
             SafeNativeMethods.PROCESS_INFORMATION lpProcessInformation = new SafeNativeMethods.PROCESS_INFORMATION();
             int error = 0;
             GCHandle pinnedEnvironmentBlock = new GCHandle();
-            string message = String.Empty;
+            string message = string.Empty;
 
             // building the cmdline with the file name given and it's arguments
             StringBuilder cmdLine = BuildCommandLine(startinfo.FileName, startinfo.Arguments);
@@ -2680,10 +2676,11 @@ namespace Microsoft.PowerShell.Commands
 
         // Methods
 
-        [DllImport(PinvokeDllNames.GetStdHandleDllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(PinvokeDllNames.GetStdHandleDllName, SetLastError = true)]
         public static extern IntPtr GetStdHandle(int whichHandle);
 
         [DllImport(PinvokeDllNames.CreateProcessWithLogonWDllName, CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CreateProcessWithLogonW(string userName,
             string domain,
             IntPtr password,
@@ -2697,6 +2694,7 @@ namespace Microsoft.PowerShell.Commands
             SafeNativeMethods.PROCESS_INFORMATION lpProcessInformation);
 
         [DllImport(PinvokeDllNames.CreateProcessDllName, CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CreateProcess([MarshalAs(UnmanagedType.LPWStr)] string lpApplicationName,
             [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lpCommandLine,
             SECURITY_ATTRIBUTES lpProcessAttributes,
@@ -2950,10 +2948,10 @@ namespace Microsoft.PowerShell.Commands
             _processName = info.GetString("ProcessName");
         }
         /// <summary>
-        /// Serializer
+        /// Serializer.
         /// </summary>
-        /// <param name="info"> serialization information </param>
-        /// <param name="context"> streaming context </param>
+        /// <param name="info">Serialization information.</param>
+        /// <param name="context">Streaming context.</param>
         [SecurityPermissionAttribute(
             SecurityAction.Demand,
             SerializationFormatter = true)]
@@ -2982,7 +2980,7 @@ namespace Microsoft.PowerShell.Commands
             set { _processName = value; }
         }
 
-        private string _processName = String.Empty;
+        private string _processName = string.Empty;
         #endregion Properties
     }
 

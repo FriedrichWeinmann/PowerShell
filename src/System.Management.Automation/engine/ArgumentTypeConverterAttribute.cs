@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections;
 using System.Globalization;
 using System.Linq;
-using Dbg = System.Management.Automation.Diagnostics;
-using System.Collections;
 using System.Reflection;
+
+using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation
 {
@@ -105,11 +106,11 @@ namespace System.Management.Automation
                         }
                     }
 
-                    //BUGBUG
-                    //NTRAID#Windows Out of Band Releases - 930116 - 03/14/06
-                    //handling special case for boolean, switchparameter and Nullable<bool>
-                    //These parameter types will not be converted if the incoming value types are not
-                    //one of the accepted categories - $true/$false or numbers (0 or otherwise)
+                    // BUGBUG
+                    // NTRAID#Windows Out of Band Releases - 930116 - 03/14/06
+                    // handling special case for boolean, switchparameter and Nullable<bool>
+                    // These parameter types will not be converted if the incoming value types are not
+                    // one of the accepted categories - $true/$false or numbers (0 or otherwise)
                     if (LanguagePrimitives.IsBoolOrSwitchParameterType(_convertTypes[i]))
                     {
                         CheckBoolValue(result, _convertTypes[i]);

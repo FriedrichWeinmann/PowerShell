@@ -5,17 +5,18 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ComponentModel;
 using System.Management.Automation.Configuration;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
 using System.Management.Automation.Security;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -34,10 +35,233 @@ using TypeTable = System.Management.Automation.Runspaces.TypeTable;
 namespace System.Management.Automation
 {
     /// <summary>
-    /// helper fns
+    /// Helper fns.
     /// </summary>
     internal static class Utils
     {
+        /// <summary>
+        /// Converts a given double value to BigInteger via Math.Round().
+        /// </summary>
+        /// <param name="d">The value to convert.</param>
+        /// <returns>Returns a BigInteger value equivalent to the input value rounded to nearest integer.</returns>
+        internal static BigInteger AsBigInt(this double d) => new BigInteger(Math.Round(d));
+
+        internal static bool TryCast(BigInteger value, out byte b)
+        {
+            if (value < byte.MinValue || byte.MaxValue < value)
+            {
+                b = 0;
+                return false;
+            }
+
+            b = (byte)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out sbyte sb)
+        {
+            if (value < sbyte.MinValue || sbyte.MaxValue < value)
+            {
+                sb = 0;
+                return false;
+            }
+
+            sb = (sbyte)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out short s)
+        {
+            if (value < short.MinValue || short.MaxValue < value)
+            {
+                s = 0;
+                return false;
+            }
+
+            s = (short)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out ushort us)
+        {
+            if (value < ushort.MinValue || ushort.MaxValue < value)
+            {
+                us = 0;
+                return false;
+            }
+
+            us = (ushort)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out int i)
+        {
+            if (value < int.MinValue || int.MaxValue < value)
+            {
+                i = 0;
+                return false;
+            }
+
+            i = (int)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out uint u)
+        {
+            if (value < uint.MinValue || uint.MaxValue < value)
+            {
+                u = 0;
+                return false;
+            }
+
+            u = (uint)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out long l)
+        {
+            if (value < long.MinValue || long.MaxValue < value)
+            {
+                l = 0;
+                return false;
+            }
+
+            l = (long)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out ulong ul)
+        {
+            if (value < ulong.MinValue || ulong.MaxValue < value)
+            {
+                ul = 0;
+                return false;
+            }
+
+            ul = (ulong)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out decimal dm)
+        {
+            if (value < (BigInteger)decimal.MinValue || (BigInteger)decimal.MaxValue < value)
+            {
+                dm = 0;
+                return false;
+            }
+
+            dm = (decimal)value;
+            return true;
+        }
+
+        internal static bool TryCast(BigInteger value, out double db)
+        {
+            if (value < (BigInteger)double.MinValue || (BigInteger)double.MaxValue < value)
+            {
+                db = 0;
+                return false;
+            }
+
+            db = (double)value;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses a given string or ReadOnlySpan&lt;char&gt; to calculate its value as a binary number.
+        /// Assumes input has already been sanitized and only contains zeroes (0) or ones (1).
+        /// </summary>
+        /// <param name="digits">Span or string of binary digits. Assumes all digits are either 1 or 0.</param>
+        /// <param name="unsigned">
+        /// Whether to treat the number as unsigned. When false, respects established conventions
+        /// with sign bits for certain input string lengths.
+        /// </param>
+        /// <returns>Returns the value of the binary string as a BigInteger.</returns>
+        internal static BigInteger ParseBinary(ReadOnlySpan<char> digits, bool unsigned)
+        {
+            if (!unsigned)
+            {
+                if (digits[0] == '0')
+                {
+                    unsigned = true;
+                }
+                else
+                {
+                    switch (digits.Length)
+                    {
+                        // Only accept sign bits at these lengths:
+                        case 8: // byte
+                        case 16: // short
+                        case 32: // int
+                        case 64: // long
+                        case 96: // decimal
+                        case int n when n >= 128: // BigInteger
+                            break;
+                        default:
+                            // If we do not flag these as unsigned, bigint assumes a sign bit for any (8 * n) string length
+                            unsigned = true;
+                            break;
+                    }
+                }
+            }
+
+            // Only use heap allocation for very large numbers
+            const int MaxStackAllocation = 512;
+
+            // Calculate number of 8-bit bytes needed to hold the input,  rounded up to next whole number.
+            int outputByteCount = (digits.Length + 7) / 8;
+            Span<byte> outputBytes = outputByteCount <= MaxStackAllocation ? stackalloc byte[outputByteCount] : new byte[outputByteCount];
+            int outputByteIndex = outputBytes.Length - 1;
+
+            // We need to be prepared for any partial leading bytes, (e.g., 010|00000011|00101100), or cases
+            // where we only have less than 8 bits to work with from the beginning.
+            //
+            // Walk bytes right to left, stepping one whole byte at a time (if there are any whole bytes).
+            int byteWalker;
+            for (byteWalker = digits.Length - 1; byteWalker >= 7; byteWalker -= 8)
+            {
+                // Use bit shifts and binary-or to sum the values in each byte.  These calculations will
+                // create values higher than a single byte, but the higher bits will be stripped out when cast
+                // to byte.
+                //
+                // The low bits are added in separately to allow us to strip the higher 'noise' bits before we
+                // sum the values using binary-or.
+                //
+                // Simplified representation of logic:     (byte)( (7)|(6)|(5)|(4) ) | ( ( (3)|(2)|(1)|(0) ) & 0b1111 )
+                //
+                // N.B.: This code has been tested against a straight for loop iterating through the byte, and in no
+                // circumstance was it faster or more effective than this unrolled version.
+                outputBytes[outputByteIndex--] =
+                    (byte)(
+                        ((digits[byteWalker - 7] << 7)
+                        | (digits[byteWalker - 6] << 6)
+                        | (digits[byteWalker - 5] << 5)
+                        | (digits[byteWalker - 4] << 4)
+                        )
+                    | (
+                        ((digits[byteWalker - 3] << 3)
+                        | (digits[byteWalker - 2] << 2)
+                        | (digits[byteWalker - 1] << 1)
+                        | (digits[byteWalker])
+                        ) & 0b1111
+                      )
+                    );
+            }
+
+            // With complete bytes parsed, byteWalker is either at the partial byte start index, or at -1
+            if (byteWalker >= 0)
+            {
+                int currentByteValue = 0;
+                for (int i = 0; i <= byteWalker; i++)
+                {
+                    currentByteValue = (currentByteValue << 1) | (digits[i] - '0');
+                }
+
+                outputBytes[outputByteIndex] = (byte)currentByteValue;
+            }
+
+            return new BigInteger(outputBytes, isUnsigned: unsigned, isBigEndian: true);
+        }
+
         // From System.Web.Util.HashCodeCombiner
         internal static int CombineHashCodes(int h1, int h2)
         {
@@ -75,12 +299,12 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Allowed PowerShell Editions
+        /// Allowed PowerShell Editions.
         /// </summary>
         internal static string[] AllowedEditionValues = { "Desktop", "Core" };
 
         /// <summary>
-        /// helper fn to check byte[] arg for null.
+        /// Helper fn to check byte[] arg for null.
         /// </summary>
         ///<param name="arg"> arg to check </param>
         ///<param name="argName"> name of the arg </param>
@@ -106,7 +330,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// helper fn to check arg for empty or null.
+        /// Helper fn to check arg for empty or null.
         /// Throws ArgumentNullException on either condition.
         /// </summary>
         ///<param name="arg"> arg to check </param>
@@ -125,7 +349,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// helper fn to check arg for null.
+        /// Helper fn to check arg for null.
         /// Throws ArgumentNullException on either condition.
         /// </summary>
         ///<param name="arg"> arg to check </param>
@@ -140,7 +364,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// helper fn to check arg for null.
+        /// Helper fn to check arg for null.
         /// </summary>
         ///<param name="arg"> arg to check </param>
         ///<param name="argName"> name of the arg </param>
@@ -196,7 +420,7 @@ namespace System.Management.Automation
         private static string s_pshome = null;
 
         /// <summary>
-        /// Get the application base path of the shell from registry
+        /// Get the application base path of the shell from registry.
         /// </summary>
         internal static string GetApplicationBaseFromRegistry(string shellId)
         {
@@ -301,7 +525,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Checks if the current process is using WOW
+        /// Checks if the current process is using WOW.
         /// </summary>
         internal static bool IsRunningFromSysWOW64()
         {
@@ -309,7 +533,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Checks if host machine is WinPE
+        /// Checks if host machine is WinPE.
         /// </summary>
         internal static bool IsWinPEHost()
         {
@@ -341,7 +565,7 @@ namespace System.Management.Automation
         #region Versioning related methods
 
         /// <summary>
-        /// returns current major version of monad ( that is running ) in a string
+        /// Returns current major version of monad ( that is running ) in a string
         /// format.
         /// </summary>
         /// <returns>String.</returns>
@@ -361,7 +585,7 @@ namespace System.Management.Automation
         /// Version.TryParse will be used to convert the string to a Version
         /// object.
         /// </summary>
-        /// <param name="versionString">string representing version</param>
+        /// <param name="versionString">String representing version.</param>
         /// <returns>A Version Object.</returns>
         internal static Version StringToVersion(string versionString)
         {
@@ -402,7 +626,7 @@ namespace System.Management.Automation
         /// Checks whether current monad session supports version specified
         /// by ver.
         /// </summary>
-        /// <param name="ver">Version to check</param>
+        /// <param name="ver">Version to check.</param>
         /// <returns>True if supported, false otherwise.</returns>
         internal static bool IsPSVersionSupported(string ver)
         {
@@ -415,7 +639,7 @@ namespace System.Management.Automation
         /// Checks whether current monad session supports version specified
         /// by checkVersion.
         /// </summary>
-        /// <param name="checkVersion">Version to check</param>
+        /// <param name="checkVersion">Version to check.</param>
         /// <returns>True if supported, false otherwise.</returns>
         internal static bool IsPSVersionSupported(Version checkVersion)
         {
@@ -437,7 +661,7 @@ namespace System.Management.Automation
         /// Checks whether current PowerShell session supports edition specified
         /// by checkEdition.
         /// </summary>
-        /// <param name="checkEdition">Edition to check</param>
+        /// <param name="checkEdition">Edition to check.</param>
         /// <returns>True if supported, false otherwise.</returns>
         internal static bool IsPSEditionSupported(string checkEdition)
         {
@@ -466,7 +690,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Checks whether the specified edition value is allowed.
         /// </summary>
-        /// <param name="editionValue">Edition value to check</param>
+        /// <param name="editionValue">Edition value to check.</param>
         /// <returns>True if allowed, false otherwise.</returns>
         internal static bool IsValidPSEditionValue(string editionValue)
         {
@@ -487,7 +711,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// The subdirectory of module paths
-        /// e.g. ~\Documents\WindowsPowerShell\Modules and %ProgramFiles%\WindowsPowerShell\Modules
+        /// e.g. ~\Documents\WindowsPowerShell\Modules and %ProgramFiles%\WindowsPowerShell\Modules.
         /// </summary>
         internal static string ModuleDirectory = Path.Combine(ProductNameForDirectory, "Modules");
 
@@ -538,17 +762,33 @@ namespace System.Management.Automation
                     PolicyBase result = null;
                     switch (typeof(T).Name)
                     {
-                        case nameof(ScriptExecution):             result = policies.ScriptExecution; break;
-                        case nameof(ScriptBlockLogging):          result = policies.ScriptBlockLogging; break;
-                        case nameof(ModuleLogging):               result = policies.ModuleLogging; break;
-                        case nameof(ProtectedEventLogging):       result = policies.ProtectedEventLogging; break;
-                        case nameof(Transcription):               result = policies.Transcription; break;
-                        case nameof(UpdatableHelp):               result = policies.UpdatableHelp; break;
-                        case nameof(ConsoleSessionConfiguration): result = policies.ConsoleSessionConfiguration; break;
-                        default: Diagnostics.Assert(false, "Should be unreachable code. Update this switch block when new PowerShell policy types are added."); break;
+                        case nameof(ScriptExecution):
+                            result = policies.ScriptExecution;
+                            break;
+                        case nameof(ScriptBlockLogging):
+                            result = policies.ScriptBlockLogging;
+                            break;
+                        case nameof(ModuleLogging):
+                            result = policies.ModuleLogging;
+                            break;
+                        case nameof(ProtectedEventLogging):
+                            result = policies.ProtectedEventLogging;
+                            break;
+                        case nameof(Transcription):
+                            result = policies.Transcription;
+                            break;
+                        case nameof(UpdatableHelp):
+                            result = policies.UpdatableHelp;
+                            break;
+                        case nameof(ConsoleSessionConfiguration):
+                            result = policies.ConsoleSessionConfiguration;
+                            break;
+                        default:
+                            Diagnostics.Assert(false, "Should be unreachable code. Update this switch block when new PowerShell policy types are added.");
+                            break;
                     }
 
-                    if (result != null) { return (T) result; }
+                    if (result != null) { return (T)result; }
                 }
             }
 
@@ -566,8 +806,12 @@ namespace System.Management.Automation
             {nameof(UpdatableHelp), @"Software\Policies\Microsoft\PowerShellCore\UpdatableHelp"},
             {nameof(ConsoleSessionConfiguration), @"Software\Policies\Microsoft\PowerShellCore\ConsoleSessionConfiguration"}
         };
-        private static readonly ConcurrentDictionary<Tuple<ConfigScope, string>, PolicyBase> s_cachedPoliciesFromRegistry =
-            new ConcurrentDictionary<Tuple<ConfigScope, string>, PolicyBase>();
+
+        private static readonly ConcurrentDictionary<ConfigScope, ConcurrentDictionary<string, PolicyBase>> s_cachedPoliciesFromRegistry =
+            new ConcurrentDictionary<ConfigScope, ConcurrentDictionary<string, PolicyBase>>();
+
+        private static readonly Func<ConfigScope, ConcurrentDictionary<string, PolicyBase>> s_subCacheCreationDelegate =
+            key => new ConcurrentDictionary<string, PolicyBase>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The implementation of fetching a specific kind of policy setting from the given configuration scope.
@@ -665,7 +909,7 @@ namespace System.Management.Automation
                 }
 
                 // If no property is set, then we consider this policy as undefined
-                return isAnyPropertySet ? (T) tInstance : null;
+                return isAnyPropertySet ? (T)tInstance : null;
             }
         }
 
@@ -675,6 +919,8 @@ namespace System.Management.Automation
         private static T GetPolicySettingFromGPO<T>(ConfigScope[] preferenceOrder) where T : PolicyBase, new()
         {
             PolicyBase policy = null;
+            string policyName = typeof(T).Name;
+
             foreach (ConfigScope scope in preferenceOrder)
             {
                 if (InternalTestHooks.BypassGroupPolicyCaching)
@@ -683,17 +929,14 @@ namespace System.Management.Automation
                 }
                 else
                 {
-                    var key = Tuple.Create(scope, typeof(T).Name);
-                    if (!s_cachedPoliciesFromRegistry.TryGetValue(key, out policy))
+                    var subordinateCache = s_cachedPoliciesFromRegistry.GetOrAdd(scope, s_subCacheCreationDelegate);
+                    if (!subordinateCache.TryGetValue(policyName, out policy))
                     {
-                        lock (s_cachedPoliciesFromRegistry)
-                        {
-                            policy = s_cachedPoliciesFromRegistry.GetOrAdd(key, tuple => GetPolicySettingFromGPOImpl<T>(tuple.Item1));
-                        }
+                        policy = subordinateCache.GetOrAdd(policyName, key => GetPolicySettingFromGPOImpl<T>(scope));
                     }
                 }
 
-                if (policy != null) { return (T) policy; }
+                if (policy != null) { return (T)policy; }
             }
 
             return null;
@@ -793,11 +1036,7 @@ namespace System.Management.Automation
                     }
                     else
                     {
-                        // append to result
-                        foreach (PSModuleInfo temp in gmoOutPut)
-                        {
-                            result.Add(temp);
-                        }
+                        result.AddRange(gmoOutPut);
                     }
                 }
             }
@@ -893,9 +1132,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the current impersonating Windows identity, if any
+        /// Gets the current impersonating Windows identity, if any.
         /// </summary>
-        /// <param name="impersonatedIdentity">Current impersonated Windows identity or null</param>
+        /// <param name="impersonatedIdentity">Current impersonated Windows identity or null.</param>
         /// <returns>True if current identity is impersonated.</returns>
         internal static bool TryGetWindowsImpersonatedIdentity(out WindowsIdentity impersonatedIdentity)
         {
@@ -942,8 +1181,6 @@ namespace System.Management.Automation
             string compareName = Path.GetFileName(destinationPath);
             string noExtensionCompareName = Path.GetFileNameWithoutExtension(destinationPath);
 
-            // See if it's the correct length. If it's shorter than CON, AUX, etc, it can't be a device name.
-            // Likewise, if it's longer than 'CLOCK$', it can't be a device name.
             if (((compareName.Length < 3) || (compareName.Length > 6)) &&
                 ((noExtensionCompareName.Length < 3) || (noExtensionCompareName.Length > 6)))
             {
@@ -953,8 +1190,8 @@ namespace System.Management.Automation
             foreach (string deviceName in reservedDeviceNames)
             {
                 if (
-                    String.Equals(deviceName, compareName, StringComparison.OrdinalIgnoreCase) ||
-                    String.Equals(deviceName, noExtensionCompareName, StringComparison.OrdinalIgnoreCase))
+                    string.Equals(deviceName, compareName, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(deviceName, noExtensionCompareName, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -971,69 +1208,6 @@ namespace System.Management.Automation
             Uri uri;
             return !string.IsNullOrEmpty(path) && Uri.TryCreate(path, UriKind.Absolute, out uri) && uri.IsUnc;
 #endif
-        }
-
-        internal class NativeMethods
-        {
-            private static string EnsureLongPathPrefixIfNeeded(string path)
-            {
-                if (path.Length >= MAX_PATH && !path.StartsWith(@"\\?\", StringComparison.Ordinal))
-                    return @"\\?\" + path;
-
-                return path;
-            }
-
-            [DllImport(PinvokeDllNames.GetFileAttributesDllName, EntryPoint = "GetFileAttributesW", CharSet = CharSet.Unicode, SetLastError = true)]
-            private static extern int GetFileAttributesPrivate(string lpFileName);
-
-            internal static int GetFileAttributes(string fileName)
-            {
-                fileName = EnsureLongPathPrefixIfNeeded(fileName);
-                return GetFileAttributesPrivate(fileName);
-            }
-
-            [Flags]
-            internal enum FileAttributes
-            {
-                Hidden = 0x0002,
-                Directory = 0x0010
-            }
-
-            public const int MAX_PATH = 260;
-            public const int MAX_ALTERNATE = 14;
-
-            [StructLayout(LayoutKind.Sequential)]
-            public struct FILETIME
-            {
-                public uint dwLowDateTime;
-                public uint dwHighDateTime;
-            };
-
-            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-            public struct WIN32_FIND_DATA
-            {
-                public FileAttributes dwFileAttributes;
-                public FILETIME ftCreationTime;
-                public FILETIME ftLastAccessTime;
-                public FILETIME ftLastWriteTime;
-                public uint nFileSizeHigh; //changed all to uint, otherwise you run into unexpected overflow
-                public uint nFileSizeLow;  //|
-                public uint dwReserved0;   //|
-                public uint dwReserved1;   //v
-                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-                public string cFileName;
-                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_ALTERNATE)]
-                public string cAlternate;
-            }
-
-            [DllImport(PinvokeDllNames.FindFirstFileDllName, CharSet = CharSet.Unicode)]
-            public static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
-
-            [DllImport(PinvokeDllNames.FindNextFileDllName, CharSet = CharSet.Unicode)]
-            public static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
-
-            [DllImport(PinvokeDllNames.FindCloseDllName, CharSet = CharSet.Unicode)]
-            public static extern bool FindClose(IntPtr hFindFile);
         }
 
         internal static readonly string PowerShellAssemblyStrongNameFormat =
@@ -1055,10 +1229,10 @@ namespace System.Management.Automation
 
         internal static bool IsPowerShellAssembly(string assemblyName)
         {
-            if (!String.IsNullOrWhiteSpace(assemblyName))
+            if (!string.IsNullOrWhiteSpace(assemblyName))
             {
                 // Remove the '.dll' if it's there...
-                var fixedName = assemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+                var fixedName = assemblyName.EndsWith(StringLiterals.PowerShellILAssemblyExtension, StringComparison.OrdinalIgnoreCase)
                                 ? Path.GetFileNameWithoutExtension(assemblyName)
                                 : assemblyName;
 
@@ -1073,7 +1247,7 @@ namespace System.Management.Automation
 
         internal static string GetPowerShellAssemblyStrongName(string assemblyName)
         {
-            if (!String.IsNullOrWhiteSpace(assemblyName))
+            if (!string.IsNullOrWhiteSpace(assemblyName))
             {
                 // Remove the '.dll' if it's there...
                 string fixedName = assemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
@@ -1090,9 +1264,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// If a mutex is abandoned, in our case, it is ok to proceed
+        /// If a mutex is abandoned, in our case, it is ok to proceed.
         /// </summary>
-        /// <param name="mutex">The mutex to wait on. If it is null, a new one will be created</param>
+        /// <param name="mutex">The mutex to wait on. If it is null, a new one will be created.</param>
         /// <param name="initializer">The initializer to use to recreate the mutex.</param>
         /// <returns>A working mutex. If the mutex was abandoned, a new one is created to replace it.</returns>
         internal static Mutex SafeWaitMutex(Mutex mutex, MutexInitializer initializer)
@@ -1155,7 +1329,7 @@ namespace System.Management.Automation
 
             if (bytesRead > 3)
             {
-                preamble = String.Join("-", initialBytes[0], initialBytes[1], initialBytes[2], initialBytes[3]);
+                preamble = string.Join("-", initialBytes[0], initialBytes[1], initialBytes[2], initialBytes[3]);
 
                 if (encodingMap.TryGetValue(preamble, out foundEncoding))
                 {
@@ -1166,7 +1340,7 @@ namespace System.Management.Automation
             // Test for three-byte preambles
             if (bytesRead > 2)
             {
-                preamble = String.Join("-", initialBytes[0], initialBytes[1], initialBytes[2]);
+                preamble = string.Join("-", initialBytes[0], initialBytes[1], initialBytes[2]);
                 if (encodingMap.TryGetValue(preamble, out foundEncoding))
                 {
                     return foundEncoding;
@@ -1176,7 +1350,7 @@ namespace System.Management.Automation
             // Test for two-byte preambles
             if (bytesRead > 1)
             {
-                preamble = String.Join("-", initialBytes[0], initialBytes[1]);
+                preamble = string.Join("-", initialBytes[0], initialBytes[1]);
                 if (encodingMap.TryGetValue(preamble, out foundEncoding))
                 {
                     return foundEncoding;
@@ -1257,7 +1431,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// If the command name is fully qualified then it is split into its component parts
-        /// E.g., moduleName\commandName
+        /// E.g., moduleName\commandName.
         /// </summary>
         /// <param name="commandName"></param>
         /// <param name="moduleName"></param>
@@ -1275,26 +1449,15 @@ namespace System.Management.Automation
             return commandName;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static T[] EmptyArray<T>()
-        {
-            return EmptyArrayHolder<T>._instance;
-        }
-
         internal static ReadOnlyCollection<T> EmptyReadOnlyCollection<T>()
         {
             return EmptyReadOnlyCollectionHolder<T>._instance;
         }
 
-        private static class EmptyArrayHolder<T>
-        {
-            internal static readonly T[] _instance = new T[0];
-        }
-
         private static class EmptyReadOnlyCollectionHolder<T>
         {
             internal static readonly ReadOnlyCollection<T> _instance =
-                new ReadOnlyCollection<T>(EmptyArray<T>());
+                new ReadOnlyCollection<T>(Array.Empty<T>());
         }
 
         internal static class Separators
@@ -1337,7 +1500,7 @@ namespace System.Management.Automation
         ///    Console.WriteLine("Is __ComObject assignable from? {0}", comObjectType.IsAssignableFrom(type));
         /// and the results are:
         ///    excelApp type: Microsoft.Office.Interop.Excel.ApplicationClass
-        ///    Is __ComObject assignable from? True
+        ///    Is __ComObject assignable from? True.
         /// </summary>
         internal static bool IsComObject(object obj)
         {
@@ -1353,9 +1516,9 @@ namespace System.Management.Automation
         ///     FullLangauge        ->  ConstrainedLanguage
         ///     RestrictedLanguage  ->  NoLanguage
         ///     ConstrainedLanguage ->  ConstrainedLanguage
-        ///     NoLanguage          ->  NoLanguage
+        ///     NoLanguage          ->  NoLanguage.
         /// </summary>
-        /// <param name="context">ExecutionContext</param>
+        /// <param name="context">ExecutionContext.</param>
         /// <returns>Previous language mode or null for no language mode change.</returns>
         internal static PSLanguageMode? EnforceSystemLockDownLanguageMode(ExecutionContext context)
         {
@@ -1806,8 +1969,8 @@ namespace System.Management.Automation.Internal
         internal static bool TestStopComputer;
         internal static bool TestWaitStopComputer;
         internal static bool TestRenameComputer;
-        internal static int  TestStopComputerResults;
-        internal static int  TestRenameComputerResults;
+        internal static int TestStopComputerResults;
+        internal static int TestRenameComputerResults;
 
         // It's useful to test that we don't depend on the ScriptBlock and AST objects and can use a re-parsed version.
         internal static bool IgnoreScriptBlockCache;
@@ -1838,8 +2001,8 @@ namespace System.Management.Automation.Internal
         /// remote session, i.e., has run the Import-PSSession cmdlet.  This hook will return true if the provided commandPipeline
         /// is successfully batched and run in the remote session, and false if it is rejected for batching.
         /// </summary>
-        /// <param name="commandPipeline">Command pipeline to test</param>
-        /// <param name="runspace">Runspace with imported remote session</param>
+        /// <param name="commandPipeline">Command pipeline to test.</param>
+        /// <param name="runspace">Runspace with imported remote session.</param>
         /// <returns>True if commandPipeline is batched successfully.</returns>
         public static bool TestImplicitRemotingBatching(string commandPipeline, System.Management.Automation.Runspaces.Runspace runspace)
         {

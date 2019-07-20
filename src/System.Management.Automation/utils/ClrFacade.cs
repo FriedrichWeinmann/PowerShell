@@ -12,13 +12,14 @@ using System.Management.Automation.Language;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Loader;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Security;
+
 using Microsoft.Win32.SafeHandles;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace System.Management.Automation
 {
@@ -49,7 +50,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Facade for AppDomain.GetAssemblies
+        /// Facade for AppDomain.GetAssemblies.
         /// </summary>
         /// <param name="namespaceQualifiedTypeName">
         /// In CoreCLR context, if it's for string-to-type conversion and the namespace qualified type name is known, pass it in so that
@@ -59,17 +60,17 @@ namespace System.Management.Automation
         {
             return PSAssemblyLoadContext.GetAssembly(namespaceQualifiedTypeName) ??
                    AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-                       !TypeDefiner.DynamicClassAssemblyName.Equals(a.GetName().Name, StringComparison.Ordinal));
+                       !a.FullName.StartsWith(TypeDefiner.DynamicClassAssemblyFullNamePrefix, StringComparison.Ordinal));
         }
 
         /// <summary>
-        /// Get the namespace-qualified type names of all available .NET Core types shipped with PowerShell Core.
+        /// Get the namespace-qualified type names of all available .NET Core types shipped with PowerShell.
         /// This is used for type name auto-completion in PS engine.
         /// </summary>
         internal static IEnumerable<string> AvailableDotNetTypeNames => PSAssemblyLoadContext.AvailableDotNetTypeNames;
 
         /// <summary>
-        /// Get the assembly names of all available .NET Core assemblies shipped with PowerShell Core.
+        /// Get the assembly names of all available .NET Core assemblies shipped with PowerShell.
         /// This is used for type name auto-completion in PS engine.
         /// </summary>
         internal static HashSet<string> AvailableDotNetAssemblyNames => PSAssemblyLoadContext.AvailableDotNetAssemblyNames;
@@ -81,7 +82,7 @@ namespace System.Management.Automation
         #region Encoding
 
         /// <summary>
-        /// Facade for getting default encoding
+        /// Facade for getting default encoding.
         /// </summary>
         internal static Encoding GetDefaultEncoding()
         {
@@ -99,7 +100,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Facade for getting OEM encoding
-        /// OEM encodings work on all platforms, or rather codepage 437 is available on both Windows and Non-Windows
+        /// OEM encodings work on all platforms, or rather codepage 437 is available on both Windows and Non-Windows.
         /// </summary>
         internal static Encoding GetOEMEncoding()
         {
@@ -280,19 +281,6 @@ namespace System.Management.Automation
         #region Misc
 
         /// <summary>
-        /// Facade for RemotingServices.IsTransparentProxy(object)
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool IsTransparentProxy(object obj)
-        {
-#if CORECLR // Namespace System.Runtime.Remoting is not in CoreCLR
-            return false;
-#else
-            return System.Runtime.Remoting.RemotingServices.IsTransparentProxy(obj);
-#endif
-        }
-
-        /// <summary>
         /// Facade for ManagementDateTimeConverter.ToDmtfDateTime(DateTime)
         /// </summary>
         internal static string ToDmtfDateTime(DateTime date)
@@ -304,7 +292,7 @@ namespace System.Management.Automation
             // it's recommended to use TimeZoneInfo.Local whenever possible.
 
             const int maxsizeUtcDmtf = 999;
-            string UtcString = String.Empty;
+            string UtcString = string.Empty;
             // Fill up the UTC field in the DMTF date with the current zones UTC value
             TimeZoneInfo curZone = TimeZoneInfo.Local;
             TimeSpan tickOffset = curZone.GetUtcOffset(date);
@@ -360,28 +348,10 @@ namespace System.Management.Automation
 #endif
         }
 
-        /// <summary>
-        /// Facade for ProfileOptimization.SetProfileRoot
-        /// </summary>
-        /// <param name="directoryPath">The full path to the folder where profile files are stored for the current application domain.</param>
-        internal static void SetProfileOptimizationRoot(string directoryPath)
-        {
-            PSAssemblyLoadContext.SetProfileOptimizationRootImpl(directoryPath);
-        }
-
-        /// <summary>
-        /// Facade for ProfileOptimization.StartProfile
-        /// </summary>
-        /// <param name="profile">The file name of the profile to use.</param>
-        internal static void StartProfileOptimization(string profile)
-        {
-            PSAssemblyLoadContext.StartProfileOptimizationImpl(profile);
-        }
-
         #endregion Misc
 
         /// <summary>
-        /// Native methods that are used by facade methods
+        /// Native methods that are used by facade methods.
         /// </summary>
         private static class NativeMethods
         {

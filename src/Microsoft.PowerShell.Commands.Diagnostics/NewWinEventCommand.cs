@@ -2,16 +2,16 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
-using System.Globalization;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Eventing;
 using System.Diagnostics.Eventing.Reader;
-using System.Resources;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
-using System.Xml;
+using System.Globalization;
 using System.IO;
+using System.Management.Automation;
+using System.Reflection;
+using System.Resources;
+using System.Xml;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -30,7 +30,7 @@ namespace Microsoft.PowerShell.Commands
         private ResourceManager _resourceMgr = Microsoft.PowerShell.Commands.Diagnostics.Common.CommonUtilities.GetResourceManager();
 
         /// <summary>
-        /// ProviderName
+        /// ProviderName.
         /// </summary>
         [Parameter(
             Position = 0,
@@ -99,7 +99,7 @@ namespace Microsoft.PowerShell.Commands
         private bool _versionSpecified = false;
 
         /// <summary>
-        /// Event Payload
+        /// Event Payload.
         /// </summary>
         [Parameter(
             Position = 2,
@@ -125,7 +125,7 @@ namespace Microsoft.PowerShell.Commands
         private object[] _payload;
 
         /// <summary>
-        /// BeginProcessing
+        /// BeginProcessing.
         /// </summary>
         protected override void BeginProcessing()
         {
@@ -309,7 +309,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// ProcessRecord
+        /// ProcessRecord.
         /// </summary>
         protected override void ProcessRecord()
         {
@@ -339,7 +339,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// EndProcessing
+        /// EndProcessing.
         /// </summary>
         protected override void EndProcessing()
         {

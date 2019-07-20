@@ -4,6 +4,7 @@
 using System;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
+
 using Dbg = System.Management.Automation;
 
 namespace Microsoft.PowerShell.Commands
@@ -16,7 +17,7 @@ namespace Microsoft.PowerShell.Commands
     {
         /// <summary>
         /// This parameter specifies the script block to run in the current
-        /// PowerShell transaction
+        /// PowerShell transaction.
         /// </summary>
         [Parameter(Position = 0, Mandatory = true)]
         public ScriptBlock TransactedScript
@@ -35,7 +36,7 @@ namespace Microsoft.PowerShell.Commands
         private ScriptBlock _transactedScript;
 
         /// <summary>
-        /// Commits the current transaction
+        /// Commits the current transaction.
         /// </summary>
         protected override void EndProcessing()
         {
@@ -43,7 +44,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 try
                 {
-                    var emptyArray = Utils.EmptyArray<object>();
+                    var emptyArray = Array.Empty<object>();
                     _transactedScript.InvokeUsingCmdlet(
                         contextCmdlet: this,
                         useLocalScope: false,

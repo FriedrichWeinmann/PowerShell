@@ -36,7 +36,7 @@ namespace System.Management.Automation
     };
 
     /// <summary>
-    /// Different streams produced by minishell output
+    /// Different streams produced by minishell output.
     /// </summary>
     internal enum MinishellStream
     {
@@ -52,7 +52,7 @@ namespace System.Management.Automation
 
     /// <summary>
     /// Helper class which holds stream names and also provide conversion
-    /// method
+    /// method.
     /// </summary>
     internal static class StringToMinishellStreamConverter
     {
@@ -104,26 +104,26 @@ namespace System.Management.Automation
 
     /// <summary>
     /// An output object from the child process.
-    /// If it's from the error stream isError will be true
+    /// If it's from the error stream isError will be true.
     /// </summary>
     internal class ProcessOutputObject
     {
         /// <summary>
-        /// Get the data from this object
+        /// Get the data from this object.
         /// </summary>
         /// <value>The data</value>
         internal object Data { get; }
 
         /// <summary>
-        /// Stream to which data belongs
+        /// Stream to which data belongs.
         /// </summary>
         internal MinishellStream Stream { get; }
 
         /// <summary>
-        /// Build an output object
+        /// Build an output object.
         /// </summary>
-        /// <param name="data">The data to output</param>
-        /// <param name="stream">stream to which data belongs</param>
+        /// <param name="data">The data to output.</param>
+        /// <param name="stream">Stream to which data belongs.</param>
         internal ProcessOutputObject(object data, MinishellStream stream)
         {
             Data = data;
@@ -140,7 +140,7 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Information about application which is invoked by this instance of
-        /// NativeCommandProcessor
+        /// NativeCommandProcessor.
         /// </summary>
         private ApplicationInfo _applicationInfo;
 
@@ -174,12 +174,12 @@ namespace System.Management.Automation
 
             this.CommandScope = context.EngineSessionState.CurrentScope;
 
-            //provide native command a backpointer to this object.
-            //When kill is called on the command object,
-            //it calls this NCP back to kill the process...
+            // provide native command a backpointer to this object.
+            // When kill is called on the command object,
+            // it calls this NCP back to kill the process...
             ((NativeCommand)Command).MyCommandProcessor = this;
 
-            //Create input writer for providing input to the process.
+            // Create input writer for providing input to the process.
             _inputWriter = new ProcessInputWriter(Command);
 
             _isTranscribing = this.Command.Context.EngineHostInterface.UI.IsTranscribing;
@@ -228,17 +228,17 @@ namespace System.Management.Automation
 
         /// <summary>
         /// Variable which is set to true when prepare is called.
-        /// Parameter Binder should only be created after Prepare method is called
+        /// Parameter Binder should only be created after Prepare method is called.
         /// </summary>
         private bool _isPreparedCalled = false;
 
         /// <summary>
-        /// Parameter binder used by this command processor
+        /// Parameter binder used by this command processor.
         /// </summary>
         private NativeCommandParameterBinderController _nativeParameterBinderController;
 
         /// <summary>
-        /// Gets a new instance of a ParameterBinderController using a NativeCommandParameterBinder
+        /// Gets a new instance of a ParameterBinderController using a NativeCommandParameterBinder.
         /// </summary>
         /// <param name="command">
         /// The native command to be run.
@@ -290,11 +290,11 @@ namespace System.Management.Automation
         {
             _isPreparedCalled = true;
 
-            //Check if the application is minishell
+            // Check if the application is minishell
             _isMiniShell = IsMiniShell();
 
-            //For minishell parameter binding is done in Complete method because we need
-            //to know if output is redirected before we can bind parameters.
+            // For minishell parameter binding is done in Complete method because we need
+            // to know if output is redirected before we can bind parameters.
             if (!_isMiniShell)
             {
                 this.NativeParameterBinderController.BindParameters(arguments);
@@ -335,12 +335,12 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Process object for the invoked application
+        /// Process object for the invoked application.
         /// </summary>
         private System.Diagnostics.Process _nativeProcess;
 
         /// <summary>
-        /// This is used for writing input to the process
+        /// This is used for writing input to the process.
         /// </summary>
         private ProcessInputWriter _inputWriter = null;
 
@@ -374,7 +374,7 @@ namespace System.Management.Automation
         private Host.Coordinates _startPosition;
 
         /// <summary>
-        /// object used for synchronization between StopProcessing thread and
+        /// Object used for synchronization between StopProcessing thread and
         /// Pipeline thread.
         /// </summary>
         private object _sync = new object();
@@ -434,12 +434,12 @@ namespace System.Management.Automation
                     }
                 }
 
-                //Start the process. If stop has been called, throw exception.
-                //Note: if StopProcessing is called which this method has the lock,
-                //Stop thread will wait for nativeProcess to start.
-                //If StopProcessing gets the lock first, then it will set the stopped
-                //flag and this method will throw PipelineStoppedException when it gets
-                //the lock.
+                // Start the process. If stop has been called, throw exception.
+                // Note: if StopProcessing is called which this method has the lock,
+                // Stop thread will wait for nativeProcess to start.
+                // If StopProcessing gets the lock first, then it will set the stopped
+                // flag and this method will throw PipelineStoppedException when it gets
+                // the lock.
                 lock (_sync)
                 {
                     if (_stopped)
@@ -461,7 +461,7 @@ namespace System.Management.Automation
                         // on Windows desktops, see if there is a file association for this command. If so then we'll use that.
                         string executable = FindExecutable(startInfo.FileName);
                         bool notDone = true;
-                        if (!String.IsNullOrEmpty(executable))
+                        if (!string.IsNullOrEmpty(executable))
                         {
                             if (IsConsoleApplication(executable))
                             {
@@ -525,7 +525,7 @@ namespace System.Management.Automation
 
                 try
                 {
-                    //If input is redirected, start input to process.
+                    // If input is redirected, start input to process.
                     if (startInfo.RedirectStandardInput)
                     {
                         NativeCommandIOFormat inputFormat = NativeCommandIOFormat.Text;
@@ -557,7 +557,6 @@ namespace System.Management.Automation
             catch (Win32Exception e)
             {
                 exceptionToRethrow = e;
-
             }
             catch (PipelineStoppedException)
             {
@@ -588,7 +587,7 @@ namespace System.Management.Automation
 
         private void InitOutputQueue()
         {
-            //if output is redirected, start reading output of process in queue.
+            // if output is redirected, start reading output of process in queue.
             if (_nativeProcess.StartInfo.RedirectStandardOutput || _nativeProcess.StartInfo.RedirectStandardError)
             {
                 lock (_sync)
@@ -667,7 +666,7 @@ namespace System.Management.Automation
             {
                 if (_isRunningInBackground == false)
                 {
-                    //Wait for input writer to finish.
+                    // Wait for input writer to finish.
                     _inputWriter.Done();
 
                     // read all the available output in the blocking way
@@ -760,7 +759,7 @@ namespace System.Management.Automation
         /// if the process handle is invalid (as seems to be the case with an ntvdm)
         /// then we try to get a fresh handle based on the original process id.
         /// </summary>
-        /// <param name="processToKill">The process to kill</param>
+        /// <param name="processToKill">The process to kill.</param>
         private static void KillProcess(Process processToKill)
         {
             if (NativeCommandProcessor.IsServerSide)
@@ -960,7 +959,7 @@ namespace System.Management.Automation
         #endregion checkForConsoleApplication
 
         /// <summary>
-        /// This is set to true when StopProcessing is called
+        /// This is set to true when StopProcessing is called.
         /// </summary>
         private bool _stopped = false;
         /// <summary>
@@ -978,7 +977,7 @@ namespace System.Management.Automation
             {
                 if (!_runStandAlone)
                 {
-                    //Stop input writer
+                    // Stop input writer
                     _inputWriter.Stop();
 
                     KillProcess(_nativeProcess);
@@ -1079,7 +1078,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the start info for process
+        /// Gets the start info for process.
         /// </summary>
         /// <param name="redirectOutput"></param>
         /// <param name="redirectError"></param>
@@ -1129,8 +1128,8 @@ namespace System.Management.Automation
                 startInfo.UseShellExecute = true;
             }
 
-            //For minishell value of -outoutFormat parameter depends on value of redirectOutput.
-            //So we delay the parameter binding. Do parameter binding for minishell now.
+            // For minishell value of -outoutFormat parameter depends on value of redirectOutput.
+            // So we delay the parameter binding. Do parameter binding for minishell now.
             if (_isMiniShell)
             {
                 MinishellParameterBinderController mpc = (MinishellParameterBinderController)NativeParameterBinderController;
@@ -1161,7 +1160,7 @@ namespace System.Management.Automation
                 // We have the test 'utscript\Engine\TestOutDefaultRedirection.ps1' to check that a user defined
                 // Out-Default function should not cause a native command to be redirected. So here we should only
                 // compare the command name to avoid breaking change.
-                if (String.Equals(outputProcessor.CommandInfo.Name, "Out-Default", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(outputProcessor.CommandInfo.Name, "Out-Default", StringComparison.OrdinalIgnoreCase))
                 {
                     // Verify that this isn't an Out-Default added for transcribing
                     if (!outputProcessor.Command.MyInvocation.BoundParameters.ContainsKey("Transcript"))
@@ -1175,7 +1174,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// This method calculates if input and output of the process are redirected
+        /// This method calculates if input and output of the process are redirected.
         /// </summary>
         /// <param name="redirectOutput"></param>
         /// <param name="redirectError"></param>
@@ -1229,8 +1228,8 @@ namespace System.Management.Automation
                 }
             }
 
-            //In minishell scenario, if output is redirected
-            //then error should also be redirected.
+            // In minishell scenario, if output is redirected
+            // then error should also be redirected.
             if (redirectError == false && redirectOutput == true && _isMiniShell)
             {
                 redirectError = true;
@@ -1579,7 +1578,7 @@ namespace System.Management.Automation
                         string streamName;
                         object obj = des.Deserialize(out streamName);
 
-                        //Decide the stream to which data belongs
+                        // Decide the stream to which data belongs
                         MinishellStream stream = MinishellStream.Unknown;
                         if (streamName != null)
                         {
@@ -1591,7 +1590,7 @@ namespace System.Management.Automation
                             stream = isOutput ? MinishellStream.Output : MinishellStream.Error;
                         }
 
-                        //Null is allowed only in output stream
+                        // Null is allowed only in output stream
                         if (stream != MinishellStream.Output && obj == null)
                         {
                             continue;
@@ -1644,7 +1643,7 @@ namespace System.Management.Automation
                                  stream == MinishellStream.Verbose ||
                                  stream == MinishellStream.Warning)
                         {
-                            //Convert to string
+                            // Convert to string
                             try
                             {
                                 obj = LanguagePrimitives.ConvertTo(obj, typeof(string), CultureInfo.InvariantCulture);
@@ -1693,7 +1692,7 @@ namespace System.Management.Automation
 
         private InternalCommand _command;
         /// <summary>
-        /// Creates an instance of ProcessInputWriter
+        /// Creates an instance of ProcessInputWriter.
         /// </summary>
         internal ProcessInputWriter(InternalCommand command)
         {
@@ -1707,7 +1706,7 @@ namespace System.Management.Automation
         private Serializer _xmlSerializer;
 
         /// <summary>
-        /// Add an object to write to process
+        /// Add an object to write to process.
         /// </summary>
         /// <param name="input"></param>
         internal void Add(object input)
@@ -1771,7 +1770,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Stream to which input is written
+        /// Stream to which input is written.
         /// </summary>
         private StreamWriter _streamWriter;
 
@@ -1781,7 +1780,7 @@ namespace System.Management.Automation
         private NativeCommandIOFormat _inputFormat;
 
         /// <summary>
-        /// Start writing input to process
+        /// Start writing input to process.
         /// </summary>
         /// <param name="process">
         /// process to which input is written
@@ -1792,9 +1791,9 @@ namespace System.Management.Automation
         {
             Dbg.Assert(process != null, "caller should validate the paramter");
 
-            //Get the encoding for writing to native command. Note we get the Encoding
-            //from the current scope so a script or function can use a different encoding
-            //than global value.
+            // Get the encoding for writing to native command. Note we get the Encoding
+            // from the current scope so a script or function can use a different encoding
+            // than global value.
             Encoding pipeEncoding = _command.Context.GetVariableValue(SpecialVariables.OutputEncodingVarPath) as System.Text.Encoding ??
                                     Utils.utf8NoBom;
 
@@ -1818,7 +1817,7 @@ namespace System.Management.Automation
         bool _stopping = false;
 
         /// <summary>
-        /// Stop writing input to process
+        /// Stop writing input to process.
         /// </summary>
         internal void Stop()
         {
@@ -1920,7 +1919,7 @@ namespace System.Management.Automation
         /// Code to control the display properties of the a window...
         /// </summary>
         /// <param name="hWnd">The window to show...</param>
-        /// <param name="nCmdShow">The command to do</param>
+        /// <param name="nCmdShow">The command to do.</param>
         /// <returns>True it it was successful.</returns>
         [DllImport("user32.dll")]
         internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -1930,17 +1929,18 @@ namespace System.Management.Automation
         /// </summary>
         /// <returns>True if a console was created...</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool AllocConsole();
 
         /// <summary>
-        /// Called to save the foreground window before allocating a hidden console window
+        /// Called to save the foreground window before allocating a hidden console window.
         /// </summary>
         /// <returns>A handle to the foreground window.</returns>
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         /// <summary>
-        /// Called to restore the foreground window after allocating a hidden console window
+        /// Called to restore the foreground window after allocating a hidden console window.
         /// </summary>
         /// <param name="hWnd">A handle to the window that should be activated and brought to the foreground.</param>
         /// <returns>True if the window was brought to the foreground.</returns>
@@ -2043,7 +2043,7 @@ namespace System.Management.Automation
     public class RemoteException : RuntimeException
     {
         /// <summary>
-        /// Initializes a new instance of RemoteException
+        /// Initializes a new instance of RemoteException.
         /// </summary>
         public RemoteException()
             : base()
@@ -2080,9 +2080,9 @@ namespace System.Management.Automation
         /// <summary>
         /// Initializes a new instance of the RemoteException
         /// with a specified error message, serialized Exception and
-        /// serialized InvocationInfo
+        /// serialized InvocationInfo.
         /// </summary>
-        /// <param name="message">The message that describes the error. </param>
+        /// <param name="message">The message that describes the error.</param>
         /// <param name="serializedRemoteException">
         /// serialized exception from remote msh
         /// </param>
@@ -2128,7 +2128,7 @@ namespace System.Management.Automation
         private PSObject _serializedRemoteInvocationInfo;
 
         /// <summary>
-        /// Original Serialized Exception from remote msh
+        /// Original Serialized Exception from remote msh.
         /// </summary>
         /// <remarks>This is the exception which was thrown in remote.
         /// </remarks>
@@ -2156,7 +2156,7 @@ namespace System.Management.Automation
 
         private ErrorRecord _remoteErrorRecord;
         /// <summary>
-        /// Sets the remote error record associated with this exception
+        /// Sets the remote error record associated with this exception.
         /// </summary>
         /// <param name="remoteError"></param>
         internal void SetRemoteErrorRecord(ErrorRecord remoteError)
@@ -2165,7 +2165,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// ErrorRecord associated with the exception
+        /// ErrorRecord associated with the exception.
         /// </summary>
         public override ErrorRecord ErrorRecord
         {

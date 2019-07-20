@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
 using System.Management.Automation;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
+using System.Text;
 
 namespace Microsoft.PowerShell.ScheduledJob
 {
@@ -259,7 +259,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// Copy Constructor.
         /// </summary>
-        /// <param name="copyOptions">Copy from</param>
+        /// <param name="copyOptions">Copy from.</param>
         internal ScheduledJobOptions(
             ScheduledJobOptions copyOptions)
         {
@@ -292,8 +292,8 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// Serialization constructor.
         /// </summary>
-        /// <param name="info">SerializationInfo</param>
-        /// <param name="context">StreamingContext</param>
+        /// <param name="info">SerializationInfo.</param>
+        /// <param name="context">StreamingContext.</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         private ScheduledJobOptions(
             SerializationInfo info,
@@ -325,8 +325,8 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// <summary>
         /// GetObjectData for ISerializable implementation.
         /// </summary>
-        /// <param name="info">SerializationInfo</param>
-        /// <param name="context">StreamingContext</param>
+        /// <param name="info">SerializationInfo.</param>
+        /// <param name="context">StreamingContext.</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -382,7 +382,7 @@ namespace Microsoft.PowerShell.ScheduledJob
     public enum TaskMultipleInstancePolicy
     {
         /// <summary>
-        /// None
+        /// None.
         /// </summary>
         None = 0,
         /// <summary>
@@ -398,7 +398,7 @@ namespace Microsoft.PowerShell.ScheduledJob
         /// </summary>
         Queue = 3,
         /// <summary>
-        /// Stop currently running task (job) and start a new one
+        /// Stop currently running task (job) and start a new one.
         /// </summary>
         StopExisting = 4
     }

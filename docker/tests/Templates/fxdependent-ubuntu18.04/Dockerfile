@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-runtime-bionic
+FROM microsoft/dotnet:2.1.7-runtime-bionic
 
 ARG PACKAGENAME
 ARG PACKAGELOCATION
@@ -13,7 +13,8 @@ RUN apt-get update \
         ca-certificates \
         apt-transport-https \
         locales \
-        git
+        git \
+    && apt-get clean
 
 # Setup the locale
 ENV LANG en_US.UTF-8

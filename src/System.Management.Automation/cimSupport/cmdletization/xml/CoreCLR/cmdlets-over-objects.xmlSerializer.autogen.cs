@@ -3,17 +3,16 @@
 
 #if CORECLR
 
+using System;
+using System.Collections;
+using System.Globalization;
+using System.Xml;
+using System.Xml.Schema;
+
 #pragma warning disable
 
 namespace Microsoft.PowerShell.Cmdletization.Xml
 {
-
-    using System;
-    using System.Collections;
-    using System.Globalization;
-    using System.Xml;
-    using System.Xml.Schema;
-
     internal class XmlSerializationReader1
     {
         #region Copy_From_XmlSerializationReader
@@ -419,7 +418,7 @@ namespace Microsoft.PowerShell.Cmdletization.Xml
 
             if (prefix == null || prefix.Length == 0)
             {
-                return new XmlQualifiedName(_r.NameTable.Add(value), _r.LookupNamespace(String.Empty));
+                return new XmlQualifiedName(_r.NameTable.Add(value), _r.LookupNamespace(string.Empty));
             }
             else
             {
@@ -2791,7 +2790,7 @@ namespace Microsoft.PowerShell.Cmdletization.Xml
             if (isNull) return null;
             global::System.Object o;
             o = new global::System.Object();
-            bool[] paramsRead = new bool[0];
+            bool[] paramsRead = Array.Empty<bool>();
             while (Reader.MoveToNextAttribute())
             {
                 if (!IsXmlnsAttribute(Reader.Name))

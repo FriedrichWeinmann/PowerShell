@@ -6,23 +6,24 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Language;
+using System.Threading;
 
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the information for a given breakpoint
+    /// Holds the information for a given breakpoint.
     /// </summary>
     public abstract class Breakpoint
     {
         #region properties
 
         /// <summary>
-        /// The action to take when the breakpoint is hit
+        /// The action to take when the breakpoint is hit.
         /// </summary>
         public ScriptBlock Action { get; private set; }
 
         /// <summary>
-        /// Gets whether this breakpoint is enabled
+        /// Gets whether this breakpoint is enabled.
         /// </summary>
         public bool Enabled { get; private set; }
 
@@ -32,17 +33,17 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Records how many times this breakpoint has been triggered
+        /// Records how many times this breakpoint has been triggered.
         /// </summary>
         public int HitCount { get; private set; }
 
         /// <summary>
-        /// This breakpoint's Id
+        /// This breakpoint's Id.
         /// </summary>
         public int Id { get; private set; }
 
         /// <summary>
-        /// True if breakpoint is set on a script, false if the breakpoint is not scoped
+        /// True if breakpoint is set on a script, false if the breakpoint is not scoped.
         /// </summary>
         internal bool IsScriptBreakpoint
         {
@@ -50,7 +51,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// The script this breakpoint is on, or null if the breakpoint is not scoped
+        /// The script this breakpoint is on, or null if the breakpoint is not scoped.
         /// </summary>
         public string Script { get; private set; }
 
@@ -58,16 +59,36 @@ namespace System.Management.Automation
 
         #region constructors
 
-        internal Breakpoint(string script, ScriptBlock action)
+        /// <summary>
+        /// Creates a new instance of a <see cref="Breakpoint"/>
+        /// </summary>
+        protected Breakpoint(string script)
+            : this(script, null)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="Breakpoint"/>
+        /// </summary>
+        protected Breakpoint(string script, ScriptBlock action)
         {
             Enabled = true;
             Script = script;
-            Id = s_lastID++;
+            Id = Interlocked.Increment(ref s_lastID);
             Action = action;
             HitCount = 0;
         }
 
-        internal Breakpoint(string script, ScriptBlock action, int id)
+        /// <summary>
+        /// Creates a new instance of a <see cref="Breakpoint"/>
+        /// </summary>
+        protected Breakpoint(string script, int id)
+            : this(script, null, id)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="Breakpoint"/>
+        /// </summary>
+        protected Breakpoint(string script, ScriptBlock action, int id)
         {
             Enabled = true;
             Script = script;
@@ -94,7 +115,7 @@ namespace System.Management.Automation
                 // implement a "trigger once" breakpoint that disables itself after first hit.
                 // One could also share an action across many breakpoints - and hence needs
                 // to know something about the breakpoint that is hit, e.g. in a poor mans code coverage tool.
-                Action.DoInvoke(dollarUnder: this, input: null, args: Utils.EmptyArray<object>());
+                Action.DoInvoke(dollarUnder: this, input: null, args: Array.Empty<object>());
             }
             catch (BreakException)
             {
@@ -131,18 +152,38 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// A breakpoint on a command
+    /// A breakpoint on a command.
     /// </summary>
     public class CommandBreakpoint : Breakpoint
     {
-        internal CommandBreakpoint(string script, WildcardPattern command, string commandString, ScriptBlock action)
+        /// <summary>
+        /// Creates a new instance of a <see cref="CommandBreakpoint"/>
+        /// </summary>
+        public CommandBreakpoint(string script, WildcardPattern command, string commandString)
+            : this(script, command, commandString, null)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="CommandBreakpoint"/>
+        /// </summary>
+        public CommandBreakpoint(string script, WildcardPattern command, string commandString, ScriptBlock action)
             : base(script, action)
         {
             CommandPattern = command;
             Command = commandString;
         }
 
-        internal CommandBreakpoint(string script, WildcardPattern command, string commandString, ScriptBlock action, int id)
+        /// <summary>
+        /// Creates a new instance of a <see cref="CommandBreakpoint"/>
+        /// </summary>
+        public CommandBreakpoint(string script, WildcardPattern command, string commandString, int id)
+            : this(script, command, commandString, null, id)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="CommandBreakpoint"/>
+        /// </summary>
+        public CommandBreakpoint(string script, WildcardPattern command, string commandString, ScriptBlock action, int id)
             : base(script, action, id)
         {
             CommandPattern = command;
@@ -150,7 +191,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Which command this breakpoint is on
+        /// Which command this breakpoint is on.
         /// </summary>
         public string Command { get; private set; }
 
@@ -215,37 +256,57 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// The access type for variable breakpoints to break on
+    /// The access type for variable breakpoints to break on.
     /// </summary>
     public enum VariableAccessMode
     {
         /// <summary>
-        /// Break on read access only
+        /// Break on read access only.
         /// </summary>
         Read,
         /// <summary>
-        /// Break on write access only (default)
+        /// Break on write access only (default).
         /// </summary>
         Write,
         /// <summary>
-        /// Breakon read or write access
+        /// Breakon read or write access.
         /// </summary>
         ReadWrite
     }
 
     /// <summary>
-    /// A breakpoint on a variable
+    /// A breakpoint on a variable.
     /// </summary>
     public class VariableBreakpoint : Breakpoint
     {
-        internal VariableBreakpoint(string script, string variable, VariableAccessMode accessMode, ScriptBlock action)
+        /// <summary>
+        /// Creates a new instance of a <see cref="VariableBreakpoint"/>.
+        /// </summary>
+        public VariableBreakpoint(string script, string variable, VariableAccessMode accessMode)
+            : this(script, variable, accessMode, null)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="VariableBreakpoint"/>.
+        /// </summary>
+        public VariableBreakpoint(string script, string variable, VariableAccessMode accessMode, ScriptBlock action)
             : base(script, action)
         {
             Variable = variable;
             AccessMode = accessMode;
         }
 
-        internal VariableBreakpoint(string script, string variable, VariableAccessMode accessMode, ScriptBlock action, int id)
+        /// <summary>
+        /// Creates a new instance of a <see cref="VariableBreakpoint"/>.
+        /// </summary>
+        public VariableBreakpoint(string script, string variable, VariableAccessMode accessMode, int id)
+            : this(script, variable, accessMode, null, id)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="VariableBreakpoint"/>.
+        /// </summary>
+        public VariableBreakpoint(string script, string variable, VariableAccessMode accessMode, ScriptBlock action, int id)
             : base(script, action, id)
         {
             Variable = variable;
@@ -253,17 +314,17 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// The access mode to trigger this variable breakpoint on
+        /// The access mode to trigger this variable breakpoint on.
         /// </summary>
         public VariableAccessMode AccessMode { get; private set; }
 
         /// <summary>
-        /// Which variable this breakpoint is on
+        /// Which variable this breakpoint is on.
         /// </summary>
         public string Variable { get; private set; }
 
         /// <summary>
-        /// Gets the string representation of this breakpoint
+        /// Gets the string representation of this breakpoint.
         /// </summary>
         /// <returns>The string representation of this breakpoint.</returns>
         public override string ToString()
@@ -296,11 +357,21 @@ namespace System.Management.Automation
     }
 
     /// <summary>
-    /// A breakpoint on a line or statement
+    /// A breakpoint on a line or statement.
     /// </summary>
     public class LineBreakpoint : Breakpoint
     {
-        internal LineBreakpoint(string script, int line, ScriptBlock action)
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line)
+            : this(script, line, null)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line, ScriptBlock action)
             : base(script, action)
         {
             Diagnostics.Assert(!string.IsNullOrEmpty(script), "Caller to verify script parameter is not null or empty.");
@@ -309,7 +380,17 @@ namespace System.Management.Automation
             SequencePointIndex = -1;
         }
 
-        internal LineBreakpoint(string script, int line, int column, ScriptBlock action)
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line, int column)
+            : this(script, line, column, null)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line, int column, ScriptBlock action)
             : base(script, action)
         {
             Diagnostics.Assert(!string.IsNullOrEmpty(script), "Caller to verify script parameter is not null or empty.");
@@ -318,7 +399,17 @@ namespace System.Management.Automation
             SequencePointIndex = -1;
         }
 
-        internal LineBreakpoint(string script, int line, int column, ScriptBlock action, int id)
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line, int column, int id)
+            : this(script, line, column, null, id)
+        { }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="LineBreakpoint"/>
+        /// </summary>
+        public LineBreakpoint(string script, int line, int column, ScriptBlock action, int id)
             : base(script, action, id)
         {
             Diagnostics.Assert(!string.IsNullOrEmpty(script), "Caller to verify script parameter is not null or empty.");
@@ -328,7 +419,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Which column this breakpoint is on
+        /// Which column this breakpoint is on.
         /// </summary>
         public int Column { get; private set; }
 

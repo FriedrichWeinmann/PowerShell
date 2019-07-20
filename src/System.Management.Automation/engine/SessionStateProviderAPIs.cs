@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Management.Automation.Provider;
 using System.Management.Automation.Runspaces;
 using System.Text;
+
 using Dbg = System.Management.Automation;
 
 #pragma warning disable 1634, 1691 // Stops compiler from warning about unknown warnings
@@ -14,7 +15,7 @@ using Dbg = System.Management.Automation;
 namespace System.Management.Automation
 {
     /// <summary>
-    /// Holds the state of a PowerShell session
+    /// Holds the state of a PowerShell session.
     /// </summary>
     internal sealed partial class SessionStateInternal
     {
@@ -739,7 +740,7 @@ namespace System.Management.Automation
         {
             bool result = false;
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -760,7 +761,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the provider of the specified name
+        /// Gets the provider of the specified name.
         /// </summary>
         /// <param name="name">
         /// The name of the provider to retrieve
@@ -777,7 +778,7 @@ namespace System.Management.Automation
         /// </exception>
         internal Collection<ProviderInfo> GetProvider(string name)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw PSTraceSource.NewArgumentException("name");
             }
@@ -800,7 +801,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets the provider of the specified name
+        /// Gets the provider of the specified name.
         /// </summary>
         /// <param name="name">
         /// The name of the provider to retrieve
@@ -881,17 +882,17 @@ namespace System.Management.Automation
                 }
             }
 
-            if (!String.IsNullOrEmpty(providerName.PSSnapInName))
+            if (!string.IsNullOrEmpty(providerName.PSSnapInName))
             {
                 // Be sure the PSSnapin/Module name matches
 
                 foreach (ProviderInfo provider in matchingProviders)
                 {
-                    if (String.Equals(
+                    if (string.Equals(
                             provider.PSSnapInName,
                             providerName.PSSnapInName,
                            StringComparison.OrdinalIgnoreCase) ||
-                        String.Equals(
+                        string.Equals(
                             provider.ModuleName,
                             providerName.PSSnapInName,
                             StringComparison.OrdinalIgnoreCase))
@@ -912,7 +913,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Gets all the CoreCommandProviders
+        /// Gets all the CoreCommandProviders.
         /// </summary>
         internal IEnumerable<ProviderInfo> ProviderList
         {
@@ -935,7 +936,7 @@ namespace System.Management.Automation
         /// <summary>
         /// Copy the Providers from another session state instance...
         /// </summary>
-        /// <param name="ss">the session state instance to copy from...</param>
+        /// <param name="ss">The session state instance to copy from...</param>
         internal void CopyProviders(SessionStateInternal ss)
         {
             if (ss == null || ss.Providers == null)
@@ -1031,7 +1032,7 @@ namespace System.Management.Automation
                             "InitializeDefaultDrivesException",
                             SessionStateStrings.InitializeDefaultDrivesException,
                             provider,
-                            String.Empty,
+                            string.Empty,
                             e);
 
                     context.WriteError(
@@ -1082,7 +1083,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Creates and adds a provider to the provider container
+        /// Creates and adds a provider to the provider container.
         /// </summary>
         /// <param name="provider">
         /// The provider to add.
@@ -1323,14 +1324,14 @@ namespace System.Management.Automation
 
                 foreach (ProviderInfo existingProvider in existingProviders)
                 {
-                    //making sure that we are not trying to add the same provider by checking the provider name & type of the new and existing providers.
+                    // making sure that we are not trying to add the same provider by checking the provider name & type of the new and existing providers.
                     if (string.IsNullOrEmpty(provider.PSSnapInName) && (string.Equals(existingProvider.Name, provider.Name, StringComparison.OrdinalIgnoreCase) &&
                         (existingProvider.GetType().Equals(provider.GetType()))))
                     {
                         isDuplicateProvider = true;
                     }
 
-                    //making sure that we are not trying to add the same provider by checking the PSSnapinName of the new and existing providers.
+                    // making sure that we are not trying to add the same provider by checking the PSSnapinName of the new and existing providers.
                     else if (string.Equals(existingProvider.PSSnapInName, provider.PSSnapInName, StringComparison.OrdinalIgnoreCase))
                     {
                         isDuplicateProvider = true;
@@ -1396,7 +1397,7 @@ namespace System.Management.Automation
                 throw PSTraceSource.NewArgumentNullException("context");
             }
 
-            if (String.IsNullOrEmpty(providerName))
+            if (string.IsNullOrEmpty(providerName))
             {
                 throw PSTraceSource.NewArgumentException("providerName");
             }
@@ -1567,7 +1568,7 @@ namespace System.Management.Automation
         #endregion RemoveProvider
 
         /// <summary>
-        /// Gets the count of the number of providers that are loaded
+        /// Gets the count of the number of providers that are loaded.
         /// </summary>
         internal int ProviderCount
         {

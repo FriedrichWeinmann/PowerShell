@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.Management.Automation.Language;
 using System.Collections.ObjectModel;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Language;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace System.Management.Automation
@@ -18,7 +19,7 @@ namespace System.Management.Automation
         #region ctor
 
         /// <summary>
-        /// Default constructor
+        /// Default constructor.
         /// </summary>
         internal CommandProcessorBase()
         {
@@ -81,7 +82,7 @@ namespace System.Management.Automation
         internal bool _addedToPipelineAlready;
 
         /// <summary>
-        /// Gets the CommandInfo for the command this command processor represents
+        /// Gets the CommandInfo for the command this command processor represents.
         /// </summary>
         /// <value></value>
         internal CommandInfo CommandInfo { get; set; }
@@ -142,7 +143,7 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Get the ObsoleteAttribute of the current command
+        /// Get the ObsoleteAttribute of the current command.
         /// </summary>
         internal virtual ObsoleteAttribute ObsoleteAttribute
         {
@@ -180,9 +181,9 @@ namespace System.Management.Automation
         /// Ensures that the provided script block is compatible with the current language mode - to
         /// be used when a script block is being dotted.
         /// </summary>
-        /// <param name="scriptBlock">The script block being dotted</param>
-        /// <param name="languageMode">The current language mode</param>
-        /// <param name="invocationInfo">The invocation info about the command</param>
+        /// <param name="scriptBlock">The script block being dotted.</param>
+        /// <param name="languageMode">The current language mode.</param>
+        /// <param name="invocationInfo">The invocation info about the command.</param>
         protected static void ValidateCompatibleLanguageMode(
             ScriptBlock scriptBlock,
             PSLanguageMode languageMode,
@@ -251,8 +252,8 @@ namespace System.Management.Automation
         /// Checks if user has requested help (for example passing "-?" parameter for a cmdlet)
         /// and if yes, then returns the help target to display.
         /// </summary>
-        /// <param name="helpTarget">help target to request</param>
-        /// <param name="helpCategory">help category to request</param>
+        /// <param name="helpTarget">Help target to request.</param>
+        /// <param name="helpCategory">Help category to request.</param>
         /// <returns><c>true</c> if user requested help; <c>false</c> otherwise.</returns>
         internal virtual bool IsHelpRequested(out string helpTarget, out HelpCategory helpCategory)
         {
@@ -266,9 +267,9 @@ namespace System.Management.Automation
         /// <summary>
         /// Creates a command processor for "get-help [helpTarget]".
         /// </summary>
-        /// <param name="context">context for the command processor</param>
-        /// <param name="helpTarget">help target</param>
-        /// <param name="helpCategory">help category</param>
+        /// <param name="context">Context for the command processor.</param>
+        /// <param name="helpTarget">Help target.</param>
+        /// <param name="helpCategory">Help category.</param>
         /// <returns>Command processor for "get-help [helpTarget]".</returns>
         internal static CommandProcessorBase CreateGetHelpCommandProcessor(
             ExecutionContext context,
@@ -408,12 +409,12 @@ namespace System.Management.Automation
         private void HandleObsoleteCommand(ObsoleteAttribute obsoleteAttr)
         {
             string commandName =
-                String.IsNullOrEmpty(CommandInfo.Name)
+                string.IsNullOrEmpty(CommandInfo.Name)
                     ? "script block"
-                    : String.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    : string.Format(System.Globalization.CultureInfo.InvariantCulture,
                                     CommandBaseStrings.ObsoleteCommand, CommandInfo.Name);
 
-            string warningMsg = String.Format(
+            string warningMsg = string.Format(
                 System.Globalization.CultureInfo.InvariantCulture,
                 CommandBaseStrings.UseOfDeprecatedCommandWarning,
                 commandName, obsoleteAttr.Message);
@@ -924,7 +925,7 @@ namespace System.Management.Automation
         /// IDisposable implementation
         /// When the command is complete, the CommandProcessorBase should be disposed.
         /// This enables cmdlets to reliably release file handles etc.
-        /// without waiting for garbage collection
+        /// without waiting for garbage collection.
         /// </summary>
         /// <remarks>We use the standard IDispose pattern</remarks>
         public void Dispose()

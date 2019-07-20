@@ -5,9 +5,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Globalization;
 using System.Management.Automation;
+using System.Text;
 
 namespace Microsoft.PowerShell.Commands.Internal.Format
 {
@@ -30,9 +30,9 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
     }
 
     /// <summary>
-    /// helper object holding a generic object and the related
+    /// Helper object holding a generic object and the related
     /// "applies to" object.
-    /// It is used in by the inheritance based type match algorithm
+    /// It is used in by the inheritance based type match algorithm.
     /// </summary>
     internal sealed class TypeMatchItem
     {
@@ -57,8 +57,8 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
     }
 
     /// <summary>
-    /// algorithm to execute a type match on a list of entities
-    /// having an "applies to" associated object
+    /// Algorithm to execute a type match on a list of entities
+    /// having an "applies to" associated object.
     /// </summary>
     internal sealed class TypeMatch
     {
@@ -226,10 +226,6 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
 
             PSPropertyExpressionResult expressionResult;
             bool retVal = DisplayCondition.Evaluate(currentObject, ex, out expressionResult);
-            if (expressionResult != null && expressionResult.Exception != null)
-            {
-                _failedResultsList.Add(expressionResult);
-            }
 
             return retVal;
         }
@@ -238,8 +234,6 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
         private TypeInfoDataBase _db;
         private Collection<string> _typeNameHierarchy;
         private bool _useInheritance;
-
-        private List<PSPropertyExpressionResult> _failedResultsList = new List<PSPropertyExpressionResult>();
 
         private int _bestMatchIndex = BestMatchIndexUndefined;
         private TypeMatchItem _bestMatchItem;
@@ -586,11 +580,11 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
         }
 
         /// <summary>
-        /// given an appliesTo list, it finds all the types that are contained (following type
+        /// Given an appliesTo list, it finds all the types that are contained (following type
         /// group references)
         /// </summary>
-        /// <param name="db">database to use</param>
-        /// <param name="appliesTo">object to lookup</param>
+        /// <param name="db">Database to use.</param>
+        /// <param name="appliesTo">Object to lookup.</param>
         /// <returns></returns>
         internal static AppliesTo GetAllApplicableTypes(TypeInfoDataBase db, AppliesTo appliesTo)
         {
@@ -668,7 +662,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             {
                 if (x.controlBody.GetType() != controlReference.controlType)
                     continue;
-                if (String.Compare(controlReference.name, x.name, StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Compare(controlReference.name, x.name, StringComparison.OrdinalIgnoreCase) == 0)
                     return x.controlBody;
             }
 

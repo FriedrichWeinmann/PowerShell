@@ -10,6 +10,7 @@ using System.Management.Automation.Internal;
 using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
 using System.Threading;
+
 using Dbg = System.Management.Automation.Diagnostics;
 
 namespace Microsoft.PowerShell.Commands
@@ -34,7 +35,7 @@ namespace Microsoft.PowerShell.Commands
     /// > Disconnect-PSSession -Id $session.Id
     ///
     /// Disconnect a collection of PS sessions:
-    /// > Get-PSSession | Disconnect-PSSession
+    /// > Get-PSSession | Disconnect-PSSession.
     /// </summary>
     [SuppressMessage("Microsoft.PowerShell", "PS1012:CallShouldProcessOnlyIfDeclaringSupport")]
     [Cmdlet(VerbsCommunications.Disconnect, "PSSession", SupportsShouldProcess = true, DefaultParameterSetName = DisconnectPSSessionCommand.SessionParameterSet,
@@ -115,7 +116,7 @@ namespace Microsoft.PowerShell.Commands
         private PSSessionOption _sessionOption;
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string[] ContainerId
         {
@@ -126,7 +127,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override Guid[] VMId
         {
@@ -137,7 +138,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Overriding to suppress this parameter
+        /// Overriding to suppress this parameter.
         /// </summary>
         public override string[] VMName
         {
@@ -333,8 +334,8 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Handles the connect throttling complete event from the ThrottleManager.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="eventArgs">EventArgs</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="eventArgs">EventArgs.</param>
         private void HandleThrottleDisconnectComplete(object sender, EventArgs eventArgs)
         {
             _stream.ObjectWriter.Close();
@@ -521,7 +522,7 @@ namespace Microsoft.PowerShell.Commands
         /// <summary>
         /// Dispose method of IDisposable. Gets called in the following cases:
         ///     1. Pipeline explicitly calls dispose on cmdlets
-        ///     2. Called by the garbage collector
+        ///     2. Called by the garbage collector.
         /// </summary>
         public void Dispose()
         {
@@ -532,7 +533,7 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary>
         /// Internal dispose method which does the actual
-        /// dispose operations and finalize suppressions
+        /// dispose operations and finalize suppressions.
         /// </summary>
         /// <param name="disposing">Whether method is called
         /// from Dispose or destructor</param>

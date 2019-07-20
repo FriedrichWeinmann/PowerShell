@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Management.Automation;
 using System.Diagnostics.CodeAnalysis;
+using System.Management.Automation;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -277,7 +277,7 @@ namespace Microsoft.PowerShell.Commands
         }
 
         /// <summary>
-        /// Gives the criteria to filter breakpoints
+        /// Gives the criteria to filter breakpoints.
         /// </summary>
         private delegate bool FilterSelector<T>(Breakpoint breakpoint, T target);
 
